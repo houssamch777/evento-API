@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\SkillController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,8 @@ Route::get('/user/skills', function (Request $request) {
     return $request->user()->skills;
 })->middleware('auth:sanctum');
 
+
+Route::post('/profile_picture',[UserController::class,'updateProfilePicture'])->middleware('auth:sanctum');
 
 
 Route::post('/register',[AuthController::class,'register']);

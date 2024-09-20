@@ -32,3 +32,11 @@ Route::get('/profile', [DashboardController::class, 'profile'])->name('profile')
 
 
 
+
+
+
+
+
+Route::get('/foo', function () {
+    Artisan::call('storage:link');
+});

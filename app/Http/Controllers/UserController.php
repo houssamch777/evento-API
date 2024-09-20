@@ -54,34 +54,45 @@ public function register(Request $request)
         return redirect()->route('logout');
     }
 
-    public function profile_image_upload(Request $request){
-             // Validate the cropped image
 
-             $request->validate([
-                'cropped_image' => 'required',
-            ]);
-        
-            $data = $request->input('cropped_image');
-        
-            // Decode the base64 string
-            $image = str_replace('data:image/png;base64,', '', $data);
-            $image = str_replace(' ', '+', $image);
-            
-            // Generate a unique name for the image (UUID + timestamp)
-            $imageName = Str::uuid() . '_' . time() . '.png';
-        
-            // Save the image to storage (using public disk, or any other configured disk)
-            Storage::disk('public')->put('profile_images/' . $imageName, base64_decode($image));
-        
-            // Build the full image path
-            $imagePath = 'profile_images/' . $imageName;
-        
-            // Update the profile picture path in the user's profile
-            $user = Auth::user();
-            $user->profile_picture = $imagePath;
-            $user->save();  // Save the updated user with the new profile picture path
-        
-            return back()->with('success', 'Profile image updated successfully.');
+    public function profile_image_upload(Request $request) {
+        // Validate the cropped image
+        $request->validate([
+            'cropped_image' => 'required',
+        ]);
+    
+        $data = $request->input('cropped_image');
+    
+        // Decode the base64 string
+        $image = str_replace('data:image/png;base64,', '', $data);
+        $image = str_replace(' ', '+', $image);
+    
+        // Generate a unique name for the image (UUID + timestamp)
+        $imageName = Str::uuid() . '_' . time() . '.png';
+    
+        // Save the image to storage (using public disk, or any other configured disk)
+        Storage::disk('public')->put('profile_images/' . $imageName, base64_decode($image));
+    
+        // Build the full image path
+        $imagePath = 'profile_images/' . $imageName;
+    
+        // Get the authenticated user
+        $user = Auth::user();
+    
+        // Check if the user already has a profile picture
+        if ($user->profile_picture) {
+            // Delete the old profile picture from storage
+            if (Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+        }
+    
+        // Update the profile picture path in the user's profile
+        $user->profile_picture = $imagePath;
+        $user->save();  // Save the updated user with the new profile picture path
+    
+        return back()->with('success', 'Profile image updated successfully.');
     }
+    
 
 }

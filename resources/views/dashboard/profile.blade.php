@@ -3,7 +3,11 @@
 @section('styles')
     <!-- dropzone css -->
     <link href="{{asset('libs/dropzone/min/dropzone.min.css')}}" rel="stylesheet" type="text/css" />
+    !-- Sweet Alert-->
+        <link href="{{asset('libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <!-- glightbox css -->
+    <link rel="stylesheet" href="{{asset('libs/glightbox/css/glightbox.min.css')}}">
     <style>
 
     </style>
@@ -35,8 +39,11 @@
                             <div class="d-flex align-items-start mt-3 mt-sm-0">
                                 <div class="flex-shrink-0">
                                     <div class="avatar-xl me-3">
-                                        @if(Auth::user()->profile_picture && Storage::disk('public')->exists(Auth::user()->profile_picture))
+                                    @if(Auth::user()->profile_picture && Storage::disk('public')->exists(Auth::user()->profile_picture))
+                                    <a href="{{ Storage::url(Auth::user()->profile_picture) }}" class="image-popup">
                                         <img src="{{ Storage::url(Auth::user()->profile_picture) }}" alt="Profile Image" class="img-fluid rounded-circle d-block">
+                                    </a>
+                                       
                                     @else
                                         <img src="{{ asset('images/users/avatar-1.jpg') }}" alt="Default Profile Image" class="img-fluid rounded-circle d-block">
                                     @endif
@@ -60,8 +67,8 @@
                             <div class="d-flex align-items-start justify-content-end gap-2">
                                 <div>
                                                                             <!-- Add a button to trigger file upload -->
-                                        <button type="button" id="choose-file-button" class="btn btn-primary">Choose Image</button>
-
+                                        
+                                        <button type="button" class="btn btn-soft-light" id="choose-file-button" ><i class="me-1"></i> Change Profile Picture</button>
                                         <form action="{{ route('profile.image.upload') }}" method="POST" id="profile-image-form" enctype="multipart/form-data">
                                             @csrf
                                             <input id="file-upload" name="file" type="file" accept="image/*" style="display: none;" required>
@@ -222,7 +229,7 @@
                                             </div>
                                             
                                             <div class="position-relative">
-                                                <img src="assets/images/small/img-3.jpg" alt="" class="img-thumbnail">
+                                                <img src="{{asset('images/small/img-3.jpg')}}" alt="" class="img-thumbnail">
                                             </div>
 
                                             <div class="p-3">
@@ -272,7 +279,7 @@
                                             </div>
                                             
                                             <div class="position-relative">
-                                                <img src="assets/images/small/img-1.jpg" alt="" class="img-thumbnail">
+                                                <img src="{{asset('images/small/img-1.jpg')}}" alt="" class="img-thumbnail">
                                             </div>
 
                                             <div class="p-3">
@@ -323,7 +330,7 @@
                                             </div>
                                             
                                             <div class="position-relative">
-                                                <img src="assets/images/small/img-5.jpg" alt="" class="img-thumbnail">
+                                                <img src="{{asset('images/small/img-5.jpg')}}" alt="" class="img-thumbnail">
                                             </div>
 
                                             <div class="p-3">
@@ -610,9 +617,19 @@
         <div class="col-xl-3 col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Skills</h5>
-
-                    <div class="d-flex flex-wrap gap-2 font-size-16">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Skills</h4>
+                                <div class="page-title-right">
+                                    <a class="btn  btn-sm edit" title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="d-flex flex-wrap gap-2 font-size-18">
                         <a href="#" class="badge bg-primary-subtle text-primary">Photoshop</a>
                         <a href="#" class="badge bg-primary-subtle text-primary">illustrator</a>
                         <a href="#" class="badge bg-primary-subtle text-primary">HTML</a>
@@ -628,8 +645,18 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Portfolio</h5>
-
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Portfolio</h4>
+                                <div class="page-title-right">
+                                    <a class="btn  btn-sm edit" title="Edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>          
                     <div>
                         <ul class="list-unstyled mb-0">
                             <li>
@@ -728,7 +755,26 @@
 });
 
 </script>
+<script src="{{asset('libs/sweetalert2/sweetalert2.min.js')}}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if(session('success'))
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        @endif
+    });
+</script>
 
+        <!-- glightbox js -->
+        <script src="{{asset('libs/glightbox/js/glightbox.min.js')}}"></script>
+
+        <!-- lightbox init -->
+        <script src="{{asset('js/pages/lightbox.init.js')}}"></script>
 
 
 @endsection
