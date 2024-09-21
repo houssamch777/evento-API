@@ -27,6 +27,7 @@ class AuthController extends Controller
 
         return [
             'user'=> $user,
+            'profile_picture_url' => asset('storage/' . $user->profile_picture),
             'token'=>$token->plainTextToken,
         ];
     }
@@ -50,6 +51,7 @@ class AuthController extends Controller
 
         return [
             'user'=> $user,
+            'profile_picture_url' => asset('storage/' . $user->profile_picture),
             'token'=>$token->plainTextToken,
         ];
     }
