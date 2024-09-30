@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('experience');
+            $table->enum('experience', ['Beginner', 'Intermediate', 'Expert']); // Skill experience level
+            $table->boolean('offer_as_service')->default(false); // Whether the skill is provided as a service
+            $table->string('portfolio_url')->nullable(); // URL for the portfolio
+            $table->decimal('cost', 8, 2)->nullable(); // Cost amount (either per hour or per task)
+            $table->enum('cost_type', ['per_hour', 'per_task'])->default('per_hour'); // Whether the cost is per hour or per task
+            $table->json('availability')->nullable(); // Availability (days and time)
             $table->timestamps();
         });
     }

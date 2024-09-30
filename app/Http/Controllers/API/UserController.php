@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Portfolio;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -69,5 +70,28 @@ class UserController extends Controller
         // Download the file with the original name or a default name
         return response()->download($filePath, 'profile_image.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
+
+    public function storePortfolio(Request $request)
+    {
+        $request->validate([
+            'link' => 'required|url|unique:portfolios',
+        ]);
+
+        $user = $request->user();
+
+        
+
+        Portfolio::create([
+            'user_id' => $user->id,
+            'link' => $request->link,
+        ]);
+        return response()->json([
+            'success' => 'Portfolio link and icon added successfully.',
+        ]);
+    }
+
+    
+
+
 
 }

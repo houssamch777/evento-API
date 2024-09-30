@@ -94,5 +94,25 @@ public function register(Request $request)
         return back()->with('success', 'Profile image updated successfully.');
     }
     
+    private function getFontAwesomeIconForLink($link)
+    {
+        $icons = [
+            'facebook.com' => 'fab fa-facebook',
+            'twitter.com' => 'fab fa-twitter',
+            'instagram.com' => 'fab fa-instagram',
+            'linkedin.com' => 'fab fa-linkedin',
+            'github.com' => 'fab fa-github',
+        ];
+
+        foreach ($icons as $domain => $iconClass) {
+            if (strpos($link, $domain) !== false) {
+                return $iconClass;
+            }
+        }
+      
+        return 'fas fa-link'; // Default icon
+    }
+
+    
 
 }

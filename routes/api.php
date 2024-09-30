@@ -17,6 +17,7 @@ Route::get('/user/skills', function (Request $request) {
 
 
 Route::post('/profile_picture',[UserController::class,'uploadProfileImage'])->middleware('auth:sanctum');
+Route::post('/store_Portfolio',[UserController::class,'storePortfolio'])->middleware('auth:sanctum');
 
 
 Route::post('/register',[AuthController::class,'register']);

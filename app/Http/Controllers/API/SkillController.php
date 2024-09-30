@@ -19,68 +19,83 @@ class SkillController extends Controller implements HasMiddleware
             new Middleware('auth:sanctum',except:['index','show'])
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-        return Skill::all();
+    
+        /**
+         * Display a listing of all skills.
+         */
+        public function index()
+        {
+            return Skill::all();
+        }
+    
+        /**
+         * Store a newly created skill in storage.
+         */
+        public function store(Request $request)
+        {
+            // Validate the request data
+            $fields = $request->validate([
+                'name' => 'required|max:255',
+                'experience' => 'required|in:Beginner,Intermediate,Expert',
+                'offer_as_service' => 'boolean',
+                'portfolio_url' => 'nullable|url',
+                'cost' => 'nullable|numeric',
+                'cost_type' => 'nullable|in:per_hour,per_task',
+                'availability' => 'nullable|array',
+            ]);
+    
+            // Create the skill associated with the authenticated user
+            $skill = $request->user()->skills()->create($fields);
+    
+            return response()->json($skill, 201); // Return the created skill with 201 status code
+        }
+    
+        /**
+         * Display the specified skill.
+         */
+        public function show(Skill $skill)
+        {
+            return response()->json($skill); // Return the specified skill
+        }
+    
+        /**
+         * Update the specified skill in storage.
+         */
+        public function update(Request $request, Skill $skill)
+        {
+            // Ensure the authenticated user is authorized to update the skill
+            Gate::authorize('update', $skill);
+    
+            // Validate the incoming data
+            $fields = $request->validate([
+                'name' => 'required|max:255',
+                'experience' => 'required|in:Beginner,Intermediate,Expert',
+                'offer_as_service' => 'boolean',
+                'portfolio_url' => 'nullable|url',
+                'cost' => 'nullable|numeric',
+                'cost_type' => 'nullable|in:per_hour,per_task',
+                'availability' => 'nullable|array',
+            ]);
+    
+            // Update the skill with the validated data
+            $skill->update($fields);
+    
+            return response()->json($skill); // Return the updated skill
+        }
+    
+        /**
+         * Remove the specified skill from storage.
+         */
+        public function destroy(Skill $skill)
+        {
+            // Ensure the authenticated user is authorized to delete the skill
+            Gate::authorize('delete', $skill);
+    
+            // Delete the skill
+            $skill->delete();
+    
+            return response()->json(['message' => 'Skill deleted successfully'], 200);
+        }
     }
+    
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-        
-        $fields=$request->validate(
-            [
-                'name'=>'required|max:255',
-                'experience'=>'required',
-            ]
-        );
-        
-        $skill=$request->user()->skills()->create($fields);
-        return $skill; 
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Skill $skill)
-    {
-        //
-        return $skill;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Skill $skill)
-    {
-        //
-
-        Gate::authorize('update',$skill);
-        $fields=$request->validate(
-            [
-                'name'=>'required|max:255',
-                'experience'=>'required',
-            ]
-        );
-        $skill->update($fields);
-        return $skill;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Skill $skill)
-    {
-        //
-        Gate::authorize('delete',$skill);
-        $skill->delete();
-        return ['message'=>'skill delleted'];
-    }
-}
