@@ -25,12 +25,13 @@ Route::view('/register','user.register')->name('register')->middleware('guest');
 
 
 Route::post('/profile/image/upload', [UserController::class, 'profile_image_upload'])->name('profile.image.upload');
-
+Route::post('/profile/portfolio', [UserController::class, 'add_Portfolios'])->name('profile.portfolio');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 Route::get('/profile', [DashboardController::class, 'profile'])->name('profile')->middleware('auth');
 
 
+Route::delete('/profile/portfolio/{id}', [UserController::class, 'destroy_Portfolio_web'])->name('portfolio.delete');
 
 
 

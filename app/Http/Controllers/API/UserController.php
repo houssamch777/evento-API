@@ -86,10 +86,26 @@ class UserController extends Controller
             'link' => $request->link,
         ]);
         return response()->json([
-            'success' => 'Portfolio link and icon added successfully.',
+            'success' => 'Portfolio link added successfully.',
         ]);
     }
+    public function destroy_Portfolio($id)
+    {
+        $portfolio = Portfolio::findOrFail( $id);
+    
+        // Check if the portfolio belongs to the authenticated user
+        if ($portfolio->user_id == Auth::id()) {
+            $portfolio->delete();
+            return response()->json([
+                'success' => 'Portfolio link deleted successfully.',
+            ]);
+        }
 
+        return response()->json([
+            'error' => 'You are not authorized to delete this portfolio link.',
+        ]);
+    }
+    
     
 
 

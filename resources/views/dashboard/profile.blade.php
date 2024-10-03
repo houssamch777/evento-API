@@ -1,3 +1,5 @@
+
+
 @extends('layouts.dashboard-layouts')
 
 @section('styles')
@@ -53,10 +55,9 @@
                                 <div class="flex-grow-1">
                                     <div>
                                         <h5 class="font-size-16 mb-1">{{Auth::user()->first_name.' '.Auth::user()->last_name  }} </h5>
-                                        <p class="text-muted font-size-13">Full Stack Developer</p>
+                                        <p class="text-muted font-size-13">{{Auth::user()->job}}</p>
 
                                         <div class="d-flex flex-wrap align-items-start gap-2 gap-lg-3 text-muted font-size-13">
-                                            <div><i class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Development</div>
                                             <div><i class="mdi mdi-circle-medium me-1 text-success align-middle"></i>{{Auth::user()->email }}</div>
                                         </div>
                                     </div>
@@ -630,13 +631,9 @@
                         </div>
                     </div> 
                     <div class="d-flex flex-wrap gap-2 font-size-18">
-                        <a href="#" class="badge bg-primary-subtle text-primary">Photoshop</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">illustrator</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">HTML</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">CSS</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">Javascript</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">Php</a>
-                        <a href="#" class="badge bg-primary-subtle text-primary">Python</a>
+                        @foreach (Auth::user()->skills as $skill)
+                        <a href="#" class="badge bg-primary-subtle text-primary">{{$skill->name}}</a>
+                        @endforeach
                     </div>
                 </div>
                 <!-- end card body -->
@@ -650,26 +647,70 @@
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                                 <h4 class="mb-sm-0 font-size-18">Portfolio</h4>
                                 <div class="page-title-right">
-                                    <a class="btn  btn-sm edit" title="Edit">
+                                    <a class="btn btn-sm edit" title="Edit" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                 </div>
                             </div>
+                            
+                            <!-- Form to add new portfolio link -->
+                            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                                <div class="card border shadow-none card-body text-muted mb-0">
+                                    <h5 class="font-size-14 mb-4">
+                                        <i class="mdi mdi-arrow-right text-primary me-1"></i> Add portfolios links
+                                    </h5>
+                                    <form class="row gx-3 gy-2 align-items-center" action="{{ route('profile.portfolio') }}" method="POST">
+                                        @csrf
+                                        <div class="hstack gap-3">
+                                            <input class="form-control me-auto" name="link" id="link" type="text" placeholder="Add your link here...">
+                                            <button type="submit" class="btn btn-secondary">Add</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+            
+                            <!-- Portfolio links list with delete options -->
+                            <div>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (Auth::user()->portfolios as $portfolio)
+                                        @php
+                                            // Determine the appropriate icon for the portfolio link
+                                            $iconClass = 'fas fa-link'; // Default icon
+                                            $domainClass = 'link';
+                                            foreach ($icons as $domain => $icon) {
+                                                if (strpos($portfolio->link, $domain) !== false) {
+                                                    $iconClass = $icon;
+                                                    $domainClass = $domain;
+                                                    break;
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        <li class="d-flex justify-content-between align-items-center py-2">
+                                            <a href="{{ $portfolio->link }}" class="text-muted">
+                                                <i class="{{ $iconClass }} text-primary me-1"></i> {{ $domainClass }}
+                                            </a>
+            
+                                            <!-- Delete button, visible only when the edit section is shown -->
+                                            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                                                <form action="{{ route('portfolio.delete', $portfolio->id) }}" method="post" class="d-inline">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
-                    </div>          
-                    <div>
-                        <ul class="list-unstyled mb-0">
-                            <li>
-                                <a href="#" class="py-2 d-block text-muted"><i class="mdi mdi-web text-primary me-1"></i> Website</a>
-                            </li>
-                            <li>
-                                <a href="#" class="py-2 d-block text-muted"><i class="mdi mdi-note-text-outline text-primary me-1"></i> Blog</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
                 <!-- end card body -->
             </div>
+            
             <!-- end card -->
 
             <!-- end card -->

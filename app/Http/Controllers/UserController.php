@@ -21,6 +21,7 @@ class UserController extends Controller
     ]);
     if (Auth::attempt($fields,$request->rememberCheck)) {
         return redirect()->intended();
+        
     } else {
         return back()->withErrors(['fialed' => 'The provided password is incorrect!']);
     }
@@ -93,25 +94,52 @@ public function register(Request $request)
     
         return back()->with('success', 'Profile image updated successfully.');
     }
-    
-    private function getFontAwesomeIconForLink($link)
-    {
-        $icons = [
-            'facebook.com' => 'fab fa-facebook',
-            'twitter.com' => 'fab fa-twitter',
-            'instagram.com' => 'fab fa-instagram',
-            'linkedin.com' => 'fab fa-linkedin',
-            'github.com' => 'fab fa-github',
-        ];
 
-        foreach ($icons as $domain => $iconClass) {
-            if (strpos($link, $domain) !== false) {
-                return $iconClass;
-            }
+    public function add_Portfolios(Request $request) {
+        $fields=$request->validate([
+            'link' => 'required|url|unique:portfolios',
+        ]);
+         // Get the authenticated user and their token
+        $user = Auth::user();
+        $token = $user->createToken('portfolio-token')->plainTextToken;
+        $headers = [
+            'Accept' => 'application/json', 
+            'Authorization' => 'Bearer ' . $token,
+    
+        ];
+        $response = Http::withHeaders($headers)->post('https://evento.witslinks.com/api/store_Portfolio', [
+            // حقول التسجيل
+            'link' => $request->input('link'),
+        ]);
+        
+        if ($response->successful()) {
+            return back()->with('success', 'Portfolio link updated successfully.');
+        } else {
+    
+            return back()->withErrors(['error' => $response->json()['message']]);
         }
-      
-        return 'fas fa-link'; // Default icon
+    
+
     }
+    public function destroy_Portfolio_web($id)
+{
+    $user = Auth::user();
+    $token = $user->createToken('portfolio-token')->plainTextToken;
+        $headers = [
+            'Accept' => 'application/json', 
+            'Authorization' => 'Bearer ' . $token,
+        ];
+        $url='https://evento.witslinks.com/api/delete_Portfolio/'.$id;
+        $response = Http::withToken($token)->delete($url);
+        
+        if ($response->successful()) {
+            return redirect()->back()->with('success', 'Portfolio link deleted successfully.');
+        } else {
+    
+            return redirect()->back()->withErrors(['error' => 'You are not authorized to delete this portfolio link.']);
+        }
+    
+}
 
     
 
