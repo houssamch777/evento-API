@@ -17,12 +17,11 @@ Route::get('/user', function (Request $request) {
     }
 
     // Get the authenticated user
-    $user = $request->user();
-
+    $user = Auth::guard('sanctum')->user();
     // Return the user data with a success message
     return Response::json([
         'success' => true,
-        'message' => 'This account is already logged in.',
+        'message' => 'already logged in.',
         'data' => $user
     ], 200);
 });

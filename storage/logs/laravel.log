@@ -15327,3 +15327,33 @@ Did you mean one of these?
 #56 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('H:\\\\memoire\\\\even...')
 #57 {main}
 "} 
+[2024-10-05 12:41:49] local.ERROR: syntax error, unexpected token "return", expecting identifier or variable or "{" or "$" {"exception":"[object] (ParseError(code: 0): syntax error, unexpected token \"return\", expecting identifier or variable or \"{\" or \"$\" at H:\\memoire\\evento-API\\routes\\api.php:23)
+[stacktrace]
+#0 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(513): Illuminate\\Routing\\RouteFileRegistrar->register('H:\\\\memoire\\\\even...')
+#1 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(467): Illuminate\\Routing\\Router->loadRoutes('H:\\\\memoire\\\\even...')
+#2 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteRegistrar.php(194): Illuminate\\Routing\\Router->group(Array, 'H:\\\\memoire\\\\even...')
+#3 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Configuration\\ApplicationBuilder.php(201): Illuminate\\Routing\\RouteRegistrar->group('H:\\\\memoire\\\\even...')
+#4 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Configuration\\ApplicationBuilder->Illuminate\\Foundation\\Configuration\\{closure}()
+#5 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#6 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(83): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#7 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Object(Closure), Object(Closure))
+#8 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(690): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Object(Closure), Array, NULL)
+#9 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider.php(162): Illuminate\\Container\\Container->call(Object(Closure))
+#10 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider.php(59): Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider->loadRoutes()
+#11 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider->Illuminate\\Foundation\\Support\\Providers\\{closure}()
+#12 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#13 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(83): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#14 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Object(Closure), Object(Closure))
+#15 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(690): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Object(Closure), Array, NULL)
+#16 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\ServiceProvider.php(130): Illuminate\\Container\\Container->call(Object(Closure))
+#17 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1122): Illuminate\\Support\\ServiceProvider->callBootedCallbacks()
+#18 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1100): Illuminate\\Foundation\\Application->bootProvider(Object(Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider))
+#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(Illuminate\\Foundation\\Support\\Providers\\RouteServiceProvider), 'Illuminate\\\\Foun...')
+#20 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1099): array_walk(Array, Object(Closure))
+#21 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
+#22 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(316): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#23 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(473): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#24 H:\\memoire\\evento-API\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(195): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#25 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#26 {main}
+"} 
