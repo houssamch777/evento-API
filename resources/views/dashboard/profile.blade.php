@@ -632,11 +632,42 @@
                     </div> 
                     <div class="d-flex flex-wrap gap-2 font-size-18">
                         @foreach (Auth::user()->skills as $skill)
-                        <a href="#" class="badge bg-primary-subtle text-primary">{{$skill->name}}</a>
+                        <a href="#" class="badge bg-primary-subtle text-primary skill-badge" 
+                           data-skill='@json($skill)' 
+                           data-bs-toggle="modal" 
+                           data-bs-target="#skillModal">
+                           {{$skill->name}}
+                        </a>
                         @endforeach
                     </div>
                 </div>
                 <!-- end card body -->
+                <!-- Modal -->
+                        <div class="modal fade" id="skillModal" tabindex="-1" aria-labelledby="skillModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="skillModalLabel">Skill Information</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                <p><strong>Name:</strong> <span id="skillName"></span></p>
+                                <p><strong>Experience:</strong> <span id="skillExperience"></span></p>
+                                <p><strong>Offer as Service:</strong> <span id="skillOfferAsService"></span></p>
+                                <p><strong>Portfolio URL:</strong> <a id="skillPortfolioUrl" href="#" target="_blank">View Portfolio</a></p>
+                                <p><strong>Cost:</strong> <span id="skillCost"></span></p>
+                                <p><strong>Cost Type:</strong> <span id="skillCostType"></span></p>
+                                <p><strong>Availability:</strong> 
+                                    <ul id="skillAvailability"></ul>
+                                </p>
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+  
             </div>
             <!-- end card -->
 
@@ -816,6 +847,54 @@
 
         <!-- lightbox init -->
         <script src="{{asset('js/pages/lightbox.init.js')}}"></script>
+<SCript>
+            document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener for skill badges
+        document.querySelectorAll('.skill-badge').forEach(function (badge) {
+        badge.addEventListener('click', function () {
+            const skill = JSON.parse(this.getAttribute('data-skill'));
 
+
+            // Populate modal with skill information
+            document.getElementById('skillName').textContent = skill.name ?? 'N/A';
+            document.getElementById('skillExperience').textContent = skill.experience ?? 'N/A';
+            document.getElementById('skillOfferAsService').textContent = skill.offer_as_service ? 'Yes' : 'No';
+            document.getElementById('skillPortfolioUrl').href = skill.portfolio_url ?? '#';
+            document.getElementById('skillCost').textContent = skill.cost ?? 'N/A';
+            document.getElementById('skillCostType').textContent = skill.cost_type ?? 'N/A';
+
+            // Handle availability (stored as JSON object with days and times)
+            const availabilityElement = document.getElementById('skillAvailability');
+            availabilityElement.innerHTML = '';  // Clear previous content
+
+            if (skill.availability) {
+
+
+                try {
+                    const availability = typeof skill.availability === 'string' ? JSON.parse(skill.availability) : skill.availability;
+
+                    // Loop through availability days and times
+                    for (const [day, time] of Object.entries(availability)) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${day}: ${time}`;
+                        availabilityElement.appendChild(listItem);
+                    }
+                } catch (error) {
+                    // Handle any JSON parsing errors
+                    console.error('Error parsing availability:', error);
+                }
+            } else {
+                // If no availability data
+                const listItem = document.createElement('li');
+                listItem.textContent = 'No availability information';
+                availabilityElement.appendChild(listItem);
+            }
+        });
+    });
+});
+
+
+
+</SCript>
 
 @endsection

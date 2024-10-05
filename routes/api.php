@@ -7,8 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    // Check if the user is authenticated
+    if (!Auth::guard('sanctum')->check()) {
+        return Response::json([
+            'success' => false,
+            'message' => 'session is expired.',
+            'data' => null
+        ], 401);
+    }
+
+    // Get the authenticated user
+    $user = $request->user();
+
+    // Return the user data with a success message
+    return Response::json([
+        'success' => true,
+        'message' => 'This account is already logged in.',
+        'data' => $user
+    ], 200);
+});
 
 
 Route::get('/user/skills', function (Request $request) {

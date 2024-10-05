@@ -38,6 +38,38 @@ Route::delete('/profile/portfolio/{id}', [UserController::class, 'destroy_Portfo
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Route::get('/foo', function () {
     Artisan::call('storage:link');
 });
