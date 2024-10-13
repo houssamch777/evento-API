@@ -5,56 +5,36 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 export default defineConfig({
     build: {
         manifest: true,
-        rtl: true,
-        outDir: 'public/build/',
-        cssCodeSplit: true,
-        sourcemap: process.env.NODE_ENV !== 'production', // Only enable in non-production
+        cssCodeSplit: true, // Split CSS for performance
+        outDir: 'public/build/', // Output directory
         rollupOptions: {
             output: {
-                assetFileNames: (css) => {
-                    if (css.name.split('.').pop() === 'css') {
-                        return 'css/[name].min.css';
-                    } else {
-                        return 'icons/' + css.name;
-                    }
+                assetFileNames: (asset) => {
+                    return asset.name.endsWith('.css')
+                        ? 'css/[name].min.css'
+                        : 'icons/[name]';
                 },
-                entryFileNames: 'js/[name].js',
+                entryFileNames: 'js/[name].js', // JS file names
             },
         },
     },
     plugins: [
         laravel({
             input: [
-                'resources/sass/app.scss',
-                'resources/js/app.js',
-                // 'resources/scss/bootstrap.scss', // Consider removing if it's in app.scss
-                // 'resources/scss/icons.scss' // Consider removing if it's in app.scss
+                'resources/scss/app.scss',
+                'resources/scss/bootstrap.scss',
+                'resources/scss/icons.scss',
             ],
-            refresh: true,
+            refresh: true, // Hot reload in development
         }),
         viteStaticCopy({
             targets: [
-                {
-                    src: 'resources/fonts',
-                    dest: ''
-                },
-                {
-                    src: 'resources/images',
-                    dest: ''
-                },
-                {
-                    src: 'resources/js',
-                    dest: ''
-                },
-                {
-                    src: 'resources/libs',
-                    dest: ''
-                },
-                {
-                    src: 'resources/lang',
-                    dest: ''
-                },
-            ]
+                { src: 'resources/fonts', dest: 'fonts' },
+                { src: 'resources/images', dest: 'images' },
+                { src: 'resources/js', dest: 'js' },
+                { src: 'resources/libs', dest: 'libs' },
+                { src: 'resources/lang', dest: 'lang' },
+            ],
         }),
     ],
 });
