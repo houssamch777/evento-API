@@ -28,7 +28,7 @@ class DashboardController extends Controller
             'pinterest.com' => ['icon' => 'bxl-pinterest', 'color' => 'border-pinterest', 'bg-color' => 'bg-pinterest'],
             'whatsapp.com' => ['icon' => 'bxl-whatsapp', 'color' => 'border-whatsapp', 'bg-color' => 'bg-whatsapp'],
             'snapchat.com' => ['icon' => 'bxl-snapchat', 'color' => 'border-snapchat', 'bg-color' => 'bg-snapchat'],
-            'tiktok.com' => ['icon' => 'bx-unlink', 'color' => 'border-tiktok', 'bg-color' => 'bg-tiktok'], // TikTok icon
+            'tiktok.com' => ['icon' => 'bx-link', 'color' => 'border-tiktok', 'bg-color' => 'bg-tiktok'], // TikTok icon
         ];
         
         
