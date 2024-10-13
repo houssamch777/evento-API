@@ -10,16 +10,16 @@ Route::get('/', function () {
 
 
 Route::post('/login', [UserController::class, 'login'])->name('login');
-Route::view('/login','user.login')->name('login')->middleware('guest');
+Route::view('/login','auth.login')->name('login')->middleware('guest');
 
 
 
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-Route::view('/logout','user.logout')->name('logout')->middleware('guest');
+Route::view('/logout','auth.logout')->name('logout')->middleware('guest');
 
 
 Route::post('/register', [UserController::class, 'register'])->name('register')->middleware('guest');
-Route::view('/register','user.register')->name('register')->middleware('guest');
+Route::view('/register','auth.register')->name('register')->middleware('guest');
 
 
 
