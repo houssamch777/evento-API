@@ -6,7 +6,7 @@
     <title> @yield('title') | Evanto</title>
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ Vite::asset('images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.ico') }}">
 
     <!-- include head css -->
     @include('layouts.head-css')

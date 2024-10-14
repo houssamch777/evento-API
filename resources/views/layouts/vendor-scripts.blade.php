@@ -1,6 +1,6 @@
 <!-- JAVASCRIPT -->
-@vite(['resources/libs/bootstrap/js/bootstrap.bundle.min.js'])
-@vite(['resources/libs/metismenujs/metismenujs.min.js'])
-@vite(['resources/libs/simplebar/simplebar.min.js'])
-@vite(['resources/libs/eva-icons/eva.min.js'])
+<script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ URL::asset('build/libs/metismenujs/metismenujs.min.js') }}"></script>
+<script src="{{ URL::asset('build/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ URL::asset('build/libs/eva-icons/eva.min.js') }}"></script>
 @yield('scripts')

@@ -1,20 +1,25 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+
 
 export default defineConfig({
     build: {
-        manifest: true,
-        cssCodeSplit: true, // Split CSS for performance
-        outDir: 'public/build/', // Output directory
+
+        rtl: true,
+        outDir: 'public/build/',
+        cssCodeSplit: true,
+        // buildDirectory: 'assets',
         rollupOptions: {
             output: {
-                assetFileNames: (asset) => {
-                    return asset.name.endsWith('.css')
-                        ? 'css/[name].min.css'
-                        : 'icons/[name]';
+                assetFileNames: (css) => {
+                    if (css.name.split('.').pop() == 'css') {
+                        return 'css/' + `[name]` + '.min.' + 'css';
+                    } else {
+                        return 'icons/' + css.name;
+                    }
                 },
-                entryFileNames: 'js/[name].js', // JS file names
+                entryFileNames: 'js/' + `[name]` + `.js`,
             },
         },
     },
@@ -23,18 +28,33 @@ export default defineConfig({
             input: [
                 'resources/scss/app.scss',
                 'resources/scss/bootstrap.scss',
-                'resources/scss/icons.scss',
+                'resources/scss/icons.scss'
             ],
-            refresh: true, // Hot reload in development
+            refresh: true,
         }),
         viteStaticCopy({
             targets: [
-                { src: 'resources/fonts', dest: 'fonts' },
-                { src: 'resources/images', dest: 'images' },
-                { src: 'resources/js', dest: 'js' },
-                { src: 'resources/libs', dest: 'libs' },
-                { src: 'resources/lang', dest: 'lang' },
-            ],
+                {
+                    src: 'resources/fonts',
+                    dest: ''
+                },
+                {
+                    src: 'resources/images',
+                    dest: ''
+                },
+                {
+                    src: 'resources/js',
+                    dest: ''
+                },
+                {
+                    src: 'resources/libs',
+                    dest: ''
+                },
+                {
+                    src: 'resources/lang',
+                    dest: ''
+                },
+            ]
         }),
     ],
 });

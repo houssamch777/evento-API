@@ -909,9 +909,9 @@
     @endsection
     @section('scripts')
         <!-- apexcharts -->
-        @vite('resources/libs/apexcharts/apexcharts.min.js')
+        <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>
 
-        @vite('resources/js/pages/profile.init.js')
+        <script src="{{ URL::asset('build/js/pages/profile.init.js') }}"></script>
         <!-- App js -->
-         @vite('resources/js/app.js')
+        <script src="{{ URL::asset('build/js/app.js') }}"></script>
     @endsection

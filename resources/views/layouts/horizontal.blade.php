@@ -3,21 +3,21 @@
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="index" class="logo logo-dark">
+                <a href="{{route('index')}}" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ Vite::asset('images/logo-dark-sm.png') }}" alt="" height="26">
+                        <img src="{{ URL::asset('build/images/logo-dark-sm.png') }}" alt="" height="26">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ Vite::asset('images/logo-dark.png') }}" alt="" height="28">
+                        <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="" height="28">
                     </span>
                 </a>
 
-                <a href="index" class="logo logo-light">
+                <a href="{{route('index')}}" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ Vite::asset('images/logo-light-sm.png') }}" alt="" height="26">
+                        <img src="{{ URL::asset('build/images/logo-light-sm.png') }}" alt="" height="26">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ Vite::asset('images/logo-light.png') }}" alt="" height="30">
+                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="" height="30">
                     </span>
                 </a>
             </div>
@@ -40,38 +40,38 @@
             <div class="dropdown d-inline-block language-switch ms-2 ms-xl-3">
                 <button type="button" class="btn header-item" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <img class="header-lang-img" src="{{ Vite::asset('images/flags/us.jpg') }}"
+                    <img class="header-lang-img" src="{{ URL::asset('build/images/flags/us.jpg') }}"
                         alt="Header Language" height="18">
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="eng">
-                        <img src="{{ Vite::asset('images/flags/us.jpg') }}" alt="user-image" class="me-1"
+                        <img src="{{ URL::asset('build/images/flags/us.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">English</span>
                     </a>
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="sp">
-                        <img src="{{ Vite::asset('images/flags/spain.jpg') }}" alt="user-image" class="me-1"
+                        <img src="{{ URL::asset('build/images/flags/spain.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">Spanish</span>
                     </a>
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="gr">
-                        <img src="{{ Vite::asset('images/flags/germany.jpg') }}" alt="user-image" class="me-1"
+                        <img src="{{ URL::asset('build/images/flags/germany.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">German</span>
                     </a>
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="it">
-                        <img src="{{ Vite::asset('images/flags/italy.jpg') }}" alt="user-image" class="me-1"
+                        <img src="{{ URL::asset('build/images/flags/italy.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">Italian</span>
                     </a>
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="ru">
-                        <img src="{{ Vite::asset('images/flags/russia.jpg') }}" alt="user-image" class="me-1"
+                        <img src="{{ URL::asset('build/images/flags/russia.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">Russian</span>
                     </a>
                 </div>
@@ -124,7 +124,7 @@
                         <a href="#!" class="text-reset notification-item">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
-                                    <img src="{{ Vite::asset('images/users/avatar-3.jpg') }}"
+                                    <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}"
                                         class="rounded-circle avatar-sm" alt="user-pic">
                                 </div>
                                 <div class="flex-grow-1">
@@ -175,7 +175,7 @@
                         <a href="#!" class="text-reset notification-item">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
-                                    <img src="{{ Vite::asset('images/users/avatar-6.jpg') }}"
+                                    <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}"
                                         class="rounded-circle avatar-sm" alt="user-pic">
                                 </div>
                                 <div class="flex-grow-1">
@@ -203,7 +203,7 @@
                     aria-expanded="false">
                     @if(Auth::check())
                         <img class="rounded-circle header-profile-user"
-                            src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : Vite::asset('images/users/avatar-3.jpg') }}" 
+                            src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" 
                             alt="Header Avatar">
                         <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{ Auth::user()->first_name }}</span>
                     @else

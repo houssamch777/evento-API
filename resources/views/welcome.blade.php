@@ -5,7 +5,10 @@
 @endsection
 @section('css')
     <!-- Load CSS via Vite -->
-    @vite(['resources/scss/app.scss', 'resources/scss/icons.scss','libs/swiper/swiper-bundle.min.css','libs/nouislider/nouislider.min.css'])
+    @vite(['resources/scss/app.scss', 'resources/scss/icons.scss'])
+    <link href="{{ URL::asset('build/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ URL::asset('build/libs/nouislider/nouislider.min.css') }}" rel="stylesheet" type="text/css" />
+
 @endsection
 @section('page-title')
     Home
@@ -27,15 +30,15 @@
                             </ol>
                             <div class="carousel-inner" role="listbox">
                                 <div class="carousel-item active">
-                                    <img class="d-block img-fluid mx-auto" src="{{ Vite::asset('images/events/img-6.jpg') }}"
+                                    <img class="d-block img-fluid mx-auto" src="{{ URL::asset('build/images/events/img-6.jpg') }}"
                                         alt="First slide">
                                 </div>
                                 <div class="carousel-item">
-                                    <img class="d-block img-fluid mx-auto" src="{{ Vite::asset('images/events/img-6.jpg') }}"
+                                    <img class="d-block img-fluid mx-auto" src="{{ URL::asset('build/images/events/img-6.jpg') }}"
                                         alt="Second slide">
                                 </div>
                                 <div class="carousel-item">
-                                    <img class="d-block img-fluid mx-auto" src="{{ Vite::asset('images/events/img-6.jpg') }}"
+                                    <img class="d-block img-fluid mx-auto" src="{{ URL::asset('build/images/events/img-6.jpg') }}"
                                         alt="Third slide">
                                 </div>
                             </div>
@@ -50,7 +53,7 @@
                             <div class="blog-post mt-3">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3">
-                                        <img src="{{ Vite::asset('images/users/avatar-5.jpg') }}" alt=""
+                                        <img src="{{ URL::asset('build/images/users/avatar-5.jpg') }}" alt=""
                                             class="avatar-md rounded-circle img-thumbnail">
                                     </div>
                                     <div class="flex-1">
@@ -68,7 +71,7 @@
 
                                 </div>
                                 <div class="position-relative mt-3">
-                                    <img src="{{ Vite::asset('images/post-2.jpg') }}" alt="" class="img-thumbnail">
+                                    <img src="{{ URL::asset('build/images/post-2.jpg') }}" alt="" class="img-thumbnail">
                                 </div>
                                 <div class="pt-3">
                                     <div
@@ -89,13 +92,13 @@
                                                 <div class="avatar-group">
                                                     <div class="avatar-group-item">
                                                         <a href="javascript: void(0);" class="d-inline-block">
-                                                            <img src="{{ Vite::asset('images/users/avatar-4.jpg') }}"
+                                                            <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}"
                                                                 alt="" class="rounded-circle avatar-sm">
                                                         </a>
                                                     </div>
                                                     <div class="avatar-group-item">
                                                         <a href="javascript: void(0);" class="d-inline-block">
-                                                            <img src="{{ Vite::asset('images/users/avatar-5.jpg') }}"
+                                                            <img src="{{ URL::asset('build/images/users/avatar-5.jpg') }}"
                                                                 alt="" class="rounded-circle avatar-sm">
                                                         </a>
                                                     </div>
@@ -120,7 +123,7 @@
                             <div class="blog-post mt-3">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3">
-                                        <img src="{{ Vite::asset('images/users/avatar-5.jpg') }}" alt=""
+                                        <img src="{{ URL::asset('build/images/users/avatar-5.jpg') }}" alt=""
                                             class="avatar-md rounded-circle img-thumbnail">
                                     </div>
                                     <div class="flex-1">
@@ -138,7 +141,7 @@
 
                                 </div>
                                 <div class="position-relative mt-3">
-                                    <img src="{{ Vite::asset('images/post-2.jpg') }}" alt="" class="img-thumbnail">
+                                    <img src="{{ URL::asset('build/images/post-2.jpg') }}" alt="" class="img-thumbnail">
                                 </div>
                                 <div class="pt-3">
                                     <div
@@ -159,13 +162,13 @@
                                                 <div class="avatar-group">
                                                     <div class="avatar-group-item">
                                                         <a href="javascript: void(0);" class="d-inline-block">
-                                                            <img src="{{ Vite::asset('images/users/avatar-4.jpg') }}"
+                                                            <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}"
                                                                 alt="" class="rounded-circle avatar-sm">
                                                         </a>
                                                     </div>
                                                     <div class="avatar-group-item">
                                                         <a href="javascript: void(0);" class="d-inline-block">
-                                                            <img src="{{ Vite::asset('images/users/avatar-5.jpg') }}"
+                                                            <img src="{{ URL::asset('build/images/users/avatar-5.jpg') }}"
                                                                 alt="" class="rounded-circle avatar-sm">
                                                         </a>
                                                     </div>
@@ -369,24 +372,21 @@
     @endsection
     @section('scripts')
         <!-- Load JS via Vite -->
-        @vite('resources/libs/swiper/swiper-bundle.min.js')
-       
+        <script src="{{ URL::asset('build/libs/swiper/swiper-bundle.min.js') }}"></script>
         <!-- nouisliderribute js -->
-        @vite('resources/libs/nouislider/nouislider.min.js')
-        
-        @vite('resources/libs/wnumb/wNumb.min.js')
-        
+        <script src="{{ URL::asset('build/libs/nouislider/nouislider.min.js') }}"></script>
 
-        <!-- init js -->
-        @vite('resources/js/pages/product-filter-range.init.js')
-        <!-- App js -->
-        @vite('resources/js/app.js')
-        
-        @vite('resources/js/app.js')
+        <script src="{{ URL::asset('build/libs/wnumb/wNumb.min.js') }}"></script>
+
+        <script src="{{ URL::asset('build/js/pages/product-filter-range.init.js') }}"></script>
+       <!-- App js -->
+       <script src="{{ URL::asset('build/js/app.js') }}"></script>
+
                 <!-- rater-js plugin -->
-        @vite('resources/libs/rater-js/index.js')
+        <script src="{{ URL::asset('build/libs/rater-js/index.js') }}"></script>
                 <!-- rating init -->
-        @vite('resources/js/pages/rating.init.js')
+                <script src="{{ URL::asset('build/js/pages/rating.init.js') }}"></script>
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
     const toggleBtn = document.getElementById('theme-toggle-btn');

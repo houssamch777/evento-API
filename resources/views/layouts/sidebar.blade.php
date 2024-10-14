@@ -3,21 +3,21 @@
 
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="index" class="logo logo-dark">
+        <a href="{{route('index')}}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ Vite::asset('images/logo-dark-sm.png') }}" alt="" height="26">
+                <img src="{{ URL::asset('build/images/logo-dark-sm.png') }}" alt="" height="26">
             </span>
             <span class="logo-lg">
-                <img src="{{ Vite::asset('images/logo-dark.png') }}" alt="" height="28">
+                <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="" height="28">
             </span>
         </a>
 
-        <a href="index" class="logo logo-light">
+        <a href="{{route('index')}}" class="logo logo-light">
             <span class="logo-lg">
-                <img src="{{ Vite::asset('images/logo-light.png') }}" alt="" height="30">
+                <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="" height="30">
             </span>
             <span class="logo-sm">
-                <img src="{{ Vite::asset('images/logo-light-sm.png') }}" alt="" height="26">
+                <img src="{{ URL::asset('build/images/logo-light-sm.png') }}" alt="" height="26">
             </span>
         </a>
     </div>
@@ -41,7 +41,7 @@
                         <span class="badge rounded-pill bg-primary">2</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="index" data-key="t-ecommerce">Ecommerce</a></li>
+                        <li><a href="{{route('index')}}" data-key="t-ecommerce">Ecommerce</a></li>
                     </ul>
                 </li>
 
