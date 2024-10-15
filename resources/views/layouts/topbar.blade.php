@@ -93,13 +93,10 @@
                     </form>
                 </div>
             </div>
--->
-            <div class="dropdown d-none d-sm-inline-block">
-                <button type="button" class="btn header-item" id="mode-setting-btn">
-                    <i data-feather="moon" class="icon-lg layout-mode-dark"></i>
-                    <i data-feather="sun" class="icon-lg layout-mode-light"></i>
-                </button>
-            </div>
+-->         <button type="button" class="btn header-item" id="theme-toggle-btn">
+    <i class="mdi mdi-theme-light-dark"></i> <!-- Toggle icon -->
+            </button>
+
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown-v"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -198,38 +195,33 @@
                     id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
                     <img class="rounded-circle header-profile-user"
-                        src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt="Header Avatar">
-                    <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">Martin Gurley</span>
+                            src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" 
+                            alt="Header Avatar">
+                        <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{ Auth::user()->first_name }}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end pt-0">
                     <div class="p-3 border-bottom">
-                        <h6 class="mb-0">Martin Gurley</h6>
-                        <p class="mb-0 font-size-11 text-muted">martin.gurley@email.com</p>
+                        <h6 class="mb-0">{{ Auth::user()->first_name }}</h6>
+                        <p class="mb-0 font-size-11 text-muted">{{ Auth::user()->email }}</p>
                     </div>
-                    <a class="dropdown-item" href="{{route('profile')}}"><i
-                            class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle">Profile</span></a>
-                    <a class="dropdown-item" href="javascript:void(0);"><i
-                            class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle">Messages</span></a>
-                    <a class="dropdown-item" href="javascript:void(0);"><i
-                            class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle">Help</span></a>
-                    <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);"><i
-                            class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle me-3">Settings</span><span
-                            class="badge bg-success-subtle text-success ms-auto">New</span></a>
-                    <a class="dropdown-item" href="auth-lock-screen"><i
-                            class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle">Lock screen</span></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="javascript:void();"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                            class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i> <span
-                            class="align-middle">Logout</span></a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
+
+                <a class="dropdown-item" href="{{ route('index') }}"><i
+                        class="mdi mdi-home text-muted font-size-16 align-middle me-2"></i> <span
+                        class="align-middle">Home</span></a>
+                <a class="dropdown-item" href="{{route('help')}}"><i
+                        class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
+                        class="align-middle">Help</span></a>
+                <a class="dropdown-item" href="#"><i
+                        class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
+                        class="align-middle">Lock screen</span></a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:void(0);"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                        class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i> <span
+                        class="align-middle">Logout</span></a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
                 </div>
             </div>
         </div>

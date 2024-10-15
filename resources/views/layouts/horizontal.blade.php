@@ -100,7 +100,7 @@
                 <i class="mdi mdi-theme-light-dark"></i> <!-- Toggle icon -->
             </button>
 
-
+            @if(Auth::check())
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -196,7 +196,7 @@
                     </div>
                 </div>
             </div>
-
+            @endif
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item user text-start d-flex align-items-center"
                     id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -221,16 +221,16 @@
                         <a class="dropdown-item" href="{{ route('profile') }}"><i
                                 class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Profile</span></a>
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard') }}"><i
+                                    class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span
+                                    class="align-middle me-3">Dashboard</span><span
+                                    class="badge bg-success-subtle text-success ms-auto">New</span></a>
                         <a class="dropdown-item" href="javascript:void(0);"><i
                                 class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Messages</span></a>
-                        <a class="dropdown-item" href="javascript:void(0);"><i
+                        <a class="dropdown-item" href="{{route('help')}}"><i
                                 class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Help</span></a>
-                        <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);"><i
-                                class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span
-                                class="align-middle me-3">Settings</span><span
-                                class="badge bg-success-subtle text-success ms-auto">New</span></a>
                         <a class="dropdown-item" href="#"><i
                                 class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Lock screen</span></a>

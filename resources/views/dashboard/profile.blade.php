@@ -847,6 +847,7 @@
 
         <!-- lightbox init -->
         <script src="{{asset('js/pages/lightbox.init.js')}}"></script>
+        
 <SCript>
             document.addEventListener('DOMContentLoaded', function () {
         // Add event listener for skill badges

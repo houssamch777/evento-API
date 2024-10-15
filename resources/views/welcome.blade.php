@@ -15,7 +15,7 @@
 @endsection
 @section('body')
 
-    <body data-layout="horizontal" data-layout-size="boxed">
+    <body data-layout="horizontal" data-layout-size="boxed" data-layout-scrollable="true">
     @endsection
     @section('content')
         <div class="row">
@@ -189,7 +189,7 @@
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4">
-                <div class="card" >
+                <div class="z-0 card sticky-top">
                     <div class="card-header bg-transparent border-bottom">
                         <h5 class="mb-0">Filters</h5>
                     </div>
@@ -385,7 +385,7 @@
                 <!-- rater-js plugin -->
         <script src="{{ URL::asset('build/libs/rater-js/index.js') }}"></script>
                 <!-- rating init -->
-                <script src="{{ URL::asset('build/js/pages/rating.init.js') }}"></script>
+        <script src="{{ URL::asset('build/js/pages/rating.init.js') }}"></script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

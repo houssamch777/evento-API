@@ -6,6 +6,7 @@
     Profile
 @endsection
 @section('css')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
 <style>
 .border-facebook { border-color: #3b5998; }
 .border-twitter { border-color: #1da1f2; }
@@ -45,6 +46,7 @@
                 <div class="card">
                     <div class="card-body p-0">
                         <div class="user-profile-img">
+                            
                             <img src="{{ URL::asset('build/images/pattern-bg.jpg') }}" class="profile-img profile-foreground-img rounded-top"
                                 style="height: 120px;" alt="">
                             <div class="overlay-content rounded-top">
@@ -57,10 +59,36 @@
                                                     <i class="bx bx-dots-vertical text-white font-size-20"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
+                                                    <button type="button"  class="dropdown-item" href="" id="choose-file-button">change profile picture</button>
                                                     <a class="dropdown-item" href="#">Edit</a>
-                                                    <a class="dropdown-item" href="#">Action</a>
-                                                    <a class="dropdown-item" href="#">Remove</a>
+                                                    
                                                 </div>
+                                                <form action="{{ route('profile.image.upload') }}" method="POST" id="profile-image-form" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input id="file-upload" name="file" type="file" accept="image/*" style="display: none;" required>
+                                                    <input type="hidden" id="cropped-image" name="cropped_image">
+        
+                                                    <!-- Modal for cropping the image -->
+                                                    <div id="cropperModal" class="modal fade" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true" data-bs-scroll="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="cropperModalLabel">Crop Your Image</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div>
+                                                                        <img id="image-preview" style="max-width: 100%;">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary" id="crop-and-submit">Crop & Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -73,17 +101,32 @@
                         <div class="p-4 pt-0">
 
                             <div class="mt-n5 position-relative text-center border-bottom pb-3">
-                                <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}" alt=""
+                                
+                                <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" alt=""
                                     class="avatar-xl rounded-circle img-thumbnail">
+
+                                
 
                                 <div class="mt-3">
                                     <h5 class="mb-1">{{Auth::user()->first_name.' '.Auth::user()->last_name  }}</h5>
                                     <p class="text-muted mb-0">
-                                        <i class="bx bxs-star text-warning font-size-14"></i>
-                                        <i class="bx bxs-star text-warning font-size-14"></i>
-                                        <i class="bx bxs-star text-warning font-size-14"></i>
-                                        <i class="bx bxs-star text-warning font-size-14"></i>
-                                        <i class="bx bxs-star-half text-warning font-size-14"></i>
+                                        @php
+                                        $fullStars = floor(Auth::user()->rating_average); // Get the number of full stars
+                                        $halfStar = (Auth::user()->rating_average - $fullStars) >= 0.5 ? 1 : 0; // Check if there's a half star
+                                        $emptyStars = 5 - $fullStars - $halfStar; // Calculate the number of empty stars
+                                    @endphp
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="bx bxs-star text-warning font-size-14"></i>
+                                        @endfor
+                                
+                                        @if ($halfStar)
+                                            <i class="bx bxs-star-half text-warning font-size-14"></i>
+                                        @endif
+                                
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="bx bx-star text-warning font-size-14"></i>
+                                        @endfor
+
                                     </p>
                                 </div>
 
@@ -93,30 +136,6 @@
                                 <table
                                     class="table align-middle table-sm table-nowrap table-borderless table-centered mb-0">
                                     <tbody>
-                                        <tr>
-                                            <th class="fw-bold">
-                                                City :</th>
-                                            <td class="text-muted">{{Auth::user()->location }}</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th class="fw-bold">
-                                                State :</th>
-                                            <td class="text-muted">New Your</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th class="fw-bold">
-                                                Country :</th>
-                                            <td class="text-muted">USA</td>
-                                        </tr>
-                                        <!-- end tr -->
-                                        <tr>
-                                            <th class="fw-bold">Pin Code :</th>
-                                            <td class="text-muted">0005485</td>
-                                        </tr>
-                                        <!-- end tr -->
-
                                         <tr>
                                             <th class="fw-bold">Phone :</th>
                                             <td class="text-muted">{{Auth::user()->phone_number }}</td>
@@ -128,14 +147,32 @@
                                             <td class="text-muted">{{Auth::user()->email }}</td>
                                         </tr>
                                         <!-- end tr -->
+                                        <tr>
+                                            <th class="fw-bold">
+                                                Gender :</th>
+                                            <td class="text-muted">{{Auth::user()->gender }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="fw-bold">
+                                                City :</th>
+                                            <td class="text-muted">{{Auth::user()->location }}</td>
+                                        </tr>
+                                        <!-- end tr -->
+                                        <tr>
+                                            <th class="fw-bold">
+                                                Birth Year:</th>
+                                            <td class="text-muted">{{Auth::user()->date_of_birth }}</td>
+                                        </tr>
+                                        <!-- end tr -->
+                                        <tr>
+                                            <th class="fw-bold">
+                                                Job Field :</th>
+                                            <td class="text-muted">{{Auth::user()->job }}</td>
+                                        </tr>
+                                        <!-- end tr -->
+                                        
                                     </tbody><!-- end tbody -->
                                 </table>
-                            </div>
-
-
-                            <div class="pt-2 text-center border-bottom pb-4">
-                                <a href="" class="btn btn-primary waves-effect waves-light btn-sm">Send Message <i
-                                        class="bx bx-send ms-1 align-middle"></i></a>
                             </div>
 
                             <div class="mt-3 pt-1 text-center">
@@ -802,108 +839,56 @@
                         <h5 class="card-title mb-0">Skill</h5>
                     </div>
                     <div class="card-body">
-
-                        <div class="row align-items-center g-0">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    Photoshop </p>
-                            </div>
-
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 72%" aria-valuenow="52" aria-valuemin="0" aria-valuemax="52">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-
+                        @foreach (Auth::user()->skills as $skill)
+                        <a href="#" class="text-body skill-badge"
+                         data-skill='@json($skill)' 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#skillModal">
                         <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    illustrator </p>
+                            <div class="col-sm-5">
+                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>{{$skill->name}} 
+                                    </p>
                             </div>
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="45">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
 
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    HTML </p>
-                            </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-7">
                                 <div class="progress mt-1" style="height: 6px;">
                                     <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 68%" aria-valuenow="48" aria-valuemin="0" aria-valuemax="48">
+                                        style="width: 23%" aria-valuenow="52" aria-valuemin="0" aria-valuemax="52">
                                     </div>
                                 </div>
                             </div>
                         </div> <!-- end row-->
-
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    CSS </p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="78">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    Javascript </p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 63%" aria-valuenow="63" aria-valuemin="0" aria-valuemax="63">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    Php </p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 48%" aria-valuenow="48" aria-valuemin="0" aria-valuemax="48">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-3">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>
-                                    Python </p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="78">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
+                    </a>
+                        
+                        @endforeach
 
                     </div>
                 </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="skillModal" tabindex="-1" aria-labelledby="skillModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="skillModalLabel">Skill Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <p><strong>Name:</strong> <span id="skillName"></span></p>
+                <p><strong>Experience:</strong> <span id="skillExperience"></span></p>
+                <p><strong>Offer as Service:</strong> <span id="skillOfferAsService"></span></p>
+                <p><strong>Portfolio URL:</strong> <a id="skillPortfolioUrl" href="#" target="_blank">View Portfolio</a></p>
+                <p><strong>Cost:</strong> <span id="skillCost"></span></p>
+                <p><strong>Cost Type:</strong> <span id="skillCostType"></span></p>
+                <p><strong>Availability:</strong> 
+                    <ul id="skillAvailability"></ul>
+                </p>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
             </div>
         </div>
     @endsection
@@ -914,4 +899,120 @@
         <script src="{{ URL::asset('build/js/pages/profile.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener for skill badges
+        document.querySelectorAll('.skill-badge').forEach(function (badge) {
+        badge.addEventListener('click', function () {
+            const skill = JSON.parse(this.getAttribute('data-skill'));
+
+
+            // Populate modal with skill information
+            document.getElementById('skillName').textContent = skill.name ?? 'N/A';
+            document.getElementById('skillExperience').textContent = skill.experience ?? 'N/A';
+            document.getElementById('skillOfferAsService').textContent = skill.offer_as_service ? 'Yes' : 'No';
+            document.getElementById('skillPortfolioUrl').href = skill.portfolio_url ?? '#';
+            document.getElementById('skillCost').textContent = skill.cost ?? 'N/A';
+            document.getElementById('skillCostType').textContent = skill.cost_type ?? 'N/A';
+
+            // Handle availability (stored as JSON object with days and times)
+            const availabilityElement = document.getElementById('skillAvailability');
+            availabilityElement.innerHTML = '';  // Clear previous content
+
+            if (skill.availability) {
+
+
+                try {
+                    const availability = typeof skill.availability === 'string' ? JSON.parse(skill.availability) : skill.availability;
+
+                    // Loop through availability days and times
+                    for (const [day, time] of Object.entries(availability)) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${day}: ${time}`;
+                        availabilityElement.appendChild(listItem);
+                    }
+                } catch (error) {
+                    // Handle any JSON parsing errors
+                    console.error('Error parsing availability:', error);
+                }
+            } else {
+                // If no availability data
+                const listItem = document.createElement('li');
+                listItem.textContent = 'No availability information';
+                availabilityElement.appendChild(listItem);
+            }
+        });
+    });
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    let cropper;
+    const fileUpload = document.getElementById('file-upload');
+    const imagePreview = document.getElementById('image-preview');
+    const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+    const croppedImageInput = document.getElementById('cropped-image');
+    const cropAndSubmitBtn = document.getElementById('crop-and-submit');
+
+    // Trigger file input when clicking a button
+    document.getElementById('choose-file-button').addEventListener('click', function () {
+        fileUpload.click();
+    });
+
+    // When user selects a file
+    fileUpload.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+
+                // Open modal for cropping
+                cropperModal.show();
+
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // You can change this based on the desired aspect ratio
+                    viewMode: 1,
+                    minContainerWidth: 300,
+                    minContainerHeight: 300,
+                    responsive: true,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // When the user clicks "Crop & Submit"
+    cropAndSubmitBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        if (cropper) {
+            const canvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300, // You can set this to your desired image size
+            });
+
+            // Convert the canvas to a Base64-encoded image and set it as the value of the hidden input
+            canvas.toBlob(function (blob) {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    croppedImageInput.value = reader.result; // Set the cropped image as a base64 string
+
+                    // Submit the form
+                    document.getElementById('profile-image-form').submit();
+                };
+                reader.readAsDataURL(blob);
+            });
+        }
+    });
+});
+
+</script>
     @endsection

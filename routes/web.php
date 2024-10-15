@@ -33,7 +33,7 @@ Route::get('/profile', [DashboardController::class, 'profile'])->name('profile')
 
 Route::delete('/profile/portfolio/{id}', [UserController::class, 'destroy_Portfolio_web'])->name('portfolio.delete');
 
-
+Route::view('/help','dashboard.help')->name('help');
 
 
 
