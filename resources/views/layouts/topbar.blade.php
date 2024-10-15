@@ -195,58 +195,59 @@
                 
             
             <div class="dropdown d-inline-block">
-                @if(Auth::check())
                 <button type="button" class="btn header-item user text-start d-flex align-items-center"
-                    id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
+                    id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <img class="rounded-circle header-profile-user"
+                    @if(Auth::check())
+                        <img class="rounded-circle header-profile-user"
                             src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" 
                             alt="Header Avatar">
                         <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{ Auth::user()->first_name }}</span>
+                    @else
+                        <i class="mdi mdi-account-circle text-muted font-size-16"></i>
+                        <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">Login / Sign Up</span>
+                    @endif
                 </button>
+                
                 <div class="dropdown-menu dropdown-menu-end pt-0">
-                    <div class="p-3 border-bottom">
-                        <h6 class="mb-0">{{ Auth::user()->first_name }}</h6>
-                        <p class="mb-0 font-size-11 text-muted">{{ Auth::user()->email }}</p>
-                    </div>
-
-                <a class="dropdown-item" href="{{ route('index') }}"><i
-                        class="mdi mdi-home text-muted font-size-16 align-middle me-2"></i> <span
-                        class="align-middle">Home</span></a>
-                <a class="dropdown-item" href="{{route('help')}}"><i
-                        class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
-                        class="align-middle">Help</span></a>
-                <a class="dropdown-item" href="#"><i
-                        class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
-                        class="align-middle">Lock screen</span></a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="javascript:void(0);"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                        class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i> <span
-                        class="align-middle">Logout</span></a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-
+                    @if(Auth::check())
+                        <div class="p-3 border-bottom">
+                            <h6 class="mb-0">{{ Auth::user()->first_name }}</h6>
+                            <p class="mb-0 font-size-11 text-muted">{{ Auth::user()->email }}</p>
+                        </div>
+                        <a class="dropdown-item" href="{{ route('profile') }}"><i
+                                class="mdi mdi-home text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Home</span></a>
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard') }}"><i
+                                    class="mdi mdi-view-dashboard text-muted font-size-16 align-middle me-2"></i> <span
+                                    class="align-middle me-3">Dashboard</span><span
+                                    class="badge bg-success-subtle text-success ms-auto">New</span></a>
+                        <a class="dropdown-item" href="javascript:void(0);"><i
+                                class="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Messages</span></a>
+                        <a class="dropdown-item" href="{{route('help')}}"><i
+                                class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Help</span></a>
+                        <a class="dropdown-item" href="#"><i
+                                class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Lock screen</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0);"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                                class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Logout</span></a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    @else
+                        <a class="dropdown-item" href="{{ route('login') }}"><i
+                                class="mdi mdi-login text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Login</span></a>
+                        <a class="dropdown-item" href="{{ route('register') }}"><i
+                                class="mdi mdi-account-plus text-muted font-size-16 align-middle me-2"></i> <span
+                                class="align-middle">Create Account</span></a>
+                    @endif
                 </div>
-                @else
-                <button type="button" class="btn header-item user text-start d-flex align-items-center"
-                    id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <img class="rounded-circle header-profile-user"
-                            src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" 
-                            alt="Header Avatar">
-                        <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{ Auth::user()->first_name }}</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end pt-0">
-                <a class="dropdown-item" href="{{ route('login') }}"><i
-                    class="mdi mdi-login text-muted font-size-16 align-middle me-2"></i> <span
-                    class="align-middle">Login</span></a>
-                <a class="dropdown-item" href="{{ route('register') }}"><i
-                    class="mdi mdi-account-plus text-muted font-size-16 align-middle me-2"></i> <span
-                    class="align-middle">Create Account</span></a>
-                @endif
-            </div>
             </div>
             
                         

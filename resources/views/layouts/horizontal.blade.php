@@ -222,7 +222,7 @@
                                 class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Profile</span></a>
                         <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard') }}"><i
-                                    class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span
+                                    class="mdi mdi-view-dashboard text-muted font-size-16 align-middle me-2"></i> <span
                                     class="align-middle me-3">Dashboard</span><span
                                     class="badge bg-success-subtle text-success ms-auto">New</span></a>
                         <a class="dropdown-item" href="javascript:void(0);"><i
