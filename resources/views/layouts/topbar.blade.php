@@ -93,8 +93,10 @@
                     </form>
                 </div>
             </div>
--->         <button type="button" class="btn header-item" id="theme-toggle-btn">
-    <i class="mdi mdi-theme-light-dark"></i> <!-- Toggle icon -->
+            --> 
+
+             <button type="button" class="btn header-item" id="theme-toggle-btn">
+                <i class="mdi mdi-theme-light-dark"></i> <!-- Toggle icon -->
             </button>
 
             <div class="dropdown d-inline-block">
@@ -190,7 +192,10 @@
                 </div>
             </div>
 
+                
+            
             <div class="dropdown d-inline-block">
+                @if(Auth::check())
                 <button type="button" class="btn header-item user text-start d-flex align-items-center"
                     id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
@@ -222,8 +227,29 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
+
                 </div>
+                @else
+                <button type="button" class="btn header-item user text-start d-flex align-items-center"
+                    id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <img class="rounded-circle header-profile-user"
+                            src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}" 
+                            alt="Header Avatar">
+                        <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{ Auth::user()->first_name }}</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end pt-0">
+                <a class="dropdown-item" href="{{ route('login') }}"><i
+                    class="mdi mdi-login text-muted font-size-16 align-middle me-2"></i> <span
+                    class="align-middle">Login</span></a>
+                <a class="dropdown-item" href="{{ route('register') }}"><i
+                    class="mdi mdi-account-plus text-muted font-size-16 align-middle me-2"></i> <span
+                    class="align-middle">Create Account</span></a>
+                @endif
             </div>
+            </div>
+            
+                        
         </div>
     </div>
 </header>

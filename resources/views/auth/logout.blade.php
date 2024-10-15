@@ -18,10 +18,10 @@
                         <div class="col-md-8 col-lg-6 col-xl-5">
 
                             <div class="mb-4 pb-2">
-                                <a href="index" class="d-block auth-logo">
-                                    <img src="{{ Vite::asset('images/logo-dark.png') }}" alt="" height="30"
+                                <a href="{{ route('index')}}" class="d-block auth-logo">
+                                    <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt="" height="30"
                                         class="auth-logo-dark me-start">
-                                    <img src="{{ Vite::asset('images/logo-light.png') }}" alt="" height="30"
+                                    <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="" height="30"
                                         class="auth-logo-light me-start">
                                 </a>
                             </div>
@@ -72,6 +72,6 @@
     @endsection
     @section('scripts')
         <!-- App js -->
-        <script src="{{ Vite::asset('resources/js/app.js') }}"></script>
+        <script src="{{ URL::asset('build/js/app.js') }}"></script>
 
     @endsection
