@@ -41,10 +41,38 @@
     <body>
     @endsection
     @section('content')
+
+    <form action="{{ route('profile.image.upload') }}" method="POST" id="profile-image-form" enctype="multipart/form-data">
+        @csrf
+        <input id="file-upload" name="file" type="file" accept="image/*" style="display: none;" required>
+        <input type="hidden" id="cropped-image" name="cropped_image">
+
+        <!-- Modal for cropping the image -->
+        <div id="cropperModal" class="modal fade" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true" data-bs-scroll="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cropperModalLabel">Crop Your Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <img id="image-preview" style="max-width: 100%;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="crop-and-submit">Crop & Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
         <div class="row">
             <div class="col-xxl-3">
                 <div class="card">
-                    <div class="card-body p-0">
+                    <div class="card-body p-0" >
+                        <div class="p-0" data-simplebar style="max-height: 580px;">
                         <div class="user-profile-img">
                             
                             <img src="{{ URL::asset('build/images/pattern-bg.jpg') }}" class="profile-img profile-foreground-img rounded-top"
@@ -61,34 +89,8 @@
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <button type="button"  class="dropdown-item" href="" id="choose-file-button">change profile picture</button>
                                                     <a class="dropdown-item" href="#">Edit</a>
-                                                    
                                                 </div>
-                                                <form action="{{ route('profile.image.upload') }}" method="POST" id="profile-image-form" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <input id="file-upload" name="file" type="file" accept="image/*" style="display: none;" required>
-                                                    <input type="hidden" id="cropped-image" name="cropped_image">
-        
-                                                    <!-- Modal for cropping the image -->
-                                                    <div id="cropperModal" class="modal fade" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true" data-bs-scroll="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="cropperModalLabel">Crop Your Image</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div>
-                                                                        <img id="image-preview" style="max-width: 100%;">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="submit" class="btn btn-primary" id="crop-and-submit">Crop & Submit</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -207,6 +209,7 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
             </div>
 
@@ -218,11 +221,6 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#overview" role="tab">
                                     <span>Overview</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
-                                    <span>Messages</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -239,60 +237,23 @@
                     <div class="tab-pane active" id="overview" role="tabpanel">
                         <div class="card">
                             <div class="card-body">
+                                <div class="mx-n3 px-3" data-simplebar style="max-height: 580px;">
                                 <h5 class="font-size-16 mb-3">Summary</h5>
                                 <div class="mt-3">
-                                    <p class="font-size-15 mb-1">Hi my name is Jennifer Bennett.</p>
-                                    <p class="font-size-15">I'm the Co-founder and Head of Design at Company agency.</p>
-
-                                    <p class="text-muted">Been the industry's standard dummy text To an English person.
-                                        Our team collaborators and clients to achieve cupidatat non proident, sunt in culpa
-                                        qui officia deserunt mollit anim id est some advantage from it? But who has any
-                                        right to find fault with a man who chooses to enjoy a pleasure that has no annoying
-                                        consequences debitis aut rerum necessitatibus saepe eveniet ut et voluptates laborum
-                                        growth.</p>
-
-                                    <h5 class="font-size-15">Experience :</h5>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <ul class="list-unstyled mb-0 pt-1">
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Donec
-                                                    vitae libero venenatis faucibus</li>
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Quisque
-                                                    rutrum aenean imperdiet</li>
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Integer
-                                                    ante a consectetuer eget</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="col">
-                                            <ul class="list-unstyled mb-0 pt-1">
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Donec
-                                                    vitae libero venenatis faucibus</li>
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Quisque
-                                                    rutrum aenean imperdiet</li>
-                                                <li class="py-1"><i
-                                                        class="mdi mdi-circle-medium me-1 text-success align-middle"></i>Integer
-                                                    ante a consectetuer eget</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <p class="font-size-15 mb-1">Hi my name is {{Auth::user()->first_name.' '.Auth::user()->last_name}}.</p>
+                                    <p class="text-muted">{{Auth::user()->bio}} .</p>
                                 </div>
 
                                 <div class="mt-4">
-                                    <h5 class="font-size-16 mb-4">Projects</h5>
+                                    <h5 class="font-size-16 mb-4">My-Events</h5>
                                     <div class="table-responsive">
                                         <table class="table table-nowrap table-hover mb-1">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Projects</th>
+                                                    <th scope="col">Events</th>
                                                     <th scope="col">Date</th>
-                                                    <th scope="col">Budget</th>
+                                                    <th scope="col">Role</th>
                                                     <th scope="col">Status</th>
                                                     <th scope="col" style="width: 120px;">Action</th>
                                                 </tr>
@@ -327,6 +288,7 @@
                                                         </div>
                                                     </td>
                                                 </tr>
+                                            
                                                 <tr>
                                                     <th scope="row">02</th>
                                                     <td><a href="#" class="text-body">Chat app Design</a></td>
@@ -390,149 +352,7 @@
                                     </div>
                                 </div>
 
-
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane" id="messages" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-
-                                <div class="py-2">
-
-                                    <div class="mx-n4 px-4" data-simplebar style="max-height: 360px;">
-                                        <div class="border-bottom pb-3">
-                                            <p class="float-sm-end text-muted font-size-13">12 July, 2021</p>
-                                            <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.1</div>
-                                            <p class="text-muted mb-4">Maecenas non vestibulum ante, nec efficitur orci.
-                                                Duis eu ornare mi, quis bibendum quam. Etiam imperdiet aliquam purus sit
-                                                amet rhoncus. Vestibulum pretium consectetur leo, in mattis ipsum
-                                                sollicitudin eget. Pellentesque vel mi tortor.
-                                                Nullam vitae maximus dui dolor sit amet, consectetur adipiscing elit.</p>
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-grow-1">
-                                                    <div class="d-flex">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}"
-                                                            class="avatar-sm rounded-circle" alt="">
-                                                        <div class="flex-1 ms-2 ps-1">
-                                                            <h5 class="font-size-15 mb-0">Samuel</h5>
-                                                            <p class="text-muted mb-0 mt-1">65 Followers, 86 Reviews</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex-shrink-0">
-                                                    <ul class="list-inline product-review-link mb-0">
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-like"></i></a>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="border-bottom py-3">
-                                            <p class="float-sm-end text-muted font-size-13">06 July, 2021</p>
-                                            <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.0</div>
-                                            <p class="text-muted mb-4">Cras ac condimentum velit. Quisque vitae elit auctor
-                                                quam egestas congue. Duis eget lorem fringilla, ultrices justo consequat,
-                                                gravida lorem. Maecenas orci enim, sodales id condimentum et, nisl arcu
-                                                aliquam velit,
-                                                sit amet vehicula turpis metus cursus dolor cursus eget dui.</p>
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-grow-1">
-                                                    <div class="d-flex">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}"
-                                                            class="avatar-sm rounded-circle" alt="">
-                                                        <div class="flex-1 ms-2 ps-1">
-                                                            <h5 class="font-size-15 mb-0">Joseph</h5>
-                                                            <p class="text-muted mb-0 mt-1">85 Followers, 102 Reviews</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex-shrink-0">
-                                                    <ul class="list-inline product-review-link mb-0">
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-like"></i></a>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="pt-3">
-                                            <p class="float-sm-end text-muted font-size-13">26 June, 2021</p>
-                                            <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.2</div>
-                                            <p class="text-muted mb-4">Aliquam sit amet eros eleifend, tristique ante sit
-                                                amet, eleifend arcu. Cras ut diam quam. Fusce quis diam eu augue semper
-                                                ullamcorper vitae sed massa. Mauris lacinia, massa a feugiat mattis, leo
-                                                massa porta eros, sed congue arcu sem nec orci.
-                                                In ac consectetur augue. Nullam pulvinar risus non augue tincidunt blandit.
-                                            </p>
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-grow-1">
-                                                    <div class="d-flex">
-                                                        <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}"
-                                                            class="avatar-sm rounded-circle" alt="">
-                                                        <div class="flex-1 ms-2 ps-1">
-                                                            <h5 class="font-size-15 mb-0">Paul</h5>
-                                                            <p class="text-muted mb-0 mt-1">27 Followers, 66 Reviews</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex-shrink-0">
-                                                    <ul class="list-inline product-review-link mb-0">
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-like"></i></a>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <div class="border rounded mt-4">
-                                            <form action="#">
-                                                <div class="px-2 py-1 bg-light">
-                                                    <div class="btn-group" role="group">
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-link text-darbodyxt-decoration-none"><i
-                                                                class="bx bx-link"></i></button>
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-link text-darbodyxt-decoration-none"><i
-                                                                class="bx bx-smile"></i></button>
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-link text-darbodyxt-decoration-none"><i
-                                                                class="bx bx-at"></i></button>
-                                                    </div>
-                                                </div>
-                                                <textarea rows="3" class="form-control border-0 resize-none" placeholder="Your Message..."></textarea>
-                                            </form>
-                                        </div>
-
-                                        <div class="text-end mt-3">
-                                            <button type="button" class="btn btn-success w-sm text-truncate ms-2"> Send
-                                                <i class="bx bx-send ms-2 align-middle"></i></button>
-                                        </div>
-                                    </div>
-
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -836,61 +656,110 @@
             <div class="col-xl-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Skill</h5>
+                        <div class="d-flex align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">Skill</h5>
+                            </div>
+                            <div class="flex-shrink-0">
+
+                                    <a class="text-muted" href="{{ route('skill') }}">
+                                        <i class='bx bx-add-to-queue font-size-22'></i>
+                                    </a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        @foreach (Auth::user()->skills as $skill)
-                        <a href="#" class="text-body skill-badge"
-                         data-skill='@json($skill)' 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#skillModal">
-                        <div class="row align-items-center g-0 mt-3">
-                            <div class="col-sm-5">
-                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-primary me-2"></i>{{$skill->name}} 
-                                    </p>
-                            </div>
+                    <div class="card-body pt-1">
+                        <div class="table-responsive">
+                            <table class="table align-middle table-nowrap mb-0">
+                                <tbody>
+                                    @foreach (Auth::user()->skills as $skill)
+                                    <tr>         
+                                        <td>
+                                            <h5 class="font-size-14 m-0">
+                                                <a href="javascript:void(0);" 
+                                                   onclick="showSkillInfo({{ $skill}})"
+                                                   class="text-body">
+                                                   {{ $skill->name }}
+                                                </a>
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                @switch(strtolower($skill->experience))
+                                                    @case('beginner')
+                                                        <span class="badge bg-danger   font-size-13">{{ $skill->experience }}</span>
+                                                        @break
 
-                            <div class="col-sm-7">
-                                <div class="progress mt-1" style="height: 6px;">
-                                    <div class="progress-bar progress-bar bg-primary" role="progressbar"
-                                        style="width: 23%" aria-valuenow="52" aria-valuemin="0" aria-valuemax="52">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- end row-->
-                    </a>
-                        
-                        @endforeach
+                                                    @case('intermediate')
+                                                        <span class="badge bg-warning  font-size-13">{{ $skill->experience }}</span>
+                                                        @break
 
+                                                    @case('expert')
+                                                        <span class="badge bg-success   font-size-13">{{ $skill->experience }}</span>
+                                                        @break
+
+                                                    @default
+                                                        <span class="badge bg-secondary-subtle font-size-14">{{ $skill->experience }}</span>
+                                                @endswitch
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a class="text-muted dropdown-toggle font-size-18" role="button"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true">
+                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" href="#">Edit</a>
+                                                    <form action="{{ route('skills.destroy', $portfolio->id) }}" method="post"">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit" class="dropdown-item">
+                                                            Remove
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    
+                    
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="skillModal" tabindex="-1" aria-labelledby="skillModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="skillModalLabel">Skill Information</h5>
+        <!-- Skill Info Modal -->
+<div class="modal fade" id="skillInfoModal" tabindex="-1" aria-labelledby="skillInfoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="skillInfoLabel">Skill Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+            </div>
+            <div class="modal-body">
                 <p><strong>Name:</strong> <span id="skillName"></span></p>
                 <p><strong>Experience:</strong> <span id="skillExperience"></span></p>
                 <p><strong>Offer as Service:</strong> <span id="skillOfferAsService"></span></p>
-                <p><strong>Portfolio URL:</strong> <a id="skillPortfolioUrl" href="#" target="_blank">View Portfolio</a></p>
+                <p><strong>Portfolio URL:</strong> <a id="skillPortfolioUrl" href="#" target="_blank">Skill Portfolio</a></p> 
                 <p><strong>Cost:</strong> <span id="skillCost"></span></p>
                 <p><strong>Cost Type:</strong> <span id="skillCostType"></span></p>
                 <p><strong>Availability:</strong> 
                     <ul id="skillAvailability"></ul>
                 </p>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
             </div>
         </div>
+    </div>
+</div>
+
     @endsection
     @section('scripts')
         <!-- apexcharts -->
@@ -900,53 +769,95 @@
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        // Add event listener for skill badges
-        document.querySelectorAll('.skill-badge').forEach(function (badge) {
-        badge.addEventListener('click', function () {
-            const skill = JSON.parse(this.getAttribute('data-skill'));
+    function showSkillInfo(skill) {
+        // Debugging: Log the skill object
+        // Debugging: Log the skill object
+        console.log('Skill object:', skill);
 
+        // Set the basic skill details
+        document.getElementById('skillName').innerText = skill.name;
+        document.getElementById('skillExperience').innerText = skill.experience;
+        document.getElementById('skillCost').innerText = skill.cost;
+        document.getElementById('skillCostType').innerText = skill.cost_type; // Corrected
 
-            // Populate modal with skill information
-            document.getElementById('skillName').textContent = skill.name ?? 'N/A';
-            document.getElementById('skillExperience').textContent = skill.experience ?? 'N/A';
-            document.getElementById('skillOfferAsService').textContent = skill.offer_as_service ? 'Yes' : 'No';
-            document.getElementById('skillPortfolioUrl').href = skill.portfolio_url ?? '#';
-            document.getElementById('skillCost').textContent = skill.cost ?? 'N/A';
-            document.getElementById('skillCostType').textContent = skill.cost_type ?? 'N/A';
+        // Debugging: Log the basic skill details
+        console.log('Skill Name:', skill.name);
+        console.log('Skill Experience:', skill.experience);
+        console.log('Skill Cost:', skill.cost);
+        console.log('Skill Cost Type:', skill.cost_type); // Corrected
 
-            // Handle availability (stored as JSON object with days and times)
-            const availabilityElement = document.getElementById('skillAvailability');
-            availabilityElement.innerHTML = '';  // Clear previous content
+        // Check if the skill is offered as a service
+        document.getElementById('skillOfferAsService').innerText = skill.offer_as_service ? 'Yes' : 'No'; // Corrected
 
-            if (skill.availability) {
+        // Debugging: Log if the skill is offered as a service
+        console.log('Offered as Service:', skill.offer_as_service ? 'Yes' : 'No'); // Corrected
 
+        // Set the portfolio URL if it exists
+        const portfolioUrl = document.getElementById('skillPortfolioUrl');
+        if (skill.portfolio_url) { // Corrected
+            portfolioUrl.href = skill.portfolio_url; // Corrected
+            portfolioUrl.style.display = 'inline';
 
-                try {
-                    const availability = typeof skill.availability === 'string' ? JSON.parse(skill.availability) : skill.availability;
+            // Debugging: Log portfolio URL
+            console.log('Portfolio URL:', skill.portfolio_url); // Corrected
+        } else {
+            portfolioUrl.style.display = 'none';
 
-                    // Loop through availability days and times
-                    for (const [day, time] of Object.entries(availability)) {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${day}: ${time}`;
-                        availabilityElement.appendChild(listItem);
-                    }
-                } catch (error) {
-                    // Handle any JSON parsing errors
-                    console.error('Error parsing availability:', error);
-                }
-            } else {
-                // If no availability data
-                const listItem = document.createElement('li');
-                listItem.textContent = 'No availability information';
-                availabilityElement.appendChild(listItem);
-            }
-        });
-    });
-});
+            // Debugging: Log when there is no portfolio URL
+            console.log('No portfolio URL found.');
+        }
+
+        // Set the availability days
+        const availabilityList = document.getElementById('skillAvailability');
+        availabilityList.innerHTML = ''; // Clear previous data
+        if (skill.availability && Object.keys(skill.availability).length > 0) { // Corrected to handle an object
+            Object.entries(skill.availability).forEach(function ([day, time]) {
+                const li = document.createElement('li');
+                li.innerText = `${day}: ${time}`;
+                availabilityList.appendChild(li);
+
+                // Debugging: Log each availability day
+                console.log('Available on:', `${day}: ${time}`);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.innerText = 'Not available';
+            availabilityList.appendChild(li);
+
+            // Debugging: Log when there is no availability
+            console.log('No availability.');
+        }
+
+        // Show the modal
+        var skillModal = new bootstrap.Modal(document.getElementById('skillInfoModal'));
+
+        // Debugging: Log before showing the modal
+        console.log('Displaying skill info modal.');
+
+        skillModal.show();
+    }
 </script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

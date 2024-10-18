@@ -39,6 +39,12 @@
                         <span class="menu-item" data-key="t-dashboard">Dashboard</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{route('profile')}}">
+                        <i class="bx bxs-user icon nav-icon"></i>
+                        <span class="menu-item" data-key="t-profile">Profile</span>
+                    </a>
+                </li>
                 
 
             </ul>

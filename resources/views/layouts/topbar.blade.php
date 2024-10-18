@@ -215,7 +215,7 @@
                             <h6 class="mb-0">{{ Auth::user()->first_name }}</h6>
                             <p class="mb-0 font-size-11 text-muted">{{ Auth::user()->email }}</p>
                         </div>
-                        <a class="dropdown-item" href="{{ route('profile') }}"><i
+                        <a class="dropdown-item" href="{{ route('index') }}"><i
                                 class="mdi mdi-home text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Home</span></a>
                         <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard') }}"><i
@@ -228,9 +228,12 @@
                         <a class="dropdown-item" href="{{route('help')}}"><i
                                 class="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span
                                 class="align-middle">Help</span></a>
-                        <a class="dropdown-item" href="#"><i
-                                class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
-                                class="align-middle">Lock screen</span></a>
+                                <form action="{{ route('manual.lock') }}" method="POST" id="lockForm">
+                                    @csrf
+                                    <button class="dropdown-item" type="submit" ><i
+                                        class="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span
+                                        class="align-middle">Lock screen</span></button>
+                                </form>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:void(0);"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
