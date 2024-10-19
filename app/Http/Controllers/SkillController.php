@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Skill;
 use Auth;
 use Http;
 use Illuminate\Http\Request;
@@ -11,17 +12,28 @@ class SkillController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    
+    public function index(Request $request)
     {
-        //
+        // Get the experience filter from the query string
+        $experience = $request->query('experience');
+    
+        // Fetch the skills, applying the experience filter if it exists
+        $skills = Skill::when($experience, function($query, $experience) {
+            return $query->where('experience', $experience);
+        })->paginate(10);
+    
+        // Return the view with the filtered skills
+        return view('user.skill', compact('skills'));
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         //
+        return view('user.add-skill');
     }
 
     /**
@@ -121,11 +133,10 @@ class SkillController extends Controller
         $response = Http::withHeaders($headers)->delete($url);
         
         if ($response->successful()) {
-            dd('Skill link deleted successfully.');
-           // return redirect()->back()->with('success', 'Skill link deleted successfully.');
+           
+           return redirect()->back()->with('success', 'Skill link deleted successfully.');
         } else {
-            dd($response->json());
-            //return redirect()->back()->withErrors(['error' => 'You are not authorized to delete this Skill link.']);
+            return redirect()->back()->withErrors(['error' => 'You are not authorized to delete this Skill link.']);
         }
     }
 }

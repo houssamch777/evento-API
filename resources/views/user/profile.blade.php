@@ -70,7 +70,7 @@
     </form>
         <div class="row">
             <div class="col-xxl-3">
-                <div class="card">
+                <div class="card" style="min-height: 610px;">
                     <div class="card-body p-0" >
                         <div class="p-0" data-simplebar style="max-height: 580px;">
                         <div class="user-profile-img">
@@ -214,7 +214,7 @@
             </div>
 
             <div class="col-xxl-9">
-                <div class="card">
+                <div class="card" >
                     <div class="card-body">
                         <!-- Nav tabs -->
                         <ul class="nav nav-pills nav-justified" role="tablist">
@@ -233,9 +233,9 @@
                 </div>
 
                 <!-- Tab content -->
-                <div class="tab-content">
+                <div class="tab-content" >
                     <div class="tab-pane active" id="overview" role="tabpanel">
-                        <div class="card">
+                        <div class="card" style="min-height: 500px;max-height: 500px;">
                             <div class="card-body">
                                 <div class="mx-n3 px-3" data-simplebar style="max-height: 580px;">
                                 <h5 class="font-size-16 mb-3">Summary</h5>
@@ -358,9 +358,9 @@
                     </div>
 
                     <div class="tab-pane" id="post" role="tabpanel">
-                        <div class="card">
+                        <div class="card" style="min-height: 500px;max-height: 500px;">
                             <div class="card-body">
-                                <div class="mx-n3 px-3" data-simplebar style="max-height: 580px;">
+                                <div class="mx-n3 px-3" data-simplebar style="min-height: 430px;max-height: 450px;">
                                     <div class="blog-post">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
@@ -519,7 +519,7 @@
         <div class="row">
 
             <div class="col-xl-4">
-                <div class="card">
+                <div class="card" style="min-height: 450px;">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Weekly Hours</h5>
                     </div>
@@ -530,7 +530,7 @@
             </div>
 
             <div class="col-xl-4">
-                <div class="card">
+                <div class="card" style="min-height: 450px;">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Team Members</h5>
                     </div>
@@ -654,7 +654,7 @@
             </div>
 
             <div class="col-xl-4">
-                <div class="card">
+                <div class="card" style="min-height: 450px;">
                     <div class="card-header">
                         <div class="d-flex align-items-start mb-2">
                             <div class="flex-grow-1">
@@ -713,7 +713,7 @@
 
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <a class="dropdown-item" href="#">Edit</a>
-                                                    <form action="{{ route('skills.destroy', $portfolio->id) }}" method="post"">
+                                                    <form action="{{ route('skills.destroy', $skill->id) }}" method="post"">
                                                         @csrf
                                                         @method('delete')
                                                         <button type="submit" class="dropdown-item">

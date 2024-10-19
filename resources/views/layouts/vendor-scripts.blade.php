@@ -19,4 +19,11 @@
 });
 
 </script>
+
+        <!-- Sweet Alerts js -->
+        <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+        <!-- Sweet alert init js-->
+<script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
+
 @yield('scripts')

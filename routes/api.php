@@ -48,4 +48,19 @@ Route::post('/login',[AuthController::class,'login']);
 
 Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
 
-Route::apiResource('skills',SkillController::class);
+Route::middleware('auth:sanctum')->group(function () {
+    // List all skills
+    Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
+
+    // Create a new skill
+    Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
+
+    // Display a specific skill
+    Route::get('/skills/{skill}', [SkillController::class, 'show'])->name('skills.show');
+
+    // Update a specific skill
+    Route::put('/skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
+
+    // Delete a specific skill
+    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+});

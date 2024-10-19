@@ -45,6 +45,19 @@
                         <span class="menu-item" data-key="t-profile">Profile</span>
                     </a>
                 </li>
+                <li class="menu-title" data-key="t-menu">Skills & Assets</li>
+
+               <li>
+                    <a href="javascript: void(0)">
+                        <i class="bx bx-wrench icon nav-icon"></i>
+                        <span class="menu-item" data-key="t-skills">Skills & Assets</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{route('skills.index')}}" data-key="t-assets">Skills<span class="badge rounded-pill bg-primary">{{count(Auth::user()->skills)}}</span></a></li>
+                        <li><a href="#" data-key="t-assets">Assets</a></li>
+                    </ul>
+
+                </li>
                 
 
             </ul>

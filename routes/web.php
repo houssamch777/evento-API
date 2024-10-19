@@ -56,7 +56,7 @@ Route::middleware(LockScreenMiddleware::class)->group(function () {
 
 
 
-    Route::resource('skills', SkillController::class);
+    Route::resource('skills', SkillController::class)->middleware('auth');
 });
 
 

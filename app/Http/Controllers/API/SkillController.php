@@ -86,10 +86,9 @@ class SkillController extends Controller implements HasMiddleware
         /**
          * Remove the specified skill from storage.
          */
-        public function destroy(string $id)
+        public function destroy(Skill $skill)
         {
             // Ensure the authenticated user is authorized to delete the skill
-            $skill = Skill::findOrFail($id);
             Gate::authorize('delete', $skill);
     
             // Delete the skill
