@@ -662,7 +662,7 @@
                             </div>
                             <div class="flex-shrink-0">
 
-                                    <a class="text-muted" href="{{ route('skill') }}">
+                                    <a class="text-muted" href="{{ route('skills.create') }}">
                                         <i class='bx bx-add-to-queue font-size-22'></i>
                                     </a>
                             </div>

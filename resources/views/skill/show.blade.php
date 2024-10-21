@@ -27,7 +27,7 @@
                 <div class="card" >
                     <div class="card-body">
                         <!--
-                        <a href="{{ route('skills.update', $skill->id) }}" class="btn btn-primary waves-effect waves-light w-100"><h5 class="font-size-15  text-white">Edit</h5></a>
+                        <a href="{{ route('skills.edit', $skill->id) }}" class="btn btn-primary waves-effect waves-light w-100"><h5 class="font-size-15  text-white">Edit</h5></a>
                         <a href="{{ route('skills.destroy', $skill->id) }}" class="btn btn-danger waves-effect waves-light w-100 mt-3"><h5 class="font-size-15  text-white">Delete</h5></a>
                         -->
                         
@@ -68,7 +68,7 @@
                                                 class="mdi mdi-chevron-down ms-1"></i></span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="{{ route('skills.update', $skill->id) }}">Edit</a>
+                                        <a class="dropdown-item" href="{{ route('skills.edit', $skill->id) }}">Edit</a>
                                         <form action="{{ route('skills.destroy', $skill->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
