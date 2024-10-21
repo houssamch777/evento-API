@@ -14,21 +14,22 @@ class SkillController extends Controller
      * Display a listing of the resource.
      */
     
-    public function index(Request $request)
-    {
-        // Get the experience filter from the query string
-        $experience = $request->query('experience');
-    
-        // Fetch the skills, applying the experience filter if it exists
-        $skills = Skill::when($experience, function($query, $experience) {
-            return $query->where('experience', $experience);
-        })->orderBy('created_at', 'desc')->paginate(10);
+     public function index(Request $request)
+     {
+         // Get the experience filter from the query string
+         $experience = $request->query('experience');
+     
+         // Fetch the skills, applying the experience filter if it exists
+         $skills = Auth::user()->skills()->when($experience, function($query, $experience) {
+             return $query->where('experience', $experience);
+         })->orderBy('created_at', 'desc')->paginate(10);
+     
+         // Append the experience filter to pagination links
+         $skills->appends(['experience' => $experience]);
 
-    
-        // Return the view with the filtered skills
-        return view('skill.index', compact('skills'));
-    }
-    
+         // Return the view with the filtered skills
+         return view('skill.index', compact('skills'));
+     }
     /**
      * Show the form for creating a new resource.
      */

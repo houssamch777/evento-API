@@ -27,32 +27,40 @@
                     <div class="card-body">
 
                         <a href="{{ route('skills.create') }}" class="btn btn-danger waves-effect waves-light w-100"><h5 class="font-size-15 text-uppercase text-white">New Skill</h5></a>
+                       
+                       
+                        <div class="custom-accordion pt-4 px-4">
+                            <h5 class="font-size-14 mb-0">
+                                <a href="{{ route('skills.index') }}" class="text-body d-block">
+                                    All
+                                </a>
+                            </h5>
+                       </div>
+                        <div class="custom-accordion p-4 " >
+                            <h5 class="font-size-14 mb-0"><a href="#categories-collapse" class="text-body d-block" data-bs-toggle="collapse" >
+                                Experience <i class="mdi mdi-chevron-up float-end accor-down-icon"></i></a></h5>
+                        
+                            <div class="collapse show mt-4" id="categories-collapse" >
+                                <!-- New Experience Filter Section -->
+                                <div class="categories-group-card px-4">
+                                    <a href="{{ route('skills.index', ['experience' => 'Expert']) }}" class="text-body fw-semibold pb-3 d-block collapsed">
+                                        <span class="mdi mdi-arrow-right-drop-circle text-success float-end"></span>
+                                        Expert
+                                    </a>
+                                </div>
+                                <div class="categories-group-card px-4">
+                                    <a href="{{ route('skills.index', ['experience' => 'Intermediate']) }}" class="text-body fw-semibold pb-3 d-block collapsed">
+                                        <span class="mdi mdi-arrow-right-drop-circle text-warning float-end"></span>Intermediate
+                                    </a>
+                                </div>
+                                <div class="categories-group-card px-4">
+                                    <a href="{{ route('skills.index', ['experience' => 'Beginner']) }}" class="text-body fw-semibold pb-3 d-block collapsed">
+                                        <span class="mdi mdi-arrow-right-drop-circle text-danger float-end"></span>Beginner
+                                    </a>
+                                </div>
 
-                        <h5 class="mt-4 font-size-15 ">Experience Filter</h5>
-                        <div class="card p-0 overflow-hidden mt-3 shadow-none">
-                            <div class="mail-list">
-                                <!-- Filter for Expert -->
-                                <a href="{{ route('skills.index', ['experience' => 'Expert']) }}" class="border-bottom">
-                                    <span class="mdi mdi-arrow-right-drop-circle text-success float-end"></span>Expert
-                                </a>
-                        
-                                <!-- Filter for Intermediate -->
-                                <a href="{{ route('skills.index', ['experience' => 'Intermediate']) }}" class="border-bottom">
-                                    <span class="mdi mdi-arrow-right-drop-circle text-warning float-end"></span>Intermediate
-                                </a>
-                        
-                                <!-- Filter for Beginner -->
-                                <a href="{{ route('skills.index', ['experience' => 'Beginner']) }}" class="border-bottom">
-                                    <span class="mdi mdi-arrow-right-drop-circle text-danger float-end"></span>Beginner
-                                </a>
-                                <a href="{{ route('skills.index') }}" class="border-bottom text-muted">
-                                    <span class="mdi mdi-close-circle-outline float-end"></span>Cancel
-                                </a>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
 
@@ -62,10 +70,13 @@
             <!-- Right Sidebar -->
             <div class="email-rightbar mb-3">
 
-                <div class="card">
+                <div class="card" >
                     <div class="card-body">
 
                         <div class="">
+                            @if($skills->count() > 0)
+                            
+                            
                             <div class="row mb-4">
                                 <div class="col-xl-3 col-md-12">
                                     <div class="pb-3 pb-xl-0">
@@ -79,9 +90,17 @@
                                     </div>
                                 </div>
                             </div>
-
+                            @endif
                             <div>
-                                <h6 class="text-muted text-uppercase mb-3">My Skills</h6>
+                                <h6 class="text-muted text-uppercase mb-3">My Skills </h6>
+                                @if($skills->count() == 0)
+                                <div class="bg-light-subtle p-3 text-center" >
+                                    <div class="row justify-content-center">
+                                        "There are no skills available right now. Please add some to get started!"
+                                    </div>
+
+                                </div>
+                                @else
                                 <div class="table-responsive">
                                     <table class="table table-striped table-centered align-middle table-nowrap mb-0 table-check" >
                                         <thead>
@@ -154,9 +173,10 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                @endif
                             </div>
                             
-
+                            @if($skills->count() > 0)
                             <div class="pt-2">
                                 <div class="row">
                                     <div class="col-7">
@@ -204,7 +224,7 @@
                                         
                                 </div>
                             </div>
-                            
+                            @endif
 
                         </div>
 

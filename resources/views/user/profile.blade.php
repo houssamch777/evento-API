@@ -654,7 +654,7 @@
             </div>
 
             <div class="col-xl-4">
-                <div class="card" style="min-height: 450px;">
+                <div class="card" style="max-height: 450px;">
                     <div class="card-header">
                         <div class="d-flex align-items-start mb-2">
                             <div class="flex-grow-1">
