@@ -35,7 +35,7 @@
         </div>
 
         <div class="d-flex">
-
+            <!-- 
             <div class="dropdown d-inline-block language-switch ms-2">
                 <button type="button" class="btn header-item" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
@@ -44,14 +44,14 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
 
-                    <!-- item-->
+                    
                     <a href="javascript:void(0);" class="dropdown-item notify-item language" data-lang="eng">
                         <img src="{{ URL::asset('build/images/flags/us.jpg') }}" alt="user-image" class="me-1"
                             height="12"> <span class="align-middle">English</span>
                     </a>
                 </div>
             </div>
-<!-- 
+
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
@@ -70,7 +70,7 @@
                 </div>
             </div>
             --> 
-
+            <!-- item-->
              <button type="button" class="btn header-item" id="theme-toggle-btn">
                 <i class="mdi mdi-theme-light-dark"></i> <!-- Toggle icon -->
             </button>
@@ -79,7 +79,7 @@
                 <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown-v"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bx bx-bell icon-sm align-middle"></i>
-                    <span class="noti-dot bg-danger rounded-pill">4</span>
+                    <span class="noti-dot bg-danger rounded-pill">{{ auth()->user()->unreadNotifications->count() }}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0"
                     aria-labelledby="page-header-notifications-dropdown-v">
@@ -89,76 +89,37 @@
                                 <h5 class="m-0 font-size-15"> Notifications </h5>
                             </div>
                             <div class="col-auto">
-                                <a href="#!" class="small fw-semibold text-decoration-underline"> Mark all as
+                                <a href="{{ route('markAllAsRead') }}" class="small fw-semibold text-decoration-underline"> Mark all as
                                     read</a>
                             </div>
                         </div>
                     </div>
                     <div data-simplebar style="max-height: 250px;">
+
+                        @forelse (Auth::user()->unreadNotifications  as $notification)
                         <a href="#!" class="text-reset notification-item">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
-                                    <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}"
-                                        class="rounded-circle avatar-sm" alt="user-pic">
+                                    @if(isset($notification->data['image']))
+                                        <img src="{{ URL::asset('storage/' . $notification->data['image']) }}" class="rounded-circle avatar-sm" alt="Notification Image">
+                                    @else
+                                        <span class="avatar-title bg-primary rounded-circle font-size-18">
+                                            <i class="bx bx-bell"></i>
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="flex-grow-1">
-                                    <p class="text-muted font-size-13 mb-0 float-end">1 hour ago</p>
-                                    <h6 class="mb-1">James Lemire</h6>
+                                    <p class="text-muted font-size-13 mb-0 float-end">{{ $notification->created_at->diffForHumans() }}</p>
+                                    <h6 class="mb-1">{{ $notification->data['title'] ?? 'Notification' }}</h6>
                                     <div>
-                                        <p class="mb-0">It will seem like simplified English.</p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </a>
-                        <a href="#!" class="text-reset notification-item">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-sm me-3">
-                                    <span class="avatar-title bg-primary rounded-circle font-size-18">
-                                        <i class="bx bx-cart"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <p class="text-muted font-size-13 mb-0 float-end">3 min ago</p>
-                                    <h6 class="mb-1">Your order is placed</h6>
-                                    <div>
-                                        <p class="mb-0">If several languages coalesce the grammar</p>
+                                        <p class="mb-0">{{ $notification->data['message'] ?? '' }}</p>
                                     </div>
                                 </div>
                             </div>
                         </a>
-                        <a href="#!" class="text-reset notification-item">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-sm me-3">
-                                    <span class="avatar-title bg-success rounded-circle font-size-18">
-                                        <i class="bx bx-badge-check"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <p class="text-muted font-size-13 mb-0 float-end">8 min ago</p>
-                                    <h6 class="mb-1">Your item is shipped</h6>
-                                    <div>
-                                        <p class="mb-0">If several languages coalesce the grammar</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#!" class="text-reset notification-item">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 me-3">
-                                    <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}"
-                                        class="rounded-circle avatar-sm" alt="user-pic">
-                                </div>
-                                <div class="flex-grow-1">
-                                    <p class="text-muted font-size-13 mb-0 float-end">1 hour ago</p>
-                                    <h6 class="mb-1">Salena Layfield</h6>
-                                    <div>
-                                        <p class="mb-1">As a skeptical Cambridge friend of mine occidental.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                    @empty
+                        <p class="text-center p-3">No new notifications</p>
+                    @endforelse
                     </div>
                     <div class="p-2 border-top d-grid">
                         <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="javascript:void(0)">

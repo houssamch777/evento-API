@@ -1,66 +1,68 @@
 <?php
 
+use App\Http\Controllers\API\AssetsController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\SkillController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    // Check if the user is authenticated
-    if (!Auth::guard('sanctum')->check()) {
-        return Response::json([
-            'success' => false,
-            'message' => 'session is expired.',
-            'data' => null
-        ], 401);
-    }
-
-    // Get the authenticated user
-    $user = Auth::guard('sanctum')->user();
-    // Return the user data with a success message
-    return Response::json([
-        'success' => true,
-        'message' => 'already logged in.',
-        'data' => $user
-    ], 200);
+// Authentication Routes
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
+// User Routes with 'auth:sanctum' Middleware
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+    // Profile Routes
+    Route::get('/', function (Request $request) {
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Session is expired.',
+                'data' => null,
+            ], 401);
+        }
 
-Route::get('/user/skills', function (Request $request) {
-    return $request->user()->skills;
-})->middleware('auth:sanctum');
-Route::get('/user/portfolios', function (Request $request) {
-    return $request->user()->portfolios;
-})->middleware('auth:sanctum');
+        $user = Auth::guard('sanctum')->user();
+        return response()->json([
+            'success' => true,
+            'message' => 'Already logged in.',
+            'data' => $user,
+        ], 200);
+    });
 
-
-Route::post('/profile_picture',[UserController::class,'uploadProfileImage'])->middleware('auth:sanctum');
-Route::post('/store_Portfolio',[UserController::class,'storePortfolio'])->middleware('auth:sanctum');
-Route::delete('/delete_Portfolio/{id}',[UserController::class,'destroy_Portfolio'])->middleware('auth:sanctum');
-
-
-Route::post('/register',[AuthController::class,'register']);
-
-Route::post('/login',[AuthController::class,'login']);
-
-
-
-Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
-
-Route::middleware('auth:sanctum')->group(function () {
-    // List all skills
-    Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
-
-    // Create a new skill
-    Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
-
-    // Display a specific skill
-    Route::get('/skills/{skill}', [SkillController::class, 'show'])->name('skills.show');
-
-    // Update a specific skill
-    Route::put('/skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
-
-    // Delete a specific skill
-    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    // User Skills and Portfolio
+    Route::get('/skills', fn(Request $request) => $request->user()->skills);
+    Route::get('/portfolios', fn(Request $request) => $request->user()->portfolios);
+    Route::post('/profile_picture', [UserController::class, 'uploadProfileImage']);
+    Route::post('/store_portfolio', [UserController::class, 'storePortfolio']);
+    Route::delete('/delete_portfolio/{id}', [UserController::class, 'destroyPortfolio']);
 });
+
+// Skill Management Routes
+Route::middleware('auth:sanctum')->prefix('skills')->name('skills.')->group(function () {
+    Route::get('/', [SkillController::class, 'index'])->name('index');
+    Route::get('/names', [SkillController::class, 'skillsNames'])->name('names');
+    Route::post('/', [SkillController::class, 'store'])->name('store');
+    Route::get('/{skill}', [SkillController::class, 'show'])->name('show');
+    Route::put('/{skill}', [SkillController::class, 'update'])->name('update');
+    Route::delete('/{skill}', [SkillController::class, 'destroy'])->name('destroy');
+});
+
+// Event Routes
+Route::middleware('auth:sanctum')->prefix('events')->group(function () {
+    Route::get('/', [EventApiController::class, 'index']);
+    Route::get('/my-events', [EventApiController::class, 'userEvents']);
+    Route::post('/', [EventApiController::class, 'store']);
+    Route::get('/domains', [EventApiController::class, 'getDomains']);
+    Route::get('/categories', [EventApiController::class, 'getCategories']);
+    // Other event-related routes can be added here
+});
+
+// Asset Management Routes
+Route::apiResource('assets', AssetsController::class)->middleware('auth:sanctum');

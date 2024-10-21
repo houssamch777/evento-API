@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
 use App\Models\User;
+use App\Notifications\EventoNotification;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -26,7 +28,11 @@ class UserController extends Controller
         return back()->withErrors(['fialed' => 'The provided password is incorrect!']);
     }
 }
-
+public function showRegistrationForm()
+{
+    $locations = Location::all();
+    return view('auth.register', compact('locations'));
+}
 public function register(Request $request)
 {
     
@@ -58,6 +64,7 @@ public function register(Request $request)
 
     public function profile_image_upload(Request $request) {
         // Validate the cropped image
+        
         $request->validate([
             'cropped_image' => 'required',
         ]);
@@ -91,7 +98,9 @@ public function register(Request $request)
         // Update the profile picture path in the user's profile
         $user->profile_picture = $imagePath;
         $user->save();  // Save the updated user with the new profile picture path
-    
+        $message='Profile image updated successfully.';
+        $title='Profile image update !';
+        $user->notify(new EventoNotification($title, $message, $imagePath,route('profile')));
         return back()->with('success', 'Profile image updated successfully.');
     }
 

@@ -2,6 +2,10 @@
 @section('title')
     Register
 @endsection
+@section('css')
+    <!-- choices css -->
+    <link href="{{ URL::asset('build/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection
 @section('page-title')
     Register
 @endsection
@@ -73,19 +77,25 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                        
                                             <div class="mb-2">
-                                                <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
-                                                <input id="location" type="text"
-                                                       class="form-control @error('location') is-invalid @enderror"
-                                                       name="location" value="{{ old('location') }}" required
-                                                       autocomplete="location" placeholder="Enter location">
+                                                <label for="location" class="form-label">Wilaya <span class="text-danger">*</span></label>
+                                                
+                                                <select class="form-control @error('location') is-invalid @enderror" name="location" id="location" required>
+                                                    <option value="" disabled selected>Select your wilaya</option>
+                                                    @foreach($locations as $location)
+                                                        <option value="{{ $location->name }}" {{ old('location') == $location->name ? 'selected' : '' }}>
+                                                            {{ $location->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                
                                                 @error('location')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
+                                            
                                         
                                             <div class="row mb-2">
                                                 <div class="col-md-6">
@@ -106,8 +116,8 @@
                                                     <select id="gender" name="gender" 
                                                             class="form-select @error('gender') is-invalid @enderror" required>
                                                         <option value="" disabled selected>Select your gender</option>
-                                                        <option value="male">Male</option>
-                                                        <option value="female">Female</option>
+                                                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                                                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                                                     </select>
                                                     @error('gender')
                                                         <span class="invalid-feedback" role="alert">
@@ -190,4 +200,10 @@
             </div><!-- end container -->
         </div>
         <!-- end authentication section -->
+    @endsection
+    @section('scripts')
+         <!-- init js -->
+         <script src="{{ URL::asset('build/js/pages/form-advanced.init.js') }}"></script>
+         <!-- choices js -->
+        <script src="{{ URL::asset('build/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
     @endsection

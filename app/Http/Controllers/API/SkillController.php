@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Skill;
 
+use App\Models\SkillName;
+use App\Notifications\EventoNotification;
+use Auth;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -26,6 +29,10 @@ class SkillController extends Controller implements HasMiddleware
         public function index()
         {
             return Skill::all();
+        }
+        public function skillsNames()
+        {
+            return SkillName::all();
         }
     
         /**
@@ -93,6 +100,13 @@ class SkillController extends Controller implements HasMiddleware
     
             // Delete the skill
             $skill->delete();
+            $user = Auth::user(); // Example user
+
+            $title = 'New Event Alert';
+            $message = 'A new event has been scheduled!';
+            $image = 'path/to/image.png'; // Optional
+        
+           
     
             return response()->json(['message' => 'Skill deleted successfully'], 200);
         }

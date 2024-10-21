@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -55,9 +56,15 @@ class User extends Authenticatable
     public function skills(){
         return $this->hasMany(Skill::class);
     }
+    public function assets(){
+        return $this->hasMany(Asset::class);
+    }
 
     public function portfolios()
 {
     return $this->hasMany(Portfolio::class);
 }
+        public function events(){
+            return $this->hasMany(Event::class, 'organizer_id');
+        }
 }
