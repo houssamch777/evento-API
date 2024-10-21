@@ -45,20 +45,24 @@
                         <span class="menu-item" data-key="t-profile">Profile</span>
                     </a>
                 </li>
-                <li class="menu-title" data-key="t-menu">Skills & Assets</li>
-
-               <li>
-                    <a href="javascript: void(0)">
+                <li class="menu-title" data-key="t-skills-assets">Skills & Assets</li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow">
                         <i class="bx bx-wrench icon nav-icon"></i>
-                        <span class="menu-item" data-key="t-skills">Skills & Assets</span>
+                        <span class="menu-item" data-key="t-multi-level">Skills & Assets</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{route('skills.index')}}" data-key="t-assets">Skills<span class="badge rounded-pill bg-primary">{{count(Auth::user()->skills)}}</span></a></li>
-                        <li><a href="#" data-key="t-assets">Assets</a></li>
+                    <ul class="sub-menu" aria-expanded="true">
+                        
+                        <li><a href="javascript: void(0);" data-key="t-level-1.1">Assets</a></li>
+                        <li><a href="javascript: void(0);" class="has-arrow" data-key="t-level-1.2">Skills</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{route('skills.index')}}" data-key="t-level-2.1">My Skills</a></li>
+                                <li><a href="{{route('skills.create')}}" data-key="t-level-2.2">New Skill</a></li>
+                                <li class="disabled"><a href="#" data-key="t-disabled-item">Edit Skill</a></li>
+                            </ul>
+                        </li>
                     </ul>
-
                 </li>
-                
 
             </ul>
         </div>

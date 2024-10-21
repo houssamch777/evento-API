@@ -26,4 +26,43 @@
         <!-- Sweet alert init js-->
 <script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
 
+@if (session('success'))
+<script>
+    // SweetAlert for success message
+    swal({
+        title: "Success!",
+        text: "{{ session('success') }}",
+        type: "success",
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
+@if (session('success'))
+
+    @if (session('success'))
+            <script>
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: "{{ session('success') }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "{{ session('error') }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            </script>
+        @endif
+
+@endif
 @yield('scripts')

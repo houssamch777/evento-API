@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventoMarketController;
 use App\Http\Controllers\LockScreenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,7 @@ Route::middleware(LockScreenMiddleware::class)->group(function () {
 
 
     Route::resource('skills', SkillController::class)->middleware('auth');
+    Route::resource('market', EventoMarketController::class)->middleware('auth');
 });
 
 
