@@ -16,13 +16,6 @@ use App\Http\Middleware\LockScreenMiddleware;
 
 // Public Routes
 Route::get('/', [HomeController::class,'index'])->name('index');
-
-Route::get('/test', function () {
-    return view('testcodes.testimageform');
-})->name('upload.form');
-
-Route::post('/send-image', [testController::class, 'sendImage'])->name('send.image');
-
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::view('/login', 'auth.login')->name('login');

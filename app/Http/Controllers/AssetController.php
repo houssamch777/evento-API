@@ -2,25 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Asset;
 use App\Models\EquipmentCategory;
-use App\Models\EquipmentType;
 use App\Models\Facility;
 use App\Models\FurnitureCategory;
-use App\Models\FurnitureType;
 use App\Models\Location;
 use App\Models\RoomCategory;
-use App\Models\RoomType;
 use App\Models\TransportationCategory;
-use App\Models\TransportationType;
 use Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
+
 use Illuminate\Http\Request;
-use Redirect;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Http;
 class AssetController extends Controller
 {
     /**
@@ -60,9 +51,7 @@ class AssetController extends Controller
 
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         // Validate the incoming request data
@@ -94,12 +83,15 @@ class AssetController extends Controller
             'assetable_type' => $validatedData['asset_type'],
             'is_available' => true,
             'assetable_data' => [
-                'available_quantity' => $validatedData['available_quantity'],
-                'condition' => $validatedData['condition'],
+                'available_quantity' => $validatedData['available_quantity'] ?? '',
+                'condition' => $validatedData['condition'] ?? '',
                 'facilities' => $validatedData['facilities'] ?? [],
             ],
         ];
 
+        // Convert to JSON string
+        
+        // Additional logic for asset type
         if ($validatedData['asset_type'] === 'room') {
             $assetData['assetable_data']['capacity'] = $validatedData['room_capacity'];
         }
@@ -108,6 +100,7 @@ class AssetController extends Controller
             $assetData['assetable_data']['capacity'] = $validatedData['transportation_capacity'];
         }
 
+        // Handle category-specific fields
         if ($validatedData['asset_type'] === 'room' && $validatedData['room_category_id']) {
             $assetData['assetable_data']['room_category_id'] = $validatedData['room_category_id'];
         }
@@ -123,7 +116,18 @@ class AssetController extends Controller
         if ($validatedData['asset_type'] === 'transportation' && $validatedData['transportation_category_id']) {
             $assetData['assetable_data']['transportation_category_id'] = $validatedData['transportation_category_id'];
         }
-
+        $assetableDataJson = json_encode($assetData['assetable_data']);
+        
+        $asset= [
+            'name' => $validatedData['name'],
+            'location' => $validatedData['location'],
+            'description' => $validatedData['description'] ?? null,
+            'daily_rental_price' => $validatedData['daily_rental_price'],
+            'assetable_type' => $validatedData['asset_type'],
+            'is_available' => true,
+            'assetable_data' => $assetableDataJson
+        ];
+        dd($asset);
         // Get authenticated user and token
         $user = Auth::user();
         $token = $user->createToken('asset-token')->plainTextToken;
@@ -134,29 +138,35 @@ class AssetController extends Controller
             'Authorization' => 'Bearer ' . $token,
         ];
 
-        // Initialize the request with the headers
-        $apirequest = Http::withHeaders($headers);
+        // Get the uploaded image
+        $image = $request->file('image');
 
-        // Start building the request
-        $requestToSend = $apirequest;
+        // Open the file as a resource
+        $fileResource = fopen($image->getPathname(), 'r');
 
-        // Check if an image is present and add it to the payload
-        if ($request->hasFile('image')) {
-            $imageFile = $request->file('image');
-            $assetData['image'] = $imageFile;
-        }
-        //dd(['asset'=>$assetData, 'image name' =>$imageFile->getClientOriginalName(),'image'=> file_get_contents($imageFile)]);
-        // Send the request with the asset datacontents
-        $response = $requestToSend->attach('image', file_get_contents($imageFile), $imageFile->getClientOriginalName())->post('https://evento.witslinks.com/api/assets', $assetData);
+        // API endpoint URL
+        $apiUrl = 'https://evento.witslinks.com/api/assets';
+
+        // Send the POST request with the image and other asset data
+        $response = Http::withHeaders($headers)
+            ->attach(
+                'image',                // Field name expected by the API
+                $fileResource,          // File resource
+                $image->getClientOriginalName() // File name
+            )
+            ->post($apiUrl, $asset);  // Send the asset data
         dd($response->json());
-        // Check the response and redirect accordingly
+        // Close the file resource
+        fclose($fileResource);
+
+        // Handle response
         if ($response->successful()) {
-            return redirect()->route('asset.index')->with('success', 'Asset successfully created');
-        } else {
-            dd(['error' => $response->json()['message']]);
-            return back()->withErrors(['error' => $response->json()['message']]);
+            return back()->with('success', 'Image uploaded successfully to the API!');
         }
+
+        return back()->with('error', 'Failed to upload the image to the API: ' . $response->body());
     }
+
 
 
 

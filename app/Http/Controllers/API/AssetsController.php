@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Validator;
 class AssetsController extends Controller implements HasMiddleware
 {
     /**
@@ -52,91 +53,107 @@ class AssetsController extends Controller implements HasMiddleware
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
- 
 
-     public function store(Request $request)
-     {
-         // Validate the incoming request data
-         $validatedData = $request->validate([
-             'assetable_type' => 'required|string|in:equipment,room,furniture,transportation',
-             'assetable_data' => 'required|array',
-             'assetable_data.equipment_category_id' => 'nullable|exists:equipment_categories,id',
-             'assetable_data.furniture_category_id' => 'nullable|exists:furniture_categories,id',
-             'assetable_data.room_category_id' => 'nullable|exists:room_categories,id',
-             'assetable_data.transportation_category_id' => 'nullable|exists:transportation_categories,id',
-             'assetable_data.available_quantity' => 'nullable|integer|min:1',
-             'assetable_data.condition' => 'nullable|in:new,good,fair,poor',
-             'assetable_data.capacity' => 'nullable|integer|min:1',
-             'assetable_data.facilities' => 'nullable|array', // Validate the facilities field as an array
-             'assetable_data.facilities.*' => 'nullable|string|exists:facilities,name', // If facilities are linked to a 'facilities' table
-             'daily_rental_price' => 'required|numeric|min:0',
-             'name' => 'required|string|max:255',
-             'description' => 'nullable|string',
-             'is_available' => 'required|boolean',
-             'location' => 'nullable|string',
-             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
-         ]);
-         // Handle image upload if provided
-         $imageUrl = null;
-         if ($request->hasFile('image')) {
-             // Store the image in the 'public/assets/images' directory
-             $path = $request->file('image')->store('assets/images', 'public');
-             $imageUrl = Storage::url($path); // Get the URL to the stored image
-         }
-     
-         // Create the assetable entity based on the assetable_type
-         $assetable = $this->createAssetable(
-             $validatedData['assetable_type'],
-             $validatedData['assetable_data']
-         );
-     
-         // If the assetable entity could not be created, return an error
-         if (!$assetable) {
-             // Optionally, delete the uploaded image if asset creation fails
-             if (isset($path) && Storage::disk('public')->exists($path)) {
-                 Storage::disk('public')->delete($path);
-             }
-     
-             return response()->json([
-                 'success' => false,
-                 'message' => 'Invalid assetable type provided. Please check the asset type and try again.',
-             ], 400);
-         }
-     
-         // Create the Asset and associate it with the assetable model
-         $asset = Asset::create([
-             'user_id' => Auth::id(),
-             'name' => $validatedData['name'],
-             'description' => $validatedData['description'] ?? null,
-             'daily_rental_price' => $validatedData['daily_rental_price'],
-             'is_available' => $validatedData['is_available'],
-             'location' => $validatedData['location'] ?? null,
-             'image_url' => $imageUrl,
-             'assetable_id' => $assetable->id,
-             'assetable_type' => get_class($assetable),
-         ]);
-     
-         // Notify the user
-         $user = auth()->user(); // Get the currently authenticated user
-         $title = "New Asset Created";
-         $message = "Your asset '{$asset->name}' of type '{$validatedData['assetable_type']}' has been successfully added.";
-         $imagePath = $asset->image_url ?? asset('images/default-asset.png');
-         $url = route('assets.show', $asset);
-     
-         $user->notify(new EventoNotification($title, $message, $imagePath, $url));
-     
-         // Load the assetable relationship
-         $asset->load('assetable');
-     
-         return response()->json([
-             'success' => true,
-             'message' => 'Asset successfully created.',
-             'data' => new AssetResource($asset),
-         ], 201);
-     }
-     
-     
-    
+
+    public function store(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'assetable_type' => 'required|string|in:equipment,room,furniture,transportation',
+            'assetable_data' => 'required|json', // Validate as JSON
+            'daily_rental_price' => 'required|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_available' => 'required|boolean',
+            'location' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
+        ]);
+
+        // Decode the assetable_data JSON into an array
+        $assetableData = json_decode($validatedData['assetable_data'], true);
+
+        // Validate the decoded JSON data
+        $additionalValidation = Validator::make($assetableData, [
+            'equipment_category_id' => 'nullable|exists:equipment_categories,id',
+            'furniture_category_id' => 'nullable|exists:furniture_categories,id',
+            'room_category_id' => 'nullable|exists:room_categories,id',
+            'transportation_category_id' => 'nullable|exists:transportation_categories,id',
+            'available_quantity' => 'nullable|integer|min:1',
+            'condition' => 'nullable|in:new,good,fair,poor',
+            'capacity' => 'nullable|integer|min:1',
+            'facilities' => 'nullable|array', // Validate the facilities field as an array
+            'facilities.*' => 'nullable|string|exists:facilities,name', // If facilities are linked to a 'facilities' table
+        ]);
+
+        if ($additionalValidation->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $additionalValidation->errors(),
+            ], 422);
+        }
+
+        // Handle image upload if provided
+        $imageUrl = null;
+        if ($request->hasFile('image')) {
+            // Store the image in the 'public/assets/images' directory
+            $path = $request->file('image')->store('assets/images', 'public');
+            $imageUrl = Storage::url($path); // Get the URL to the stored image
+        }
+
+        // Create the assetable entity based on the assetable_type
+        $assetable = $this->createAssetable(
+            $validatedData['assetable_type'],
+            $assetableData
+        );
+
+        // If the assetable entity could not be created, return an error
+        if (!$assetable) {
+            // Optionally, delete the uploaded image if asset creation fails
+            if (isset($path) && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid assetable type provided. Please check the asset type and try again.',
+            ], 400);
+        }
+
+        // Create the Asset and associate it with the assetable model
+        $asset = Asset::create([
+            'user_id' => Auth::id(),
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'] ?? null,
+            'daily_rental_price' => $validatedData['daily_rental_price'],
+            'is_available' => $validatedData['is_available'],
+            'location' => $validatedData['location'] ?? null,
+            'image_url' => $imageUrl,
+            'assetable_id' => $assetable->id,
+            'assetable_type' => get_class($assetable),
+        ]);
+
+        // Notify the user
+        $user = auth()->user(); // Get the currently authenticated user
+        $title = "New Asset Created";
+        $message = "Your asset '{$asset->name}' of type '{$validatedData['assetable_type']}' has been successfully added.";
+        $imagePath = $asset->image_url ?? asset('images/default-asset.png');
+        $url = route('assets.show', $asset);
+
+        $user->notify(new EventoNotification($title, $message, $imagePath, $url));
+
+        // Load the assetable relationship
+        $asset->load('assetable');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Asset successfully created.',
+            'data' => new AssetResource($asset),
+        ], 201);
+    }
+
+
+
+
 
     /**
      * Display the specified asset.
