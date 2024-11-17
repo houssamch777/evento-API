@@ -57,6 +57,9 @@ class AssetController extends Controller
         ));
     }
 
+
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -69,16 +72,17 @@ class AssetController extends Controller
             'location' => 'nullable|string',
             'description' => 'nullable|string',
             'daily_rental_price' => 'required|numeric|min:0',
-            'room_category_id' => 'nullable|exists:room_categories,id', // Allow null or valid ID
-            'equipment_category_id' => 'nullable|exists:equipment_categories,id', // Allow null or valid ID
-            'furniture_category_id' => 'nullable|exists:furniture_categories,id', // Allow null or valid ID
-            'transportation_category_id' => 'nullable|exists:transportation_categories,id', // Allow null or valid ID
+            'room_category_id' => 'nullable|exists:room_categories,id',
+            'equipment_category_id' => 'nullable|exists:equipment_categories,id',
+            'furniture_category_id' => 'nullable|exists:furniture_categories,id',
+            'transportation_category_id' => 'nullable|exists:transportation_categories,id',
             'available_quantity' => 'nullable|integer|min:1',
             'condition' => 'nullable|string|in:new,good,fair,poor',
-            'capacity' => 'nullable|integer|min:1',
+            'room_capacity' => 'nullable|integer|min:1',
+            'transportation_capacity' => 'nullable|integer|min:1',
             'facilities' => 'nullable|array',
             'facilities.*' => 'nullable|string',
-            'image' => 'nullable|image|max:2048', // Add validation for the image
+            'image' => 'nullable|image|max:2048', // Validate the image
         ]);
 
         // Organize the form data into the structure needed by the API
@@ -87,55 +91,74 @@ class AssetController extends Controller
             'location' => $validatedData['location'],
             'description' => $validatedData['description'] ?? null,
             'daily_rental_price' => $validatedData['daily_rental_price'],
-            'assetable_type' => $validatedData['asset_type'], // Room, Equipment, etc.
-            'is_available'=>true,
+            'assetable_type' => $validatedData['asset_type'],
+            'is_available' => true,
             'assetable_data' => [
                 'available_quantity' => $validatedData['available_quantity'],
                 'condition' => $validatedData['condition'],
-                'capacity' => $validatedData['capacity'],
-                'facilities' => $validatedData['facilities'] ?? [], // Array of facilities (if provided)
-            ]
+                'facilities' => $validatedData['facilities'] ?? [],
+            ],
         ];
 
-        // Add categories only if they are not null
+        if ($validatedData['asset_type'] === 'room') {
+            $assetData['assetable_data']['capacity'] = $validatedData['room_capacity'];
+        }
+
+        if ($validatedData['asset_type'] === 'transportation') {
+            $assetData['assetable_data']['capacity'] = $validatedData['transportation_capacity'];
+        }
+
         if ($validatedData['asset_type'] === 'room' && $validatedData['room_category_id']) {
             $assetData['assetable_data']['room_category_id'] = $validatedData['room_category_id'];
         }
+
         if ($validatedData['asset_type'] === 'equipment' && $validatedData['equipment_category_id']) {
             $assetData['assetable_data']['equipment_category_id'] = $validatedData['equipment_category_id'];
         }
+
         if ($validatedData['asset_type'] === 'furniture' && $validatedData['furniture_category_id']) {
             $assetData['assetable_data']['furniture_category_id'] = $validatedData['furniture_category_id'];
         }
+
         if ($validatedData['asset_type'] === 'transportation' && $validatedData['transportation_category_id']) {
             $assetData['assetable_data']['transportation_category_id'] = $validatedData['transportation_category_id'];
         }
 
-        // Prepare the image if it's provided
-        $imageFile = $request->file('image');
-        // Get the authenticated user and their token
+        // Get authenticated user and token
         $user = Auth::user();
-        $token = $user->createToken('assts-token')->plainTextToken;
+        $token = $user->createToken('asset-token')->plainTextToken;
+
+        // Build the headers
         $headers = [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $token,
         ];
 
-        // Prepare the data to send to the API
-        $apiData = $assetData;
-        if (isset($imageFile)) {
-            $apiData['image'] = $imageFile; // Attach the image file to the API data
-        }
-        // Send the data to the API
-        $response = Http::withHeaders($headers)->post('https://evento.witslinks.com/api/assets', $apiData);
+        // Initialize the request with the headers
+        $apirequest = Http::withHeaders($headers);
 
+        // Start building the request
+        $requestToSend = $apirequest;
+
+        // Check if an image is present and add it to the payload
+        if ($request->hasFile('image')) {
+            $imageFile = $request->file('image');
+            $assetData['image'] = $imageFile;
+        }
+        //dd(['asset'=>$assetData, 'image name' =>$imageFile->getClientOriginalName(),'image'=> file_get_contents($imageFile)]);
+        // Send the request with the asset datacontents
+        $response = $requestToSend->attach('image', file_get_contents($imageFile), $imageFile->getClientOriginalName())->post('https://evento.witslinks.com/api/assets', $assetData);
+        dd($response->json());
+        // Check the response and redirect accordingly
         if ($response->successful()) {
             return redirect()->route('asset.index')->with('success', 'Asset successfully created');
         } else {
-            dd($response->json()['message']);
+            dd(['error' => $response->json()['message']]);
             return back()->withErrors(['error' => $response->json()['message']]);
         }
     }
+
+
 
 
     /**

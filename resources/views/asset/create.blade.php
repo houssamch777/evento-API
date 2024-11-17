@@ -179,9 +179,9 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="roomCapacity" class="form-label">Capacity</label>
-                                            <input type="number" class="form-control" id="roomCapacity" name="capacity"
-                                                placeholder="Enter room capacity" min="0" >
+                                            <label for="room_capacity" class="form-label">Capacity</label>
+                                            <input type="number" class="form-control" id="room_capacity" name="room_capacity" placeholder="Enter room capacity" min="0">
+
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mt-4 mt-lg-0">
@@ -239,9 +239,9 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="transportationCapacity" class="form-label">Capacity</label>
-                                            <input type="number" class="form-control" id="transportationCapacity"
-                                                name="capacity" placeholder="Enter capacity (e.g., kg or passengers)"
+                                            <label for="transportation_capacity" class="form-label">Capacity</label>
+                                            <input type="number" class="form-control" id="transportation_capacity"
+                                                name="transportation_capacity" placeholder="Enter capacity (e.g., kg or passengers)"
                                                 min="0" >
                                         </div>
                                     </div>

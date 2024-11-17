@@ -5,16 +5,17 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\SkillController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\apiTestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
-Route::prefix('auth')->group(function () {
+
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-});
+
 
 // User Routes with 'auth:sanctum' Middleware
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
@@ -66,3 +67,18 @@ Route::middleware('auth:sanctum')->prefix('events')->group(function () {
 
 // Asset Management Routes
 Route::apiResource('assets', AssetsController::class)->middleware('auth:sanctum');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::post('/upload-image', [apiTestController::class, 'uploadImage']);

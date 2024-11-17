@@ -7,6 +7,7 @@ use App\Http\Controllers\EventoMarketController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LockScreenController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\testController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SkillController;
 use App\Models\Location;
@@ -15,6 +16,12 @@ use App\Http\Middleware\LockScreenMiddleware;
 
 // Public Routes
 Route::get('/', [HomeController::class,'index'])->name('index');
+
+Route::get('/test', function () {
+    return view('testcodes.testimageform');
+})->name('upload.form');
+
+Route::post('/send-image', [testController::class, 'sendImage'])->name('send.image');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
