@@ -20,9 +20,9 @@ class testController extends Controller
 
         // Open the file as a resource
         $fileResource = fopen($image->getPathname(), 'r');
-        dd($fileResource);
+        
         // API endpoint URL
-        $apiUrl = 'http://127.0.0.1:8000/api/upload-image';
+        $apiUrl = 'https://evento.witslinks.com/api/upload-image';
 
         // Send the POST request with the image
         $response = Http::attach(
@@ -30,8 +30,8 @@ class testController extends Controller
             $fileResource,          // File resource
             $image->getClientOriginalName() // File name
         )->post($apiUrl);
-        dd($response->json());
         // Close the file resource
+        dd($response->json());
         fclose($fileResource);
 
         // Handle response

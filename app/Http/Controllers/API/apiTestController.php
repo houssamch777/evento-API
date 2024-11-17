@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class apiTestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    //
     public function uploadImage(Request $request)
     {
         // Validate the incoming request

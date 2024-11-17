@@ -5,7 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\SkillController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\apiTestController;
+use App\Http\Controllers\API\apiTestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
