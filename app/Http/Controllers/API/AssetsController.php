@@ -60,13 +60,13 @@ class AssetsController extends Controller implements HasMiddleware
          $validatedData = $request->validate([
              'assetable_type' => 'required|string|in:equipment,room,furniture,transportation',
              'assetable_data' => 'required|array',
-             'assetable_data.equipment_category_id' => 'required_if:assetable_type,equipment|exists:equipment_categories,id',
-             'assetable_data.furniture_category_id' => 'required_if:assetable_type,furniture|exists:furniture_categories,id',
-             'assetable_data.room_category_id' => 'required_if:assetable_type,room|exists:room_categories,id',
-             'assetable_data.transportation_category_id' => 'required_if:assetable_type,transportation|exists:transportation_categories,id',
-             'assetable_data.available_quantity' => 'required_if:assetable_type,equipment,furniture|integer|min:1',
-             'assetable_data.condition' => 'required_if:assetable_type,equipment|in:new,good,fair,poor',
-             'assetable_data.capacity' => 'required_if:assetable_type,room,transportation|integer|min:1',
+             'assetable_data.equipment_category_id' => 'nullable|exists:equipment_categories,id',
+             'assetable_data.furniture_category_id' => 'nullable|exists:furniture_categories,id',
+             'assetable_data.room_category_id' => 'nullable|exists:room_categories,id',
+             'assetable_data.transportation_category_id' => 'nullable|exists:transportation_categories,id',
+             'assetable_data.available_quantity' => 'nullable|integer|min:1',
+             'assetable_data.condition' => 'nullable|in:new,good,fair,poor',
+             'assetable_data.capacity' => 'nullable|integer|min:1',
              'assetable_data.facilities' => 'nullable|array', // Validate the facilities field as an array
              'assetable_data.facilities.*' => 'nullable|string|exists:facilities,name', // If facilities are linked to a 'facilities' table
              'daily_rental_price' => 'required|numeric|min:0',
@@ -76,7 +76,6 @@ class AssetsController extends Controller implements HasMiddleware
              'location' => 'nullable|string',
              'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
          ]);
-     
          // Handle image upload if provided
          $imageUrl = null;
          if ($request->hasFile('image')) {

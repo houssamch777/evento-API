@@ -88,6 +88,7 @@ class AssetController extends Controller
             'description' => $validatedData['description'] ?? null,
             'daily_rental_price' => $validatedData['daily_rental_price'],
             'assetable_type' => $validatedData['asset_type'], // Room, Equipment, etc.
+            'is_available'=>true,
             'assetable_data' => [
                 'available_quantity' => $validatedData['available_quantity'],
                 'condition' => $validatedData['condition'],
@@ -125,7 +126,6 @@ class AssetController extends Controller
         if (isset($imageFile)) {
             $apiData['image'] = $imageFile; // Attach the image file to the API data
         }
-        
         // Send the data to the API
         $response = Http::withHeaders($headers)->post('https://evento.witslinks.com/api/assets', $apiData);
 
