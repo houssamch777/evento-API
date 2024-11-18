@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use App\Models\EquipmentCategory;
 use App\Models\Facility;
 use App\Models\FurnitureCategory;
@@ -65,7 +66,8 @@ class AssetController extends Controller
             'equipment_category_id' => 'nullable|exists:equipment_categories,id',
             'furniture_category_id' => 'nullable|exists:furniture_categories,id',
             'transportation_category_id' => 'nullable|exists:transportation_categories,id',
-            'available_quantity' => 'nullable|integer|min:1',
+            'equipment_available_quantity' => 'nullable|integer|min:1',
+            'furniture_available_quantity' => 'nullable|integer|min:1',
             'condition' => 'nullable|string|in:new,good,fair,poor',
             'room_capacity' => 'nullable|integer|min:1',
             'transportation_capacity' => 'nullable|integer|min:1',
@@ -73,7 +75,7 @@ class AssetController extends Controller
             'facilities.*' => 'nullable|string',
             'image' => 'nullable|image|max:2048', // Validate the image
         ]);
-
+        //dd($validatedData);
         // Organize the form data into the structure needed by the API
         $assetData = [
             'name' => $validatedData['name'],
@@ -82,11 +84,7 @@ class AssetController extends Controller
             'daily_rental_price' => $validatedData['daily_rental_price'],
             'assetable_type' => $validatedData['asset_type'],
             'is_available' => true,
-            'assetable_data' => [
-                'available_quantity' => $validatedData['available_quantity'] ?? '',
-                'condition' => $validatedData['condition'] ?? '',
-                'facilities' => $validatedData['facilities'] ?? [],
-            ],
+            'assetable_data' => [],
         ];
 
         // Convert to JSON string
@@ -94,10 +92,20 @@ class AssetController extends Controller
         // Additional logic for asset type
         if ($validatedData['asset_type'] === 'room') {
             $assetData['assetable_data']['capacity'] = $validatedData['room_capacity'];
+            $assetData['assetable_data']['facilities'] = $validatedData['facilities'];
         }
 
         if ($validatedData['asset_type'] === 'transportation') {
             $assetData['assetable_data']['capacity'] = $validatedData['transportation_capacity'];
+        }
+        // Additional logic for asset type
+        if ($validatedData['asset_type'] === 'equipment') {
+            $assetData['assetable_data']['available_quantity'] = $validatedData['equipment_available_quantity'];
+            $assetData['assetable_data']['condition'] = $validatedData['condition'];
+        }
+
+        if ($validatedData['asset_type'] === 'furniture') {
+            $assetData['assetable_data']['available_quantity'] = $validatedData['furniture_available_quantity'];
         }
 
         // Handle category-specific fields
@@ -127,7 +135,7 @@ class AssetController extends Controller
             'is_available' => true,
             'assetable_data' => $assetableDataJson
         ];
-        dd($asset);
+        //dd($asset);
         // Get authenticated user and token
         $user = Auth::user();
         $token = $user->createToken('asset-token')->plainTextToken;
@@ -146,7 +154,7 @@ class AssetController extends Controller
 
         // API endpoint URL
         $apiUrl = 'https://evento.witslinks.com/api/assets';
-
+       //dd($asset);
         // Send the POST request with the image and other asset data
         $response = Http::withHeaders($headers)
             ->attach(
@@ -155,16 +163,15 @@ class AssetController extends Controller
                 $image->getClientOriginalName() // File name
             )
             ->post($apiUrl, $asset);  // Send the asset data
-        dd($response->json());
         // Close the file resource
         fclose($fileResource);
 
         // Handle response
         if ($response->successful()) {
-            return back()->with('success', 'Image uploaded successfully to the API!');
+            return redirect()->route('asset.index')->with('success', 'asset created successfully!');
         }
 
-        return back()->with('error', 'Failed to upload the image to the API: ' . $response->body());
+        return back()->with('error', 'Failed to add new asset: ' . $response->body());
     }
 
 
@@ -177,7 +184,8 @@ class AssetController extends Controller
     public function show(string $id)
     {
         //
-        dd($id);
+        $asset = Asset::with('assetable')->findOrFail($id);
+        return view('asset.show',compact('asset'));
     }
 
     /**
@@ -202,5 +210,22 @@ class AssetController extends Controller
     public function destroy(string $id)
     {
         //
+        
+        $user = Auth::user();
+        $token = $user->createToken('asset-token')->plainTextToken;
+        $headers = [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ];
+        $url = 'https://evento.witslinks.com/api/assets/' . $id;
+        $response = Http::withHeaders($headers)->delete($url);
+        
+        if ($response->successful()) {
+
+            return redirect()->route('asset.index')->with('success', 'asset link deleted successfully.');
+        } else {
+            return redirect()->back()->withErrors(['error' => 'You are not authorized to delete this asset link.']);
+        }
+
     }
 }

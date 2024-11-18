@@ -16,13 +16,19 @@
     @section('content')
 
         <x-breadcrub :title="'Create'" :link="route('asset.index')" :pagetitle="'My Assets'" />
-                @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        @if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
         <form action="{{ route('asset.store') }}" method="POST" enctype="multipart/form-data">
@@ -34,7 +40,7 @@
                         <div class="card-body">
 
                             <div class="mt-4">
-                                
+
                                 <h5 class="mt-4 mb-3">Asset Type</h5>
                                 <!-- Asset Type Selection -->
                                 <div class="row">
@@ -42,8 +48,7 @@
                                         <div class="col-lg-3 col-sm-6">
                                             <label class="card-radio-label">
                                                 <input type="radio" name="asset_type" value="{{ $type }}"
-                                                    class="card-radio-input" 
-                                                    onchange="toggleFields('{{ $type }}')">
+                                                    class="card-radio-input" onchange="toggleFields('{{ $type }}')">
                                                 <span class="card-radio py-3 text-center text-truncate">
                                                     <i class="bx bx-{{ $icon }} d-block h2 mb-3"></i>
                                                     {{ $type }}
@@ -60,7 +65,7 @@
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                                id="name" name="name" placeholder="Enter asset name" >
+                                                id="name" name="name" placeholder="Enter asset name">
                                             <div class="invalid-feedback">
                                                 @error('name')
                                                     {{ $message }}
@@ -73,7 +78,7 @@
                                         <div class="mb-3">
                                             <label for="location" class="form-label">Wilaya</label>
                                             <select class="form-control @error('location') is-invalid @enderror"
-                                                id="location" name="location" >
+                                                id="location" name="location">
                                                 <option value="" disabled selected>Select your wilaya</option>
                                                 @foreach ($locations as $location)
                                                     <option value="{{ $location->name }}"
@@ -139,8 +144,8 @@
                                         <h6 class="mt-3">Equipment Details</h6>
                                         <div class="mb-3">
                                             <label for="equipmentCategory" class="form-label">Equipment Category</label>
-                                            <select class="form-control" id="equipmentCategory" name="equipment_category_id"
-                                                >
+                                            <select class="form-control" id="equipmentCategory"
+                                                name="equipment_category_id">
                                                 <option value="">Select Equipment Category</option>
                                                 @foreach ($equipmentCategories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -150,13 +155,12 @@
                                         <div class="mb-3">
                                             <label for="equipmentQuantity" class="form-label">Available Quantity</label>
                                             <input type="number" class="form-control" id="equipmentQuantity"
-                                                name="available_quantity" placeholder="Enter available quantity"
-                                                min="0" >
+                                                name="equipment_available_quantity" placeholder="Enter available quantity"
+                                                min="0">
                                         </div>
                                         <div class="mb-3">
                                             <label for="equipmentCondition" class="form-label">Condition</label>
-                                            <select class="form-control" id="equipmentCondition" name="condition"
-                                                >
+                                            <select class="form-control" id="equipmentCondition" name="condition">
                                                 <option value="">Select Condition</option>
                                                 <option value="new">New</option>
                                                 <option value="used">Used</option>
@@ -170,8 +174,7 @@
                                         <h6 class="mt-3">Room Details</h6>
                                         <div class="mb-3">
                                             <label for="roomCategory" class="form-label">Room Category</label>
-                                            <select class="form-control" id="roomCategory" name="room_category_id"
-                                                >
+                                            <select class="form-control" id="roomCategory" name="room_category_id">
                                                 <option value="">Select Room Category</option>
                                                 @foreach ($roomCategories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -180,7 +183,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="room_capacity" class="form-label">Capacity</label>
-                                            <input type="number" class="form-control" id="room_capacity" name="room_capacity" placeholder="Enter room capacity" min="0">
+                                            <input type="number" class="form-control" id="room_capacity"
+                                                name="room_capacity" placeholder="Enter room capacity" min="0">
 
                                         </div>
                                         <div class="col-lg-6">
@@ -209,7 +213,7 @@
                                         <div class="mb-3">
                                             <label for="furnitureCategory" class="form-label">Furniture Category</label>
                                             <select class="form-control" id="furnitureCategory"
-                                                name="furniture_category_id" >
+                                                name="furniture_category_id">
                                                 <option value="">Select Furniture Category</option>
                                                 @foreach ($furnitureCategories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -219,8 +223,8 @@
                                         <div class="mb-3">
                                             <label for="furnitureQuantity" class="form-label">Available Quantity</label>
                                             <input type="number" class="form-control" id="furnitureQuantity"
-                                                name="available_quantity" placeholder="Enter available quantity"
-                                                min="0" >
+                                                name="furniture_available_quantity" placeholder="Enter available quantity"
+                                                min="0">
                                         </div>
                                     </div>
 
@@ -231,7 +235,7 @@
                                             <label for="transportationCategory" class="form-label">Transportation
                                                 Category</label>
                                             <select class="form-control" id="transportationCategory"
-                                                name="transportation_category_id" >
+                                                name="transportation_category_id">
                                                 <option value="">Select Transportation Category</option>
                                                 @foreach ($transportationCategories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -241,8 +245,8 @@
                                         <div class="mb-3">
                                             <label for="transportation_capacity" class="form-label">Capacity</label>
                                             <input type="number" class="form-control" id="transportation_capacity"
-                                                name="transportation_capacity" placeholder="Enter capacity (e.g., kg or passengers)"
-                                                min="0" >
+                                                name="transportation_capacity"
+                                                placeholder="Enter capacity (e.g., kg or passengers)" min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -255,7 +259,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </form>
     @endsection
     @section('scripts')
