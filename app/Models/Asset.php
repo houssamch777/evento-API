@@ -31,4 +31,13 @@ class Asset extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function reviews()
+    {
+        return $this->hasMany(AssetReview::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
+    }
 }

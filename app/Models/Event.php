@@ -32,19 +32,16 @@ class Event extends Model
     /**
      * The categories that belong to the event.
      */
+
     public function categories()
     {
-        return $this->belongsToMany(EventCategory::class, 'event_category');
+        return $this->belongsToMany(EventCategory::class, 'event_category', 'event_id', 'category_id')->withTimestamps();
     }
 
-    /**
-     * The domains that belong to the event.
-     */
     public function domains()
     {
-        return $this->belongsToMany(EventDomain::class, 'event_domain');
+        return $this->belongsToMany(EventDomain::class, 'event_domain', 'event_id', 'domain_id')->withTimestamps();
     }
-
     /**
      * The fees associated with the event.
      */

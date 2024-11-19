@@ -26,6 +26,9 @@ Route::middleware('guest')->group(function () {
     Route::view('/logout', 'auth.logout')->name('logout.view'); // This should be used only for view; actual logout needs no view
 });
 
+
+
+
 Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Help Route
@@ -50,6 +53,7 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
     // Skills and Market Resources
     Route::resource('skills', SkillController::class);
     Route::resource('asset', AssetController::class);
+    Route::post('/assets/{assetId}/reviews', [AssetController::class, 'storeOrUpdate'])->name('reviews.storeOrUpdate');
     Route::resource('market', EventoMarketController::class);
 
     // Events Resources

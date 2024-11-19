@@ -96,10 +96,9 @@
                     <div class="card-body">
                         <div class="position-relative">
                             <div class="modal-button mt-2">
-                                <button type="button"
-                                    class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
-                                    data-bs-toggle="modal" data-bs-target=".add-new-order"><i class="mdi mdi-plus me-1"></i>
-                                    Add New Order</button>
+                                <a href="{{ route('events.create') }}" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i
+                                        class="mdi mdi-plus me-1"></i>
+                                    Add New event</a>
                             </div>
                         </div>
                         <div id="table-user-events"></div>
@@ -108,12 +107,6 @@
             </div>
         </div>
         <!-- end row -->
-
-
-        </div>
-        <!-- container-fluid -->
-        </div>
-        <!-- End Page-content -->
 
         <!--  Extra Large modal example -->
         <div class="modal fade add-new-order" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
@@ -211,125 +204,137 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-<!-- Modal -->
-@foreach ($events as $event)
-    <div class="modal fade eventsdetailsModal" id="eventModal{{ $event->id }}" tabindex="-1" role="dialog" aria-labelledby="eventsdetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventsdetailsModalLabel">Event Details - {{ $event->name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-2">Event ID: <span class="text-primary">{{ $event->id }}</span></p>
-                    <p class="mb-4">Event Name: <span class="text-primary">{{ $event->name }}</span></p>
-                    <p class="mb-2">Categories: <span class="text-primary">{{ implode(', ', $event->categories->pluck('name')->toArray()) }}</span></p>
-                    <p class="mb-4">Domains: <span class="text-primary">{{ implode(', ', $event->domains->pluck('name')->toArray()) }}</span></p>
+        <!-- Modal -->
+        @foreach ($events as $event)
+            <div class="modal fade eventsdetailsModal" id="eventModal{{ $event->id }}" tabindex="-1" role="dialog"
+                aria-labelledby="eventsdetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="eventsdetailsModalLabel">Event Details - {{ $event->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-4">Event Name: <span class="text-primary">{{ $event->name }}</span></p>
+                            <p class="mb-2">Event Certificated: <span
+                                    class="text-primary">{{ $event->certificate }}</span></p>
+                            <p class="mb-2">Event Privacy: <span class="text-primary">{{ $event->privacy }}</span></p>
+                            <p class="mb-4">Event Description: <span
+                                    class="text-primary">{{ $event->description }}</span></p>
+                            <p class="mb-2">Categories: <span
+                                    class="text-primary">{{ implode(', ', $event->categories->pluck('name')->toArray()) }}</span>
+                            </p>
+                            <p class="mb-4">Domains: <span
+                                    class="text-primary">{{ implode(', ', $event->domains->pluck('name')->toArray()) }}</span>
+                            </p>
 
-                    <!-- Assets Table -->
-                    @if ($event->assetNeeds->isNotEmpty())
-                    <div class="table-responsive">
-                        <table class="table align-middle table-nowrap">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Asset</th>
-                                    <th scope="col">Asset Name</th>
-                                    <th scope="col">Quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($event->assetNeeds as $asset)
-                                    <tr>
-                                        <th scope="row">
-                                            <div>
-                                                
-                                                @if ($asset->{'asset-type'} == 'equipment' && $asset->equipmentType)
-                                                <img src="{{ URL::asset('build/images/assettype/' . ($asset->{'asset-type'}.'.png' ?? 'default.png')) }}" alt="" class="rounded avatar-md">
-                                                @elseif ($asset->{'asset-type'} == 'furniture' && $asset->furnitureType)
-                                                <img src="{{ URL::asset('build/images/assettype/' . ($asset->{'asset-type'}.'.png' ?? 'default.png')) }}" alt="" class="rounded avatar-md">
-                                                @elseif ($asset->{'asset-type'} == 'room' && $asset->roomType)
-                                                <img src="{{ URL::asset('build/images/assettype/' . ($asset->{'asset-type'}.'.png' ?? 'default.png')) }}" alt="" class="rounded avatar-md">
-                                                @elseif ($asset->{'asset-type'} == 'transportation' && $asset->transportationType)
-                                                <img src="{{ URL::asset('build/images/assettype/' . ($asset->{'asset-type'}.'.png' ?? 'default.png')) }}" alt="" class="rounded avatar-md">
-                                                @endif
-                                            </div>
-                                        </th>
-                                        <td>
-                                            <div>
-                                                @if ($asset->{'asset-type'} == 'equipment' && $asset->equipmentType)
-                                                    <h5 class="text-truncate font-size-14">Need Equipment: {{ $asset->equipmentType->name }}</h5>
-                                                @elseif ($asset->{'asset-type'} == 'furniture' && $asset->furnitureType)
-                                                    <h5 class="text-truncate font-size-14">Need Furniture : {{ $asset->furnitureType->name }}</h5>
-                                                @elseif ($asset->{'asset-type'} == 'room' && $asset->roomType)
-                                                    <h5 class="text-truncate font-size-14">Need Room : {{ $asset->roomType->name }}</h5>
-                                                @elseif ($asset->{'asset-type'} == 'transportation' && $asset->transportationType)
-                                                    <h5 class="text-truncate font-size-14">NeedTransportation : {{ $asset->transportationType->name }}</h5>
-                                                @else
-                                                    <h5 class="text-truncate font-size-14">Need Asset : {{ $asset->{'asset-type'} }}</h5>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td>{{ $asset->quantity }}</td>
-                                    </tr>
-                                @endforeach
-                            
+                            <!-- Assets Table -->
+                            @if ($event->assetNeeds->isNotEmpty())
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Asset</th>
+                                                <th scope="col">Asset Name</th>
+                                                <th scope="col">Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($event->assetNeeds as $asset)
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div>
+                                                            @if (class_basename($asset->assetable_type) == 'EquipmentCategory')
+                                                                <img src="{{ URL::asset('build/images/assettype/' . (class_basename($asset->assetable_type) . '.png' ?? 'default.png')) }}"
+                                                                    alt="" class="rounded avatar-md">
+                                                            @elseif (class_basename($asset->assetable_type) == 'FurnitureCategory')
+                                                                <img src="{{ URL::asset('build/images/assettype/' . (class_basename($asset->assetable_type) . '.png' ?? 'default.png')) }}"
+                                                                    alt="" class="rounded avatar-md">
+                                                            @elseif (class_basename($asset->assetable_type) == 'RoomCategory')
+                                                                <img src="{{ URL::asset('build/images/assettype/' . (class_basename($asset->assetable_type) . '.png' ?? 'default.png')) }}"
+                                                                    alt="" class="rounded avatar-md">
+                                                            @elseif (class_basename($asset->assetable_type) == 'TransportationCategory')
+                                                                <img src="{{ URL::asset('build/images/assettype/' . (class_basename($asset->assetable_type) . '.png' ?? 'default.png')) }}"
+                                                                    alt="" class="rounded avatar-md">
+                                                            @endif
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <div>
+                                                            @if (class_basename($asset->assetable_type) == 'EquipmentCategory')
+                                                                <h5 class="text-truncate font-size-14">Need Equipment:
+                                                                    {{ $asset->assetable->name }}</h5>
+                                                            @elseif (class_basename($asset->assetable_type) == 'FurnitureCategory')
+                                                                <h5 class="text-truncate font-size-14">Need Furniture :
+                                                                    {{ $asset->assetable->name }}</h5>
+                                                            @elseif (class_basename($asset->assetable_type) == 'RoomCategory')
+                                                                <h5 class="text-truncate font-size-14">Need Room :
+                                                                    {{ $asset->assetable->name }}</h5>
+                                                            @elseif (class_basename($asset->assetable_type) == 'TransportationCategory')
+                                                                <h5 class="text-truncate font-size-14">NeedTransportation :
+                                                                    {{ $asset->assetable->name }}</h5>
+                                                            @else
+                                                                <h5 class="text-truncate font-size-14">Need Asset :
+                                                                    {{ $asset->assetable->name }}</h5>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $asset->quantity }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                            @endif
 
+                            <!-- Skills Table -->
+                            @if ($event->skillNeeds->isNotEmpty())
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Skill Type</th>
+                                                <th scope="col">Skill Name</th>
+                                                <th scope="col">Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($event->skillNeeds as $skill)
+                                                <tr>
+                                                    <th scope="row">
+                                                        <div>
+                                                            <h5 class="text-truncate font-size-14">
+                                                                {{ $skill->skillName->type }}</h5>
+                                                        </div>
+                                                    </th>
+                                                    <td>
+                                                        <div>
+                                                            <h5 class="text-truncate font-size-14">
+                                                                {{ $skill->skillName->name }}</h5>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $skill->quantity }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                            @endif
 
-
-                            </tbody>
-                        </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
-
-                    @else
-                        
-                    @endif
-
-                    <!-- Skills Table -->
-                    @if ($event->skillNeeds->isNotEmpty())
-                    <div class="table-responsive">
-                        <table class="table align-middle table-nowrap">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Skill Type</th>
-                                    <th scope="col">Skill Name</th>
-                                    <th scope="col">Quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($event->skillNeeds as $skill)
-
-                                    <tr>
-                                        <th scope="row">
-                                            <div>
-                                                <h5 class="text-truncate font-size-14">{{ $skill->skillName->type }}</h5>
-                                            </div>
-                                        </th>
-                                        <td>
-                                            <div>
-                                                <h5 class="text-truncate font-size-14">{{ $skill->skillName->name }}</h5>
-                                            </div>
-                                        </td>
-                                        <td>{{ $skill->quantity }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    @else
-                        
-                    @endif
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-        </div>
-    </div>
-@endforeach
+        @endforeach
 
 
-<!-- End Modal -->
+        <!-- End Modal -->
 
         <!-- end modal -->
     @endsection
@@ -345,86 +350,98 @@
 
         <script>
             new gridjs.Grid({
-            columns: [
-                {
-                name: '#',
-                sort: {
-                    enabled: false
-                },
-                formatter: (function (cell) {
-                    return gridjs.html('<div class="form-check font-size-16"><input class="form-check-input" type="checkbox" id="orderidcheck01"><label class="form-check-label" for="orderidcheck01"></label></div>');
-                })
-                },
-                {
-                name: 'Event ID',
-                formatter: (function (cell) {
-                    return gridjs.html('<span class="fw-semibold">' + cell + '</span>');
-                })
-                },
-                {
-                name: 'Event Name',
-                formatter: (function (cell) {
-                    return gridjs.html('<a href="#" class="text-body">' + cell + "</a>");
-                })
-                },
-                "start Date", "end Date",
-                {
-                name: 'Type',
-                formatter: (function (cell) {
-                    switch (cell) {
-                    case "online":
-                        return gridjs.html('<span class="badge badge-pill bg-success-subtle text-success font-size-12">' + cell + '</span>');
-                    case "in-person":
-                        return gridjs.html('<span class="badge badge-pill bg-warning-subtle text-warning font-size-12">' + cell + '</span>');
-                    default:
-                        return gridjs.html('<span class="badge badge-pill bg-success-subtle text-success font-size-12">' + cell + '</span>');
+                columns: [{
+                        name: '#',
+                        sort: {
+                            enabled: false
+                        },
+                        formatter: (function(cell) {
+                            return gridjs.html(
+                                '<div class="form-check font-size-16"><input class="form-check-input" type="checkbox" id="orderidcheck01"><label class="form-check-label" for="orderidcheck01"></label></div>'
+                                );
+                        })
+                    },
+                    {
+                        name: 'Event ID',
+                        formatter: (function(cell) {
+                            return gridjs.html('<span class="fw-semibold">' + cell + '</span>');
+                        })
+                    },
+                    {
+                        name: 'Event Name',
+                        formatter: (function(cell) {
+                            return gridjs.html('<a href="#" class="text-body">' + cell + "</a>");
+                        })
+                    },
+                    "start Date", "end Date",
+                    {
+                        name: 'Type',
+                        formatter: (function(cell) {
+                            switch (cell) {
+                                case "online":
+                                    return gridjs.html(
+                                        '<span class="badge badge-pill bg-success-subtle text-success font-size-12">' +
+                                        cell + '</span>');
+                                case "in-person":
+                                    return gridjs.html(
+                                        '<span class="badge badge-pill bg-warning-subtle text-warning font-size-12">' +
+                                        cell + '</span>');
+                                default:
+                                    return gridjs.html(
+                                        '<span class="badge badge-pill bg-success-subtle text-success font-size-12">' +
+                                        cell + '</span>');
+                            }
+                        })
+                    },
+                    {
+                        name: "Status",
+                        formatter: (function(cell) {
+                            switch (cell) {
+                                case "Scheduled":
+                                    return gridjs.html('<span class="text-body">' + cell + '</span>');
+                                case "Completed":
+                                    return gridjs.html('<span class="text-body">' + cell + '</span>');
+                                case "Cancelled":
+                                    return gridjs.html('<span class="text-body">' + cell + '</span>');
+                                case "Ongoing":
+                                    return gridjs.html('<span class="text-body">' + cell + '</span>');
+                            }
+                        })
+                    },
+                    {
+                        name: "View Details",
+                        formatter: (function(cell, row) {
+                            return gridjs.html(
+                                '<button type="button" class="btn btn-success btn-sm btn-rounded view-details" data-bs-toggle="modal" data-bs-target="#eventModal' +
+                                row.cells[1].data + '">' + cell + '</button>');
+                        })
+                    },
+                    {
+                        name: "Action",
+                        sort: {
+                            enabled: false
+                        },
+                        formatter: (function(cell) {
+                            return gridjs.html(
+                                '<div class="d-flex gap-3"><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="text-success"><i class="mdi mdi-pencil font-size-18"></i></a><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="text-danger"><i class="mdi mdi-delete font-size-18"></i></a></div>'
+                                );
+                        })
                     }
-                })
+                ],
+                pagination: {
+                    limit: 7
                 },
-                {
-                name: "Status",
-                formatter: (function (cell) {
-                    switch (cell) {
-                    case "Scheduled":
-                        return gridjs.html('<span class="text-body">' + cell + '</span>');
-                    case "Completed":
-                        return gridjs.html('<span class="text-body">' + cell + '</span>');
-                    case "Cancelled":
-                        return gridjs.html('<span class="text-body">' + cell + '</span>');
-                    case "Ongoing":
-                        return gridjs.html('<span class="text-body">' + cell + '</span>');
-                    }
-                })
-                },
-                {
-                name: "View Details",
-                formatter: (function (cell, row) {
-                    return gridjs.html('<button type="button" class="btn btn-primary btn-sm btn-rounded view-details" data-bs-toggle="modal" data-bs-target="#eventModal' + row.cells[1].data + '">' + cell + '</button>');
-                })
-                },
-                {
-                name: "Action",
-                sort: {
-                    enabled: false
-                },
-                formatter: (function (cell) {
-                    return gridjs.html('<div class="d-flex gap-3"><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="text-success"><i class="mdi mdi-pencil font-size-18"></i></a><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="text-danger"><i class="mdi mdi-delete font-size-18"></i></a></div>');
-                })
-                }
-            ],
-            pagination: {
-                limit: 7
-            },
-            sort: true,
-            search: true,
-            data: [
-                @foreach ($events as $event)
-                ["", "{{$event->id}}", "{{$event->name}}", "{{$event->start_date}}", "{{$event->end_date}}", "{{$event->type}}", "{{$event->status}}", "View Details"],
-                @endforeach
-            ]
+                sort: true,
+                search: true,
+                data: [
+                    @foreach ($events as $event)
+                        ["", "{{ $event->id }}", "{{ $event->name }}", "{{ $event->start_date }}",
+                            "{{ $event->end_date }}", "{{ $event->type }}", "{{ $event->status }}",
+                            "View Details"
+                        ],
+                    @endforeach
+                ]
             }).render(document.getElementById("table-user-events"));
-
-
         </script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>

@@ -19,143 +19,70 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            
+
                             <div class="col-xl-4">
                                 <div class="product-detail mt-3" dir="ltr">
-                                    <div class="swiper product-thumbnail-slider rounded border overflow-hidden position-relative">
-
-                                        <div class="swiper-slide rounded">
-                                            <div class="p-3">
-                                                <div class="product-img bg-light rounded p-3">
-                                                    <img src="{{ URL::asset($asset->image_url) }}"
-                                                        class="img-fluid d-block" />
-                                                </div>
-                                            </div>
+                                    <div class="rounded border overflow-hidden position-relative" style="height: 300px;">
+                                        <div class="p-3 h-100 d-flex justify-content-center align-items-center">
+                                            <img src="{{ URL::asset($asset->image_url) }}"
+                                                class="img-fluid h-100 object-fit-cover" alt="Responsive image">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xl-8">
                                 <div class="mt-3 mt-xl-3 ps-xl-5">
-                                    <h4 class="font-size-20 mb-3"><a href="" class="text-body">Home & Office Chair
-                                            Crime</a></h4>
+                                    <h4 class="font-size-20 mb-3"><a href=""
+                                            class="text-body">{{ $asset->name }}</a></h4>
 
                                     <p class="text-muted mb-0">
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star text-warning"></i>
-                                        <i class="bx bxs-star-half text-warning"></i>
+                                        {{-- Full stars --}}
+                                        @for ($i = 0; $i < $fullStars; $i++)
+                                            <i class="bx bxs-star text-warning"></i>
+                                        @endfor
+
+                                        {{-- Half star --}}
+                                        @if ($halfStar)
+                                            <i class="bx bxs-star-half text-warning"></i>
+                                        @endif
+
+                                        {{-- Empty stars --}}
+                                        @for ($i = 0; $i < $emptyStars; $i++)
+                                            <i class="bx bx-star text-warning"></i>
+                                        @endfor
                                     </p>
 
                                     <div class="text-muted mt-2">
                                         <span class="badge bg-success font-size-14 me-1"><i class="mdi mdi-star"></i>
-                                            4.5</span> 234 Reviews
+                                            {{ number_format($asset->averageRating(), 1) }}</span>
+                                        {{ $asset->reviews()->count() }} Reviews
                                     </div>
 
-                                    <h2 class="text-primary mt-4 py-2 mb-0">$460 <del
-                                            class="text-muted font-size-18 fw-medium ps-1">$520</del>
+                                    <h2 class="text-primary mt-4 py-2 mb-0">{{ $asset->daily_rental_price }} DA
 
-                                        <span class="badge bg-danger font-size-10 ms-1">20 % Off</span>
+                                        <span class="badge bg-success font-size-12 ms-1">per day</span>
                                     </h2>
 
 
                                     <div>
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mt-3">
-                                                    <h5 class="font-size-14">Specification :</h5>
-                                                    <ul class="list-unstyled ps-0 mb-0 mt-3">
-                                                        <li>
-                                                            <p class="text-muted mb-1 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                Full heighted Hydraulic</p>
-                                                        </li>
-                                                        <li>
-                                                            <p class="text-muted mb-1 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                Heavy Dencity Premium Cushion</p>
-                                                        </li>
-                                                        <li>
-                                                            <p class="text-muted mb-1 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                Colour According To Salon Interior</p>
-                                                        </li>
-                                                        <li>
-                                                            <p class="text-muted mb-1 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                1 Year Gurantee On All Parts</p>
-                                                        </li>
-                                                        <li>
-                                                            <p class="text-muted mb-0 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                Size 25inch x 25inch</p>
-                                                        </li>
-                                                    </ul>
+                                            <div class="mt-3">
+                                                <h5 class="font-size-14">Description :</h5>
+                                                <div>
+                                                    {{ $asset->description }}
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <div class="mt-3">
-                                                    <h5 class="font-size-14">Services :</h5>
-                                                    <ul class="list-unstyled ps-0 mb-0 mt-3">
-                                                        <li>
-                                                            <p class="text-muted mb-1 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                10 Days Replacement </p>
-                                                        </li>
-                                                        <li>
-                                                            <p class="text-muted mb-0 text-truncate"><i
-                                                                    class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
-                                                                Cash on Delivery available </p>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="mt-3">
-                                                    <h5 class="font-size-14">Delivery location :</h5>
-
-                                                    <div class="d-inline-flex mt-2">
-                                                        <div class="input-group mb-3">
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Enter Delivery pincode">
-                                                            <button class="btn btn-primary" type="button">Check</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-lg-6 col-sm-8">
-                                                <div class="product-desc-color mt-3">
-                                                    <h5 class="font-size-14">Colors :</h5>
-                                                    <ul class="list-inline mt-3">
-                                                        <li class="list-inline-item">
-                                                            <i class="mdi mdi-circle font-size-18 text-body"></i>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <i class="mdi mdi-circle font-size-18 text-success"></i>
-                                                        </li>
-                                                        <li class="list-inline-item">
-                                                            <i class="mdi mdi-circle font-size-18 text-primary"></i>
-                                                        </li>
-
-                                                        <li class="list-inline-item">
-                                                            <a href="#" class="text-primary border-0 p-1">
-                                                                2 + Colors
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-
-                                                </div>
-
-
                                                 <div class="row text-center mt-4 pt-1">
                                                     <div class="col-sm-6">
                                                         <div class="d-grid">
                                                             <button type="button"
                                                                 class="btn btn-primary waves-effect waves-light mt-2 me-1">
-                                                                <i class="bx bx-cart me-2"></i> Add to cart
+                                                                <i class="bx bx-cart me-2"></i> Rent for Event
                                                             </button>
                                                         </div>
                                                     </div>
@@ -191,138 +118,69 @@
                                     <div class="border py-4 rounded">
 
                                         <div class="px-4" data-simplebar style="max-height: 360px;">
-                                            <div class="border-bottom pb-3">
-                                                <p class="float-sm-end text-muted font-size-13">12 July, 2021</p>
-                                                <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.1</div>
-                                                <p class="text-muted mb-4">Maecenas non vestibulum ante, nec efficitur
-                                                    orci. Duis eu ornare mi, quis bibendum quam. Etiam imperdiet aliquam
-                                                    purus sit amet rhoncus. Vestibulum pretium consectetur leo, in mattis
-                                                    ipsum sollicitudin eget. Pellentesque vel mi tortor.
-                                                    Nullam vitae maximus dui dolor sit amet, consectetur adipiscing elit.
-                                                </p>
-                                                <div class="d-flex align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <div class="d-flex">
-                                                            <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}"
-                                                                class="avatar-sm rounded-circle" alt="">
-                                                            <div class="flex-1 ms-2 ps-1">
-                                                                <h5 class="font-size-16 mb-0">Samuel</h5>
-                                                                <p class="text-muted mb-0 mt-1">65 Followers, 86 Reviews
-                                                                </p>
+                                            @forelse($asset->reviews as $review)
+                                                <!-- Loop through reviews -->
+                                                <div class="border-bottom pb-3">
+                                                    <p class="float-sm-end text-muted font-size-13">
+                                                        {{ $review->created_at->format('d M, Y') }}</p>
+                                                    <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i>
+                                                        {{ number_format($review->rating, 1) }}</div>
+                                                    <p class="text-muted mb-4">{{ $review->comment }}</p>
+                                                    <div class="d-flex align-items-start">
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex">
+                                                                <img src="{{ $review->user->profile_picture ? asset('storage/' . $review->user->profile_picture) : URL::asset('build/images/users/avatar-3.jpg') }}"
+                                                                    class="avatar-sm rounded-circle" alt="">
+                                                                <div class="flex-1 ms-2 ps-1">
+                                                                    <h5 class="font-size-16 mb-0">
+                                                                        {{ $review->user->first_name . ' ' . $review->user->first_name }}
+                                                                    </h5>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    <div class="flex-shrink-0">
-                                                        <ul class="list-inline product-review-link mb-0">
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-like"></i></a>
-                                                            </li>
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
                                                 </div>
-
-                                            </div>
-
-                                            <div class="border-bottom py-3">
-                                                <p class="float-sm-end text-muted font-size-13">06 July, 2021</p>
-                                                <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.0</div>
-                                                <p class="text-muted mb-4">Cras ac condimentum velit. Quisque vitae elit
-                                                    auctor quam egestas congue. Duis eget lorem fringilla, ultrices justo
-                                                    consequat, gravida lorem. Maecenas orci enim, sodales id condimentum et,
-                                                    nisl arcu aliquam velit,
-                                                    sit amet vehicula turpis metus cursus dolor cursus eget dui.</p>
-                                                <div class="d-flex align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <div class="d-flex">
-                                                            <img src="{{ URL::asset('build/images/users/avatar-3.jpg') }}"
-                                                                class="avatar-sm rounded-circle" alt="">
-                                                            <div class="flex-1 ms-2 ps-1">
-                                                                <h5 class="font-size-16 mb-0">Joseph</h5>
-                                                                <p class="text-muted mb-0 mt-1">85 Followers, 102 Reviews
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="flex-shrink-0">
-                                                        <ul class="list-inline product-review-link mb-0">
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-like"></i></a>
-                                                            </li>
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="pt-3">
-                                                <p class="float-sm-end text-muted font-size-13">26 June, 2021</p>
-                                                <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.2</div>
-                                                <p class="text-muted mb-4">Aliquam sit amet eros eleifend, tristique ante
-                                                    sit amet, eleifend arcu. Cras ut diam quam. Fusce quis diam eu augue
-                                                    semper ullamcorper vitae sed massa. Mauris lacinia, massa a feugiat
-                                                    mattis, leo massa porta eros, sed congue arcu sem nec orci.
-                                                    In ac consectetur augue. Nullam pulvinar risus non augue tincidunt
-                                                    blandit.</p>
-                                                <div class="d-flex align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <div class="d-flex">
-                                                            <img src="{{ URL::asset('build/images/users/avatar-6.jpg') }}"
-                                                                class="avatar-sm rounded-circle" alt="">
-                                                            <div class="flex-1 ms-2 ps-1">
-                                                                <h5 class="font-size-16 mb-0">Paul</h5>
-                                                                <p class="text-muted mb-0 mt-1">27 Followers, 66 Reviews
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="flex-shrink-0">
-                                                        <ul class="list-inline product-review-link mb-0">
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-like"></i></a>
-                                                            </li>
-                                                            <li class="list-inline-item">
-                                                                <a href="#"><i class="bx bx-comment-dots"></i></a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-
-                                            </div>
+                                            @empty
+                                                <p>No reviews yet.</p> <!-- Message when there are no reviews -->
+                                            @endforelse
                                         </div>
 
                                         <div class="px-4 mt-2">
-                                            <div class="border rounded mt-4">
-                                                <form action="#">
-                                                    <div class="px-2 py-1 bg-light">
-                                                        <div class="btn-group" role="group">
-                                                            <button type="button"
-                                                                class="btn btn-sm btn-link text-body text-decoration-none"><i
-                                                                    class="bx bx-link"></i></button>
-                                                            <button type="button"
-                                                                class="btn btn-sm btn-link text-body text-decoration-none"><i
-                                                                    class="bx bx-smile"></i></button>
-                                                            <button type="button"
-                                                                class="btn btn-sm btn-link text-body text-decoration-none"><i
-                                                                    class="bx bx-at"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <textarea rows="3" class="form-control border-0 resize-none" placeholder="Your Message..."></textarea>
-                                                </form>
-                                            </div>
+                                            <form action="{{ route('reviews.storeOrUpdate', ['assetId' => $asset->id]) }}"
+                                                method="POST" id="reviewForm">
+                                                @csrf
+                                                <div class="border rounded mt-4">
+                                                    @if ($userReview)
+                                                        @method('PUT') <!-- If the review exists, use PUT to update -->
+                                                        <textarea rows="3" class="form-control border-0 resize-none" placeholder="Your Message..." name="review_message">{{ $userReview->message }}</textarea>
+                                                    @else
+                                                        <textarea rows="3" class="form-control border-0 resize-none" placeholder="Your Message..." name="review_message"></textarea>
+                                                    @endif
 
-                                            <div class="text-end mt-3">
-                                                <button type="button" class="btn btn-success w-sm text-truncate ms-2">
-                                                    Send <i class="bx bx-send ms-2 align-middle"></i></button>
-                                            </div>
+                                                    <!-- Rate.js Rating -->
+                                                    <div id="rating"
+                                                        data-rate-value="{{ $userReview ? $userReview->rating : 5 }}">
+                                                    </div>
+                                                    <input type="hidden" name="rating" id="ratingInput"
+                                                        value="{{ $userReview ? $userReview->rating : 5 }}">
+                                                </div>
+
+                                                <div class="text-end mt-3">
+                                                    @if ($userReview)
+                                                        <button type="submit" form="reviewForm"
+                                                            class="btn btn-warning w-sm text-truncate ms-2">
+                                                            Update Review <i class="bx bx-refresh ms-2 align-middle"></i>
+                                                        </button>
+                                                    @else
+                                                        <button type="submit" form="reviewForm"
+                                                            class="btn btn-success w-sm text-truncate ms-2">
+                                                            Send Review <i class="bx bx-send ms-2 align-middle"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </form>
                                         </div>
+
 
                                     </div>
                                 </div>
@@ -333,76 +191,110 @@
                                     <h5 class="font-size-14 mb-3">Product description : </h5>
                                     <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link" id="desc-tab" data-bs-toggle="tab" href="#desc"
-                                                role="tab">Description</a>
-                                        </li>
-                                        <li class="nav-item">
                                             <a class="nav-link active" id="specifi-tab" data-bs-toggle="tab"
                                                 href="#specifi" role="tab">Specifications</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content border border-top-0 p-4">
-                                        <div class="tab-pane fade" id="desc" role="tabpanel">
-                                            <div class="row">
-                                                <div class="col-sm-3 col-md-3">
-                                                    <div>
-                                                        <img src="{{ URL::asset('build/images/product/img.png') }}"
-                                                            alt="" class="img-fluid mx-auto rounded d-block">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-9 col-md-9">
-                                                    <div class="text-muted p-2">
-                                                        <p>If several languages coalesce, the grammar of the resulting
-                                                            language is more simple.</p>
 
-                                                        <p>It will be as simple as occidental in fact.</p>
-
-                                                        <div>
-                                                            <ul class="list-unstyled product-desc-list text-body mb-0">
-                                                                <li><i
-                                                                        class="mdi mdi-circle-medium me-1 align-middle text-primary"></i>
-                                                                    Sed ut perspiciatis omnis iste</li>
-                                                                <li><i
-                                                                        class="mdi mdi-circle-medium me-1 align-middle text-primary"></i>
-                                                                    Neque porro quisquam est</li>
-                                                                <li><i
-                                                                        class="mdi mdi-circle-medium me-1 align-middle text-primary"></i>
-                                                                    Quis autem vel eum iure</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="tab-pane fade show active" id="specifi" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-nowrap mb-0">
                                                     <tbody>
-                                                        <tr>
-                                                            <th scope="row" style="width: 50%;">Category :</th>
-                                                            <td> Chairs </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Brand :</th>
-                                                            <td>Bajaj</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Color :</th>
-                                                            <td>body</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Quality :</th>
-                                                            <td>High</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Material :</th>
-                                                            <td>Metal</td>
-                                                        </tr>
-
+                                                        @if ($asset->assetable)
+                                                            <!-- Check if assetable is not null -->
+                                                            @if (class_basename($asset->assetable_type) == 'Room')
+                                                                <!-- If assetable type is 'Room' -->
+                                                                <tr>
+                                                                    <th scope="row" style="width: 50%;">Room Type :
+                                                                    </th>
+                                                                    <td>{{ $asset->assetable->room_type }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Capacity :</th>
+                                                                    <td>{{ $asset->assetable->capacity }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Location :</th>
+                                                                    <td>{{ $asset->assetable->location }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Price per Hour :</th>
+                                                                    <td>{{ $asset->assetable->price_per_hour }}</td>
+                                                                </tr>
+                                                            @elseif(class_basename($asset->assetable_type) == 'Equipment')
+                                                                <!-- If assetable type is 'Equipment' -->
+                                                                <tr>
+                                                                    <th scope="row" style="width: 50%;">Equipment Type
+                                                                        :</th>
+                                                                    <td>{{ $asset->assetable->equipment_type }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Category :</th>
+                                                                    <td>{{ $asset->assetable->category->name }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Available Quantity :</th>
+                                                                    <td>{{ $asset->assetable->available_quantity }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Condition :</th>
+                                                                    <td>{{ $asset->assetable->condition }}</td>
+                                                                </tr>
+                                                            @elseif(class_basename($asset->assetable_type) == 'Furniture')
+                                                                <!-- If assetable type is 'Furniture' -->
+                                                                <tr>
+                                                                    <th scope="row" style="width: 50%;">Furniture Type
+                                                                        :</th>
+                                                                    <td>{{ $asset->assetable->furniture_type }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Material :</th>
+                                                                    <td>{{ $asset->assetable->material }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Dimensions :</th>
+                                                                    <td>{{ $asset->assetable->dimensions }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Color :</th>
+                                                                    <td>{{ $asset->assetable->color }}</td>
+                                                                </tr>
+                                                            @elseif(class_basename($asset->assetable_type) == 'Transportation')
+                                                                <!-- If assetable type is 'Transportation' -->
+                                                                <tr>
+                                                                    <th scope="row" style="width: 50%;">Vehicle Type :
+                                                                    </th>
+                                                                    <td>{{ $asset->assetable->vehicle_type }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Brand :</th>
+                                                                    <td>{{ $asset->assetable->brand }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Capacity :</th>
+                                                                    <td>{{ $asset->assetable->capacity }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Fuel Type :</th>
+                                                                    <td>{{ $asset->assetable->fuel_type }}</td>
+                                                                </tr>
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="2">No details available for this asset
+                                                                        type.{{ $asset->assetable_type }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="2">No asset details available. </td>
+                                                            </tr>
+                                                        @endif
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -416,7 +308,24 @@
     @section('scripts')
         <!-- swiper js -->
         <script src="{{ URL::asset('build/libs/swiper/swiper-bundle.min.js') }}"></script>
+        <!-- rater-js plugin -->
+        <script src="{{ URL::asset('build/libs/rater-js/index.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Rate.js
+                var basicRating = raterJs({
+                    starSize: 22,
+                    rating: 3,
+                    element: document.querySelector("#rating"),
+                    rateCallback: function rateCallback(rating, done) {
+                        this.setRating(rating);
+                        document.getElementById('ratingInput').value = rating;
+                        done();
+                    }
+                });
 
+            });
+        </script>
         <script src="{{ URL::asset('build/js/pages/ecommerce-product-detail.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>

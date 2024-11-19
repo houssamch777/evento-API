@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AssetResource;
 use App\Http\Resources\AssetableResource;
+use App\Models\AssetReview;
 use App\Models\Facility;
 use Illuminate\Support\Facades\Log;
 use App\Models\Asset;
@@ -466,5 +467,19 @@ class AssetsController extends Controller implements HasMiddleware
             default:
                 throw new \Exception('Invalid assetable type.');
         }
+    }
+    public function addReview(Request $request, $assetId)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        $review = AssetReview::updateOrCreate(
+            ['asset_id' => $assetId, 'user_id' => auth()->id()],
+            ['rating' => $request->rating, 'comment' => $request->comment]
+        );
+
+        return response()->json(['success' => 'Review submitted successfully!', 'data' => $review], 200);
     }
 }

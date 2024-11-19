@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\AssetReview;
 use App\Models\EquipmentCategory;
 use App\Models\Facility;
 use App\Models\FurnitureCategory;
@@ -185,8 +186,14 @@ class AssetController extends Controller
     {
         //
         $asset = Asset::with('assetable')->findOrFail($id);
-        return view('asset.show',compact('asset'));
+        $rating = $asset->averageRating(); // Get the rating value
+        $fullStars = floor($rating); // Number of full stars
+        $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0; // Check if there's a half star
+        $emptyStars = 5 - ($fullStars + $halfStar); // Remaining stars
+        $userReview = $asset->reviews()->where('user_id', auth()->id())->first(); // Get the user's review if it exists
+        return view('asset.show',compact('asset','rating','fullStars','halfStar','emptyStars','userReview'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -228,4 +235,54 @@ class AssetController extends Controller
         }
 
     }
+
+
+
+    public function addReview(Request $request, $assetId)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        $review = AssetReview::updateOrCreate(
+            ['asset_id' => $assetId, 'user_id' => auth()->id()],
+            ['rating' => $request->rating, 'comment' => $request->comment]
+        );
+
+        return redirect()->back()->with(['success' => 'Review submitted successfully!', 'data' => $review], 200);
+    }
+    public function storeOrUpdate(Request $request, $assetId)
+    {
+        $request->validate([
+            'review_message' => 'required|string|max:500',
+            'rating' => 'nullable|integer|min:1|max:5',
+        ]);
+
+        $asset = Asset::findOrFail($assetId);
+        $user = auth()->user();
+
+        // Check if the user has already reviewed the asset
+        $review = $asset->reviews()->where('user_id', $user->id)->first();
+
+        if ($review) {
+            // Update existing review
+            $review->message = $request->input('review_message');
+            $review->save();
+        } else {
+            // Create a new review
+            $asset->reviews()->create([
+                'user_id' => $user->id,
+                'message' => $request->input('review_message'),
+                'rating' => $request->input('rating', 5), // Optional rating input
+            ]);
+        }
+
+        return redirect()->route('assets.show', $assetId)->with('success', 'Your review has been submitted/updated.');
+    }
+
+
+
+
+
 }
