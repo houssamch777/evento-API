@@ -223,7 +223,7 @@
                             <p class="mb-4">Event Description: <span
                                     class="text-primary">{{ $event->description }}</span></p>
                             <p class="mb-2">Categories: <span
-                                    class="text-primary">{{ implode(', ', $event->categories->pluck('name')->toArray()) }}</span>
+                                    class="text-primary">{{ implode(' , ', $event->categories->pluck('name')->toArray()) }}</span>
                             </p>
                             <p class="mb-4">Domains: <span
                                     class="text-primary">{{ implode(', ', $event->domains->pluck('name')->toArray()) }}</span>
