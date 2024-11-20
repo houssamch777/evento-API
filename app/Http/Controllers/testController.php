@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -124,5 +125,12 @@ public function store(Request $request)
         }
 
         return back()->with('error', 'Failed to upload the image to the API: ' . $response->body());
+    }
+    public function getEventCategory()
+    {
+
+        $event = Event::find(2); // Replace with a valid event ID
+        $categories = $event->categories->pluck('name')->toArray();
+        dd($categories);
     }
 }

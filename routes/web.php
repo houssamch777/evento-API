@@ -64,6 +64,8 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
 
 });
 
+Route::get('/test', [testController::class, 'getEventCategory']);
+
 // Artisan Command Route (for development or maintenance)
 Route::get('/foo', function () {
     Artisan::call('cache:clear');

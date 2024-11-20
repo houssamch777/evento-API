@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -35,10 +34,10 @@ return new class extends Migration
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->unsignedBigInteger('organizer_id');
-            $table->boolean('fee')->default(false); // Boolean to indicate if fee is required
-            $table->boolean('privacy')->default(false);
+            $table->boolean('fee')->default(false); // Indicates if a fee is required
+            $table->boolean('privacy')->default(false); // Public or private
             $table->enum('type', ['online', 'in-person']);
-            $table->boolean('certificate')->default(false);
+            $table->boolean('certificate')->default(false); // Indicates if a certificate is provided
             $table->enum('status', ['Scheduled', 'Completed', 'Cancelled', 'Ongoing'])->default('Scheduled');
             $table->timestamps();
 
@@ -51,28 +50,22 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->string('type'); // e.g., "General Admission," "VIP Access"
-            $table->decimal('amount', 8, 2); // Specific fee amount for the type
+            $table->decimal('amount', 8, 2); // Fee amount
             $table->timestamps();
         });
 
-        // Create pivot table for event_categories and events (event_category)
+        // Create pivot table for event_categories and events
         Schema::create('event_category', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('event_categories')->onDelete('cascade');
             $table->timestamps();
-
-            $table->index(['event_id', 'category_id']); // Adding indexes for faster querying
         });
 
-        // Create pivot table for event_domains and events (event_domain)
+        // Create pivot table for event_domains and events
         Schema::create('event_domain', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('domain_id')->constrained('event_domains')->onDelete('cascade');
             $table->timestamps();
-
-            $table->index(['event_id', 'domain_id']); // Adding indexes for faster querying
         });
 
         // Create event_asset_needs table with polymorphic relationships
@@ -86,11 +79,21 @@ return new class extends Migration
             $table->morphs('assetable'); // assetable_id, assetable_type
 
             $table->timestamps();
-
-            // Adding index for faster queries on event_id and polymorphic relationship
-            $table->index(['event_id', 'assetable_type', 'assetable_id']);
         });
-
+        Schema::create('skill_names', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('type')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('event_skill_needs', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('event_id')->constrained('events')->onDelete('cascade');
+            $table->unsignedBigInteger('skill_name_id')->constrained('skill_names')->onDelete('cascade');;
+            $table->integer('quantity')->default(1); // Quantity of the skill needed
+            $table->timestamps();
+        });
     }
 
     /**
@@ -99,6 +102,8 @@ return new class extends Migration
     public function down(): void
     {
         // Drop tables in reverse order of creation to maintain foreign key integrity
+        Schema::dropIfExists('event_skill_needs');
+        Schema::dropIfExists('skill_names');
         Schema::dropIfExists('event_asset_needs');
         Schema::dropIfExists('event_domain');
         Schema::dropIfExists('event_category');
