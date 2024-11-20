@@ -16,6 +16,7 @@ class EventDomain extends Model
      */
     public function events()
     {
-        return $this->belongsToMany(Event::class, 'event_domain');
+        return $this->belongsToMany(Event::class, 'event_domain', 'domain_id', 'event_id')
+            ->withTimestamps();
     }
 }

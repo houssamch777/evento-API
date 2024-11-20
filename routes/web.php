@@ -66,6 +66,10 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
 
 // Artisan Command Route (for development or maintenance)
 Route::get('/foo', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
     Artisan::call('storage:link');
-    return redirect()->route('index');
+    return redirect()->route('index')->with('success', 'Welcome to the platform!');
 });
