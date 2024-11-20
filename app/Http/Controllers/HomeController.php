@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,8 +16,9 @@ class HomeController extends Controller
         //
 
         $events = Event::orderBy('created_at', 'desc')->paginate(10);
+        $tags = Tag::all();
 
-         return view('welcome', compact('events'));
+         return view('welcome', compact('events','tags'));
     }
 
     /**

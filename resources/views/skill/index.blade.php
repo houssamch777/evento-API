@@ -26,7 +26,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <a href="{{ route('skills.create') }}" class="btn btn-danger waves-effect waves-light w-100"><h5 class="font-size-15 text-uppercase text-white">New Skill</h5></a>
+                        <a href="{{ route('skills.create') }}" class="btn btn-success waves-effect waves-light w-100"><h5 class="font-size-15 text-uppercase text-white">New Skill</h5></a>
                        
                        
                         <div class="custom-accordion pt-4 px-4">

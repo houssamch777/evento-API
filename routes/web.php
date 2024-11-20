@@ -55,7 +55,7 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
     Route::resource('asset', AssetController::class);
     Route::post('/assets/{assetId}/reviews', [AssetController::class, 'storeOrUpdate'])->name('reviews.storeOrUpdate');
     Route::resource('market', EventoMarketController::class);
-
+    Route::resource('posts', EventController::class);
     // Events Resources
     Route::resource('events', EventController::class);
     Route::get('/my-events', [EventController::class, 'myEvents'])->name('myEvents');
