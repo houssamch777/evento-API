@@ -43,24 +43,45 @@ class SkillController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        // Validate the request data
-
         $fields = $request->validate([
             'name' => 'required|max:255',
             'experience' => 'required|in:Beginner,Intermediate,Expert',
             'offer_as_service' => 'boolean',
             'portfolio_url' => 'nullable|url',
-            'cost' => 'nullable|numeric',
+            'cost' => 'nullable|numeric|min:0',
             'cost_type' => 'nullable|in:per_hour,per_task',
             'availability' => 'nullable|array',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+        ], [
+            'name.required' => 'The name field is required.',
+            'experience.required' => 'Please select your level of experience.',
+            'experience.in' => 'The experience must be one of: Beginner, Intermediate, or Expert.',
+            'offer_as_service.boolean' => 'The offer_as_service field must be true or false.',
+            'portfolio_url.url' => 'The portfolio URL must be a valid URL.',
+            'cost.numeric' => 'The cost must be a numeric value.',
+            'cost_type.in' => 'The cost type must be either per_hour or per_task.',
+            'start_time.required' => 'The start time is required.',
+            'end_time.required' => 'The end time is required.',
+            'end_time.after' => 'The end time must be after the start time.',
         ]);
 
-        // Create the skill associated with the authenticated user
-        $skill = $request->user()->skills()->create($fields);
+        try {
+            // Create the skill associated with the authenticated user
+            $skill = $request->user()->skills()->create($fields);
 
-        return response()->json($skill, 201); // Return the created skill with 201 status code
+            return response()->json([
+                'message' => 'Skill created successfully.',
+                'data' => $skill,
+            ], 201);
+
+        } catch (\Exception $e) {
+            // Handle any errors
+            return response()->json([
+                'message' => 'Failed to create skill.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
 
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/{page}', [HomeController::class, 'loadMore'])->name('loadMore');
+//Route::get('/{page}', [HomeController::class, 'loadMore'])->name('loadMore');
 // User Routes with 'auth:sanctum' Middleware
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     // Profile Routes
