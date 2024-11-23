@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\User;
+use Arr;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+
+
+
 
 class testController extends Controller
 {
@@ -16,13 +21,13 @@ class testController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        
+
         // Get the uploaded file
         $image = $request->file('image');
 
         // Open the file as a resource
         $fileResource = fopen($image->getPathname(), 'r');
-       // dd($fileResource);
+        // dd($fileResource);
         // API endpoint URL
         $apiUrl = 'https://evento.witslinks.com/api/upload-image';
 
@@ -51,7 +56,7 @@ class testController extends Controller
                 'image',
                 $fileResource,
                 $image->getClientOriginalName()
-            )->post($apiUrl, $assetData );
+            )->post($apiUrl, $assetData);
         // Close the file resource
         dd($response->json());
         fclose($fileResource);
@@ -63,8 +68,8 @@ class testController extends Controller
 
         return back()->with('error', 'Failed to upload the image to the API: ' . $response->body());
     }
-   
-public function store(Request $request)
+
+    public function store(Request $request)
     {
         // Organize the form data into the structure needed by the API
         $assetData = [
@@ -132,5 +137,9 @@ public function store(Request $request)
         $event = Event::find(2); // Replace with a valid event ID
         $categories = $event->categories->pluck('name')->toArray();
         dd($categories);
+    }
+    public function index()
+    {
+        return view('testcodes.home');
     }
 }

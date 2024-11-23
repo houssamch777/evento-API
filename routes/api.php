@@ -6,6 +6,7 @@ use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\SkillController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\apiTestController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-
+Route::get('/{page}', [HomeController::class, 'loadMore'])->name('loadMore');
 // User Routes with 'auth:sanctum' Middleware
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     // Profile Routes
@@ -38,7 +39,7 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     });
 
     // User Skills and Portfolio
-    Route::get('/skills', fn(Request $request) => $request->user()->skills);
+    Route::get('/userskills', fn(Request $request) => $request->user()->skills);
     Route::get('/portfolios', fn(Request $request) => $request->user()->portfolios);
     Route::post('/profile_picture', [UserController::class, 'uploadProfileImage']);
     Route::post('/store_portfolio', [UserController::class, 'storePortfolio']);
@@ -47,7 +48,7 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
 
 // Skill Management Routes
 Route::middleware('auth:sanctum')->prefix('skills')->name('skills.')->group(function () {
-    Route::get('/', [SkillController::class, 'index'])->name('index');
+    Route::get('/all', [SkillController::class, 'index'])->name('index');
     Route::get('/names', [SkillController::class, 'skillsNames'])->name('names');
     Route::post('/', [SkillController::class, 'store'])->name('store');
     Route::get('/{skill}', [SkillController::class, 'show'])->name('show');

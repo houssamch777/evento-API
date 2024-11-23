@@ -16,6 +16,7 @@ use App\Http\Middleware\LockScreenMiddleware;
 
 // Public Routes
 Route::get('/', [HomeController::class,'index'])->name('index');
+Route::post('/render-post', [HomeController::class, 'renderPost'])->name('post.render');
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::view('/login', 'auth.login')->name('login');
@@ -64,7 +65,7 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
 
 });
 
-Route::get('/test', [testController::class, 'getEventCategory']);
+Route::get('/test', [testController::class, 'index']);
 
 // Artisan Command Route (for development or maintenance)
 Route::get('/foo', function () {

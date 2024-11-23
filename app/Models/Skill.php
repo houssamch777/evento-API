@@ -20,6 +20,8 @@ class Skill extends Model
         'cost',
         'cost_type',
         'availability',
+        'start_time',
+        'end_time'
     ];
     /**
      * The attributes that should be cast to native types.

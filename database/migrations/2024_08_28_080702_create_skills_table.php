@@ -22,6 +22,8 @@ return new class extends Migration
             $table->decimal('cost', 8, 2)->nullable(); // Cost amount (either per hour or per task)
             $table->enum('cost_type', ['per_hour', 'per_task'])->default('per_hour'); // Whether the cost is per hour or per task
             $table->json('availability')->nullable(); // Availability (days and time)
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
             $table->decimal('skill_rating', 2, 1)->default(2.5);
             $table->timestamps();
         });

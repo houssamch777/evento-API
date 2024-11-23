@@ -242,85 +242,52 @@
                                             <div class="mb-3">
                                                 <label class="form-label" for="offer_as_service">Offer as a Service</label>
                                                 <select id="offer_as_service" name="offer_as_service" class="form-control">
-                                                    <option value="1">Yes</option>
+                                                    <option value="1" >Yes</option>
                                                     <option value="0" selected>No</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        
                                     </div>
+                                    <div class="row d-none" id="availability-row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="day-select">work days</label>
+                                                    <select id="day-select" name="day[]" multiple>
+                                                        <option value="Mo">Monday</option>
+                                                        <option value="Tu">Tuesday</option>
+                                                        <option value="We">Wednesday</option>
+                                                        <option value="Th">Thursday</option>
+                                                        <option value="Fr">Friday</option>
+                                                        <option value="Sa">Saturday</option>
+                                                        <option value="Su">Sunday</option>
+                                                    </select>
+                                                    @error('facilities')
+                                                    <div class="invalid-feedback d-block">
+                                                        {{ $message }}
+                                                    </div>
+                                                    @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="start_time">Start Time</label>
+                                                <input id="start_time" name="start_time" placeholder="start time" type="time" class="form-control">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="end_time">End Time</label>
+                                                <input id="end_time" name="end_time" placeholder="end ime" type="time" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
     
                                 
                             </div>
                         </div>
                     </div>
-
-                    <div class="card" id="availability-card" style="display: none;">
-                        <a href="#addproduct-img-collapse" class="text-body collbodyd" data-bs-toggle="collapse"
-                            aria-haspopup="true" aria-expanded="true"
-                            aria-controls="addproduct-img-collapse">
-                            <div class="p-4">
-
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="avatar">
-                                            <div class="avatar-title rounded-circle bg-primary-subtle text-primary">
-                                                <h5 class="text-primary font-size-17 mb-0">02</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 overflow-hidden">
-                                        <h5 class="font-size-16 mb-1">Availability</h5>
-                                                    <p class="text-muted text-truncate mb-0">Set your availability for specific days and times</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </a>
-
-                        <div id="addproduct-img-collapse" class="collapse" data-bs-parent="#addskill-accordion">
-                            <div class="p-4 border-top">
-                                
-                                    <div id="availability-container">
-                                        <!-- Availability Row -->
-                                        <div class="availability-row row mb-3">
-                                            <div class="col-md-3">
-                                                <label for="day" class="form-label">Day</label>
-                                                <select class="form-control" name="day[]">
-                                                    <option value="Mo">Monday</option>
-                                                    <option value="Tu">Tuesday</option>
-                                                    <option value="We">Wednesday</option>
-                                                    <option value="Th">Thursday</option>
-                                                    <option value="Fr">Friday</option>
-                                                    <option value="Sa">Saturday</option>
-                                                    <option value="Su">Sunday</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="start-time" class="form-label">Start Time</label>
-                                                <input type="time" name="start_time[]" class="form-control">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="end-time" class="form-label">End Time</label>
-                                                <input type="time" name="end_time[]" class="form-control">
-                                            </div>
-                                            <div class="col-md-3 d-flex align-items-end">
-                                                <button type="button" class="btn btn-danger remove-row">Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Add Availability Button -->
-                                    <button type="button" id="add-availability" class="btn btn-primary mt-3">Add</button>
-                                
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
         
@@ -346,63 +313,31 @@
         <script src="{{ URL::asset('build/js/pages/ecommerce-choices.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 // Show/Hide Availability section based on "Offer as a Service"
                 const offer_as_serviceSelect = document.getElementById('offer_as_service');
-                const availabilityCard = document.getElementById('availability-card');
+                const availabilityRow = document.getElementById('availability-row');
     
                 offer_as_serviceSelect.addEventListener('change', function () {
                     if (this.value == '1') {
-                        availabilityCard.style.display = 'block'; // Show Availability Card
+                        availabilityRow.classList.remove('d-none'); // Remove the class to make it visible
                     } else {
-                        availabilityCard.style.display = 'none'; // Hide Availability Card
-                    }
-                });
-    
-                // Handle Add Availability
-                const addAvailabilityButton = document.getElementById('add-availability');
-                const availabilityContainer = document.getElementById('availability-container');
-    
-                addAvailabilityButton.addEventListener('click', function () {
-                    const availabilityRow = `
-                    <div class="availability-row row mb-3">
-                        <div class="col-md-3">
-                            <label for="day" class="form-label">Day</label>
-                            <select class="form-control" name="day[]">
-                                <option value="Mo">Monday</option>
-                                <option value="Tu">Tuesday</option>
-                                <option value="We">Wednesday</option>
-                                <option value="Th">Thursday</option>
-                                <option value="Fr">Friday</option>
-                                <option value="Sa">Saturday</option>
-                                <option value="Su">Sunday</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="start-time" class="form-label">Start Time</label>
-                            <input type="time" name="start_time[]" class="form-control">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="end-time" class="form-label">End Time</label>
-                            <input type="time" name="end_time[]" class="form-control">
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger remove-row">Remove</button>
-                        </div>
-                    </div>
-                `;
-                    availabilityContainer.insertAdjacentHTML('beforeend', availabilityRow);
-                });
-    
-                // Handle Remove Availability Row
-                availabilityContainer.addEventListener('click', function (e) {
-                    if (e.target.classList.contains('remove-row')) {
-                        e.target.closest('.availability-row').remove();
+                        availabilityRow.classList.add('d-none'); // Remove the class to make it visible
                     }
                 });
             });
+        </script>
+        <script>
+            // Initialize Choices.js on the select element
+                    const choices = new Choices('#day-select', {
+                        removeItemButton: true,
+                        searchEnabled: true,
+                        placeholderValue: 'Select days...',
+                    });
+    
         </script>
         <!-- choices js -->
         <script src="{{ URL::asset('build/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>

@@ -22,7 +22,7 @@ class PostFactory extends Factory
             //
             'title' => $this->faker->sentence(6, true), // Generates a random sentence as a title
             'content' => $this->faker->paragraphs(3, true), // Generates multiple paragraphs as content
-            'image_url' => $this->faker->imageUrl(640, 480, 'abstract', true, 'Faker'), // Random image URL
+            'image_url' => 'https://picsum.photos/' . $this->faker->randomElement([640, 800, 1024]) . '/' . $this->faker->randomElement([480, 600, 768]),
             'user_id' => User::inRandomOrder()->first()->id, // Creates a user and associates it with the post
             'event_id' => $this->faker->boolean(50)
                 ? Event::inRandomOrder()->first()->id

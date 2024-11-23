@@ -47,6 +47,7 @@ public function register(Request $request)
             'email'=>'required|email|unique:users',
             'password'=>'required|confirmed',
         ]);
+        $fields['name'] = "{$fields['first_name']} {$fields['last_name']}";
     $user=User::create($fields);
     Auth::login($user);
     return redirect()->intended();
