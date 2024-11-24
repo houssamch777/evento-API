@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class EventCategory extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description'];
+    
+    protected $fillable = ['name',
+        'slug',
+        'img_url',
+         'description'];
 
     /**
      * The events that belong to the category.
@@ -17,5 +21,10 @@ class EventCategory extends Model
     {
         return $this->belongsToMany(Event::class, 'event_category', 'category_id', 'event_id')
             ->withTimestamps();
+    }
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = $value;
+        $this->attributes['slug'] = \Str::slug($value);
     }
 }

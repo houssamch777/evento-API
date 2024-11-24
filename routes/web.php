@@ -4,6 +4,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventoMarketController;
+use App\Http\Controllers\EventReviewController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LockScreenController;
 use App\Http\Controllers\NotificationController;
@@ -59,7 +60,12 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
     Route::resource('posts', EventController::class);
     // Events Resources
     Route::resource('events', EventController::class);
+    Route::get('/event-categories', [EventController::class, 'eventsByCategory'])->name('events.categories');
+    Route::get('/event-categories/{category}', [EventController::class, 'eventsByCategoryName'])->name('events.categories.name');
     Route::get('/my-events', [EventController::class, 'myEvents'])->name('myEvents');
+    Route::post('/events/{event}/reviews', [EventReviewController::class, 'store'])->name('event_reviews.store');
+    Route::put('/reviews/{reviewId}', [EventReviewController::class, 'update'])->name('event_reviews.update');
+    Route::delete('/reviews/{reviewId}', [EventReviewController::class, 'destroy'])->name('event_reviews.destroy');
     // routes/web.php
     Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
 

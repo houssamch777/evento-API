@@ -96,7 +96,8 @@
                     <div class="card-body">
                         <div class="position-relative">
                             <div class="modal-button mt-2">
-                                <a href="{{ route('events.create') }}" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i
+                                <a href="{{ route('events.create') }}"
+                                    class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i
                                         class="mdi mdi-plus me-1"></i>
                                     Add New event</a>
                             </div>
@@ -334,8 +335,68 @@
         @endforeach
 
 
-        <!-- End Modal -->
 
+        <!-- Modal for Delete Event -->
+        <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-labelledby="deleteEventModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteEventModalLabel">Delete Event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this event?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- Form to Delete Event -->
+                        <form id="deleteEventForm" method="POST" action="" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for Handling Modal and Form Submission -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Reference to the delete form and modal
+                const deleteForm = document.getElementById('deleteEventForm');
+                const deleteModal = document.getElementById('deleteEventModal');
+                const modalTriggerButtons = document.querySelectorAll('#delete-btn');
+                const eventId = null;
+                modalTriggerButtons.forEach(link => {
+                    link.addEventListener('click', function() {
+                        // Get the event ID from the button's data-id attribute
+                        eventId = this.getAttribute('data-id');
+                        alert("Hello World!"+eventId);
+                        if (eventId) {
+                            // Set the form's action URL with the event ID
+                            deleteForm.setAttribute('action', `/events/${eventId}`);
+                            //this.setAttribute('data-bs-toggle', `modal`);
+                            //this.setAttribute('data-bs-target', `#deleteEventModal`);
+                        } else {
+                            console.error('Event ID is missing!');
+                        }
+                    });
+                });
+
+                // Prevent form submission if the action URL is not updated
+                deleteForm.addEventListener('submit', function(event) {
+                    console.log('id ='+eventId);
+                    
+                    const action = deleteForm.getAttribute('action');
+                    if (!action || action.endsWith('/null')) {
+                        event.preventDefault();
+                        console.error('Form action URL is not set correctly!');
+                    }
+                });
+            });
+        </script>
         <!-- end modal -->
     @endsection
     @section('scripts')
@@ -358,7 +419,7 @@
                         formatter: (function(cell) {
                             return gridjs.html(
                                 '<div class="form-check font-size-16"><input class="form-check-input" type="checkbox" id="orderidcheck01"><label class="form-check-label" for="orderidcheck01"></label></div>'
-                                );
+                            );
                         })
                     },
                     {
@@ -421,10 +482,27 @@
                         sort: {
                             enabled: false
                         },
-                        formatter: (function(cell) {
+                        formatter: (function(cell, row) {
                             return gridjs.html(
-                                '<div class="d-flex gap-3"><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="text-success"><i class="mdi mdi-pencil font-size-18"></i></a><a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="text-danger"><i class="mdi mdi-delete font-size-18"></i></a></div>'
-                                );
+                                `
+                                <div class="d-flex gap-3">
+                                    <!-- Edit Link -->
+                                    <a href="/events/${row.cells[1].data}/edit" class="text-success" title="Edit">
+                                        <i class="mdi mdi-pencil font-size-18"></i>
+                                    </a>
+                                
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="/events/${row.cells[1].data}" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-danger p-0 m-0" title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this event?')">
+                                            <i class="mdi mdi-delete font-size-18"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                `
+                            );
                         })
                     }
                 ],

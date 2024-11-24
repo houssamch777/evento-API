@@ -32,6 +32,10 @@ class SkillController extends Controller implements HasMiddleware
         
         return response()->json(Skill::all(), 201);
     }
+    public function userSkills(){
+        $userSkills = Auth::user()->skills;
+        return response()->json($userSkills, 201);
+    }
     public function skillsNames()
     {
         $skills = SkillName::all()->pluck('name')->toJson();

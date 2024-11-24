@@ -2,28 +2,29 @@
 @section('title', 'Home')
 @section('page-title', 'Home')
 @section('css')
-    <style>
-        /* Ensure image fills its container without stretching */
-        .object-fit-cover {
-        object-fit: cover; /* Maintain aspect ratio while filling the container */
-        }
-        
-        /* Prevent overflow and ensure layout consistency */
-        .carousel-inner {
+<style>
+    /* Ensure image fills its container without stretching */
+    .object-fit-cover {
+        object-fit: cover;
+        /* Maintain aspect ratio while filling the container */
+    }
+
+    /* Prevent overflow and ensure layout consistency */
+    .carousel-inner {
         height: 100%;
-        }
-        
-        /* Flexbox for centering content */
-        .card-body {
-        height: 25%; /* Allocate 25% of the card for text and buttons */
+    }
+
+    /* Flexbox for centering content */
+    .card-body {
+        height: 25%;
+        /* Allocate 25% of the card for text and buttons */
         overflow: hidden;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        }
-        
-    </style>
+    }
+</style>
 @endsection
 @section('body')
 
@@ -44,6 +45,7 @@
                         <div class="carousel-item {{ $index == 0 ? 'active' : '' }} h-100">
                             <img src="{{ asset($event->image) }}" class="d-block w-100 h-75 object-fit-cover"
                                 alt="{{ $event->name }}">
+
                             <div class="card-body text-center h-25 d-flex flex-column justify-content-center">
                                 <h5 class="card-title mb-3">{{ $event->name }}</h5>
                                 <p class="text-muted mb-4">{{ \Carbon\Carbon::parse($event->startdate)->format('F d, Y')
@@ -71,24 +73,77 @@
             </div>
         </div>
     </div>
-<div class="row">
-    <div class="col-12  text-white py-5 text-center">
-        <h1 class="mb-4">Live a little! Because when things get scheduled, things get done!</h1>
-        <div class="d-flex flex-wrap justify-content-center align-items-center mb-3">
-            <input type="text" class="form-control me-2" style="max-width: 300px;"
-                placeholder="Search Events, Businesses or People">
-            <input type="text" class="form-control me-2" style="max-width: 200px;" placeholder="Location">
-            <input type="date" class="form-control me-2" style="max-width: 200px;">
-            <button class="btn btn-danger me-2">Search</button>
-            <button class="btn btn-outline-danger">+</button>
+    <div class="row">
+        <div class="col-12  text-white py-5 text-center">
+            <h1 class="mb-4">Live a little! Because when things get scheduled, things get done!</h1>
+            <div class="d-flex flex-wrap justify-content-center align-items-center mb-3">
+                <input type="text" class="form-control me-2" style="max-width: 300px;"
+                    placeholder="Search Events, Businesses or People">
+                <input type="text" class="form-control me-2" style="max-width: 200px;" placeholder="Location">
+                <input type="date" class="form-control me-2" style="max-width: 200px;">
+                <button class="btn btn-danger me-2">Search</button>
+                <button class="btn btn-outline-danger">+</button>
+            </div>
+            <p class="text-muted">Explore, schedule and share all of your favorite scheduled events from sports, movies,
+                music,
+                and concerts to TV shows, restaurants, and nightlife events.</p>
         </div>
-        <p class="text-muted">Explore, schedule and share all of your favorite scheduled events from sports, movies,
-            music,
-            and concerts to TV shows, restaurants, and nightlife events.</p>
     </div>
-</div>
-    
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Event Categories</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach ($categgories as $item)
+            <div class="col">
+                <div class="card border-0 shadow">
+                    <img src="{{ $item->img_url == 'default-image-url' ? URL::asset('build/images/small/img-3.jpg') : $item->img_url }}"
+                        class="card-img-top" alt="{{$item->name}}">
+                    <div class="card-body text-center">
+                        <h6 class="card-title fw-bold">{{$item->name}}</h6>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+            <!-- Add more categories -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Event Domains</h2>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            @foreach ($domains as $item)
+            <button type="button" class="btn btn-success w-lg waves-effect waves-light" data-bs-toggle="button" autocomplete="off">
+                {{$item->name}}
+            </button>
+            @endforeach
+            <!-- Add more categories -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Event Domains</h2>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            @foreach ($domains as $item)
+            <button type="button" class="btn btn-success w-lg waves-effect waves-light" data-bs-toggle="button"
+                autocomplete="off">
+                {{$item->name}}
+            </button>
+            @endforeach
+            <!-- Add more categories -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-outline-primary">View All</a>
+        </div>
+    </div>
+
+
+
     @endsection
+
 
     @section('scripts')
     <!-- App js -->

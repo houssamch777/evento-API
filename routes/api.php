@@ -47,8 +47,9 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
 });
 
 // Skill Management Routes
-Route::middleware('auth:sanctum')->prefix('skills')->name('skills.')->group(function () {
+Route::middleware('auth:sanctum')->prefix('skills')->name('api.skills.')->group(function () {
     Route::get('/all', [SkillController::class, 'index'])->name('index');
+    Route::get('/user', [SkillController::class, 'userSkills'])->name('user');
     Route::get('/names', [SkillController::class, 'skillsNames'])->name('names');
     Route::post('/', [SkillController::class, 'store'])->name('store');
     Route::get('/{skill}', [SkillController::class, 'show'])->name('show');

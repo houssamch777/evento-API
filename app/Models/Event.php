@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Event extends Model
 {
@@ -56,6 +57,19 @@ class Event extends Model
     public function assetNeeds()
     {
         return $this->hasMany(EventAssetNeed::class);
+    }
+    public function reviews()
+    {
+        return $this->hasMany(EventReview::class);
+    }
+    public function timeLine()
+    {
+        return $this->hasMany(EventTimeline::class)->orderBy('start_time', 'asc');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating');
     }
     public function skillNeeds()
     {

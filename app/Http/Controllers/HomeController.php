@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventCategory;
+use App\Models\EventDomain;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -52,9 +54,12 @@ class HomeController extends Controller
         ];
 
 
-        $posts = Post::orderBy('updated_at', 'desc')->with(['comments', 'likes'])->paginate(10);
+        //$posts = Post::orderBy('updated_at', 'desc')->with(['comments', 'likes'])->paginate(10);
+        $categgories = EventCategory::paginate(12);
+        $domains = EventDomain::paginate(15);
+        
         $tags = Tag::all();
-         return view('welcome', compact('posts','events','tags'));
+         return view('welcome', compact('categgories','events','domains'));
     }
     public function loadMore($page)
     {
