@@ -83,4 +83,12 @@ class User extends Authenticatable
         // Add more fields as needed
         ];
     }
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_user')->withPivot('role')->withTimestamps();
+    }
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_user')->withTimestamps();
+    }
 }

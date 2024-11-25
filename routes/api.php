@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->prefix('skills')->name('api.skills.')->group(
 });
 
 // Event Routes
-Route::middleware('auth:sanctum')->prefix('events')->group(function () {
+Route::middleware('auth:sanctum')->prefix('events')->name('api.events.')->group(function () {
     Route::get('/', [EventApiController::class, 'index']);
     Route::get('/my-events', [EventApiController::class, 'userEvents']);
     Route::post('/', [EventApiController::class, 'store']);

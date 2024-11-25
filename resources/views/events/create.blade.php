@@ -5,6 +5,8 @@
 @section('css')
     <!-- datepicker css -->
     <link rel="stylesheet" href="{{ URL::asset('build/libs/flatpickr/flatpickr.min.css') }}">
+    <!-- choices css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 @endsection
 @section('page-title')
     New Event Create
@@ -14,6 +16,7 @@
     <body>
     @endsection
     @section('content')
+        <x-breadcrub :title="'Create'" :link="route('myEvents')" :pagetitle="'My Event'" />
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -21,7 +24,8 @@
                         <h4 class="card-title mb-0">Event creation Steps</h4>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        <form action="#">
+                        <form action="{{ route('events.store') }}" method="POST" id="yourFormId">
+                            @csrf
                             <ul class="wizard-nav mb-5">
                                 <li class="wizard-list-item">
                                     <div class="list-item">
@@ -56,237 +60,255 @@
                                     <h5>Event Details</h5>
                                     <p class="card-title-desc">Fill all the information below</p>
                                 </div>
-                                <div>
-                                    <!-- Event Name and Date -->
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <div class="mb-3">
-                                                <label for="event-name-input" class="form-label">Event Name <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Enter Event Name"
-                                                    id="event-name-input" required>
-                                                <div class="invalid-feedback">Please enter a valid event name.</div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <!-- Event Name and Date -->
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="mb-3">
+                                                    <label for="event-name-input" class="form-label">Event Name <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text"
+                                                        class="form-control @error('event_name') is-invalid @enderror"
+                                                        placeholder="Enter Event Name" id="event-name-input" name="name"
+                                                        value="{{ old('name') }}">
+                                                    @error('name')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="mb-3">
+                                                    <label for="datepicker-range" class="form-label">Start and End Date
+                                                        <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Select Date Range" id="datepicker-range"
+                                                        name="date">
+                                                    @error('date')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label for="event-date-input" class="form-label">Date <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" placeholder="Select Date"
-                                                    id="event-date-input" required>
-                                                <div class="invalid-feedback">Please select a valid date.</div>
+
+                                        <!-- Event Type and Privacy -->
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="mb-3">
+                                                    <label for="event-type-switch" class="form-label">Event Type</label>
+                                                    <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="event-type-switch" checked>
+                                                        <label class="form-check-label" for="event-type-switch">
+                                                            <span class="text-success">In Person</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="event-privacy-switch" class="form-label">Privacy</label>
+                                                    <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="event-privacy-switch" checked>
+                                                        <label class="form-check-label" for="event-privacy-switch">
+                                                            <span class="text-success">Private</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="mb-3">
+                                                    <label for="event-certificate-switch"
+                                                        class="form-label">Certificate</label>
+                                                    <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="event-certificate-switch" checked>
+                                                        <label class="form-check-label" for="event-certificate-switch">
+                                                            <span class="text-success">Certified</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="event-fee-switch" class="form-label">Fee</label>
+                                                    <div class="form-check form-switch form-switch-lg mb-3"
+                                                        dir="ltr">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="event-fee-switch">
+                                                        <label class="form-check-label" for="event-fee-switch">
+                                                            <span class="text-success">Fees Required</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dynamic Fee Input -->
+                                        <div class="row" id="fees-section" style="display: none;">
+                                            <div class="col-lg-12">
+                                                <div id="fee-list">
+                                                    <div class="fee-entry mb-3">
+                                                        <div class="row">
+                                                            <div class="col-md-5">
+                                                                <label for="event-fee-type" class="form-label">Fee
+                                                                    Type</label>
+                                                                <input type="text" class="form-control fee-type"
+                                                                    placeholder="Enter Fee Type (e.g. Early Bird)"
+                                                                    required>
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label for="event-fee-amount"
+                                                                    class="form-label">Amount</label>
+                                                                <input type="number" class="form-control fee-amount"
+                                                                    placeholder="Enter Amount" required>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button type="button"
+                                                                    class="btn btn-danger remove-fee-btn"
+                                                                    style="margin-top: 28px;">Remove</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-primary" id="add-fee-btn">Add
+                                                    Another Fee</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Switches -->
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label for="event-type-switch" class="form-label">Type</label>
-                                                <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
-                                                    <input type="checkbox" class="form-check-input" id="event-type-switch"
-                                                        checked>
-                                                    <label class="form-check-label" for="event-type-switch">
-                                                        <span class="text-success">In Person</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="event-privacy-switch" class="form-label">Privacy</label>
-                                                <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="event-privacy-switch" checked>
-                                                    <label class="form-check-label" for="event-privacy-switch">
-                                                        <span class="text-success">Private</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label for="event-certificate-switch" class="form-label">Certificate</label>
-                                                <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="event-certificate-switch" checked>
-                                                    <label class="form-check-label" for="event-certificate-switch">
-                                                        <span class="text-success">Certified</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="event-fee-switch" class="form-label">Fee</label>
-                                                <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
-                                                    <input type="checkbox" class="form-check-input" id="event-fee-switch">
-                                                    <label class="form-check-label" for="event-fee-switch">
-                                                        <span class="text-success">No Fee</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-3">
-                                                <label for="event-description-input" class="form-label">Description <span
-                                                        class="text-danger">*</span></label>
-                                                <textarea id="event-description-input" class="form-control" placeholder="Enter Event Description" rows="3"
-                                                    required></textarea>
-                                                <div class="invalid-feedback">Please provide a description for the event.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Conditional Fee Input -->
-                                    <div class="row">
-                                        <div class="col-lg-4" id="fee-input-row" style="display: none;">
-                                            <div class="mb-3">
-                                                <label for="event-fee-amount" class="form-label">Fee Amount <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" placeholder="Enter Fee Amount"
-                                                    id="event-fee-amount">
-                                                <div class="invalid-feedback">Please enter a valid fee amount.</div>
-                                            </div>
+
+                                    <!-- Event Description -->
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="event-description-input" class="form-label">Event Description
+                                                <span class="text-danger">*</span></label>
+                                            <textarea id="event-description-input" class="form-control" placeholder="Enter Event Description" rows="3"
+                                                required></textarea>
+                                            <div class="invalid-feedback">Please provide a description for the event.</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
 
-
-
-                            <!-- wizard-tab -->
-
                             <div class="wizard-tab">
-                                <div>
-                                    <div class="text-center mb-4">
-                                        <h5>Company Document</h5>
-                                        <p class="card-title-desc">Fill all information below</p>
+                                <div class="text-center mb-4">
+                                    <h5>Event Categories and Domains</h5>
+                                    <p class="card-title-desc">Select relevant categories and domains for your event</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <!-- Event Categories -->
+                                        <div class="mb-3">
+                                            <label for="event-categories" class="form-label">Categories <span
+                                                    class="text-danger">*</span></label>
+                                            <select id="event-categories" class="form-control" multiple required>
+                                                @foreach ($categories as $Category)
+                                                    <option value="{{ $Category->id }}">{{ $Category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">Please select at least one category.</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-pancard-input" class="form-label">PAN
-                                                        Card</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Pan Card" id="basicpill-pancard-input">
-                                                </div>
-                                            </div><!-- end col -->
 
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-vatno-input" class="form-label">VAT/TIN
-                                                        No.</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter VAT/TIN No." id="basicpill-vatno-input">
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div><!-- end row -->
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-cstno-input" class="form-label">CST
-                                                        No.</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter CST No." id="basicpill-cstno-input">
-                                                </div>
-                                            </div><!-- end col -->
+                                    <div class="col-lg-6">
+                                        <!-- Event Domains -->
+                                        <div class="mb-3">
+                                            <label for="event-domains" class="form-label">Domains <span
+                                                    class="text-danger">*</span></label>
+                                            <select id="event-domains" class="form-control" multiple required>
+                                                @foreach ($domains as $domain)
+                                                    <option value="{{ $domain->id }}">{{ $domain->name }}</option>
+                                                @endforeach
 
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-servicetax-input" class="form-label">Service Tax
-                                                        No.</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Service Tax No."
-                                                        id="basicpill-servicetax-input">
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div><!-- end row -->
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-companyuin-input" class="form-label">Company
-                                                        UIN</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Company UIN" id="basicpill-companyuin-input">
-                                                </div>
-                                            </div><!-- end col -->
-
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-declaration-input"
-                                                        class="form-label">Declaration</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Declaration" id="basicpill-declaration-input">
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div><!-- end row-->
-                                    </div><!-- end form -->
+                                            </select>
+                                            <div class="invalid-feedback">Please select at least one domain.</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- wizard-tab -->
 
                             <div class="wizard-tab">
-                                <div>
-                                    <div class="text-center mb-4">
-                                        <h5>Bank Details</h5>
-                                        <p class="card-title-desc">Fill all information below</p>
-                                    </div>
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-namecard-input" class="form-label">Name On
-                                                        Card</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Name On Card" id="basicpill-namecard-input">
-                                                </div>
-                                            </div><!-- end col -->
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Credit Card Type</label>
-                                                    <select class="form-select">
-                                                        <option selected>Select Card Type</option>
-                                                        <option value="AE">American Express</option>
-                                                        <option value="VI">Visa</option>
-                                                        <option value="MC">MasterCard</option>
-                                                        <option value="DI">Discover</option>
-                                                    </select>
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div><!-- end row -->
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-cardno-input" class="form-label">Credit Card
-                                                        Number</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Credit Card Number"
-                                                        id="basicpill-cardno-input">
-                                                </div>
-                                            </div><!-- end col -->
+                                <div class="text-center mb-4">
+                                    <h5>Event Needs</h5>
+                                    <p class="card-title-desc">Specify the assets and skills required for your event</p>
+                                </div>
+                                <div class="row">
+                                    <!-- Assets Section -->
+                                    <div class="col-lg-6">
+                                        <div class="mb-4">
+                                            <h6>Assets</h6>
+                                            <div id="asset-needs-container">
+                                                <!-- Template for Adding Asset Needs -->
+                                                <div class="row mb-3 align-items-end asset-row">
+                                                    <div class="col-lg-4">
+                                                        <label for="asset-type-1" class="form-label">Asset Type</label>
+                                                        <select class="form-select asset-type" id="asset-type-1"
+                                                            onchange="loadAssets(1)">
+                                                            <option value="Furniture" selected>Furniture</option>
+                                                            <option value="Equipment">Equipment</option>
+                                                            <option value="Venue">Venue</option>
+                                                            <option value="Transportation">Transportation</option>
+                                                        </select>
+                                                    </div>
 
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-card-verification-input" class="form-label">Card
-                                                        Verification Number</label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Card Verification Number"
-                                                        id="basicpill-card-verification-input">
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div><!-- end row -->
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-expiration-input" class="form-label">Expiration
-                                                        Date</label>
-                                                    <input type="text" class="form-control" id="datepicker-basic"
-                                                        placeholder="Enter Expiration Date"
-                                                        id="basicpill-expiration-input">
+                                                    <!-- Asset Name Dropdown (Initially Empty) -->
+                                                    <div class="col-lg-4">
+                                                        <label for="asset-id-1" class="form-label">Asset Name</label>
+                                                        <select class="form-select asset-id" id="asset-id-1">
+                                                            @foreach ($furnitureCategories as $category)
+                                                                <option value="{{ $category->id }}">{{ $category->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-lg-2">
+                                                        <label for="asset-quantity-1" class="form-label">Quantity</label>
+                                                        <input type="number" class="form-control asset-quantity"
+                                                            id="asset-quantity-1" min="1" value="1">
+                                                    </div>
+
+                                                    <div class="col-lg-2">
+                                                        <button type="button"
+                                                            class="btn btn-danger remove-asset">Remove</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div><!-- end row -->
-                                    </div><!-- end form -->
+                                            <button type="button" class="btn btn-success" id="add-asset-btn">Add
+                                                Asset</button>
+                                        </div>
+                                    </div>
 
+                                    <!-- Skills Section -->
+                                    <div class="col-lg-6">
+                                        <div class="mb-4">
+                                            <h6>Skills</h6>
+                                            <div id="skill-needs-container">
+                                                <!-- Template for Adding Skill Needs -->
+                                                <div class="row mb-3 align-items-end skill-row">
+                                                    <div class="col-lg-6">
+                                                        <label for="skill-name-1" class="form-label">Skill Name</label>
+                                                        <select class="form-select skill-name" id="skill-name-1">
+                                                            @foreach ($skills as $skill)
+                                                                <option value="{{ $skill->id }}">{{ $skill->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <label for="skill-quantity-1" class="form-label">Quantity</label>
+                                                        <input type="number" class="form-control skill-quantity"
+                                                            id="skill-quantity-1" min="1" value="1">
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <button type="button"
+                                                            class="btn btn-danger remove-skill">Remove</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-success" id="add-skill-btn">Add
+                                                Skill</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- wizard-tab -->
@@ -306,6 +328,177 @@
     @section('scripts')
         <!-- datepicker js -->
         <script src="{{ URL::asset('build/libs/flatpickr/flatpickr.min.js') }}"></script>
+        <!-- form wizard init -->
+        <script>
+            var currentTab = 0; // Current tab is set to be the first tab (0)
+            showTab(currentTab); // Display the current tab
+            function showTab(n) {
+                // This function will display the specified tab of the form...
+                var x = document.getElementsByClassName("wizard-tab");
+                x[n].style.display = "block";
+                //... and fix the Previous/Next buttons:
+                if (n == 0) {
+                    document.getElementById("prevBtn").style.display = "none";
+                } else {
+                    document.getElementById("prevBtn").style.display = "inline";
+                }
+                if (n == (x.length - 1)) {
+                    document.getElementById("nextBtn").innerHTML = "Submit";
+                } else {
+                    document.getElementById("nextBtn").innerHTML = "Next";
+                }
+                //... and run a function that will display the correct step indicator:
+                fixStepIndicator(n)
+            }
+
+            function nextPrev(n) {
+                // This function will figure out which tab to display
+                var x = document.getElementsByClassName("wizard-tab");
+
+                // Hide the current tab:
+                x[currentTab].style.display = "none";
+                // Increase or decrease the current tab by 1:
+                currentTab = currentTab + n;
+                // if you have reached the end of the form...
+                if (currentTab === x.length) {
+                    document.getElementById("yourFormId").submit();
+                }
+                if (currentTab > x.length) {
+                    currentTab = currentTab - n;
+                    x[currentTab].style.display = "block";
+                }
+
+                // Otherwise, display the correct tab:
+                showTab(currentTab)
+            }
+
+            function fixStepIndicator(n) {
+                // This function removes the "active" class of all steps...
+
+                var i, x = document.getElementsByClassName("list-item");
+
+                for (i = 0; i < x.length; i++) {
+                    x[i].className = x[i].className.replace(" active", "");
+                }
+
+                //... and adds the "active" class on the current step:
+
+                x[n].className += " active";
+            }
+
+            // flatpickr
+
+            flatpickr('#datepicker-basic');
+        </script>
+        <script>
+            // Predefined assets for each category
+            const assetCategories = {
+                Furniture: @json($furnitureCategories->toArray()),
+                Equipment: @json($equipmentCategories->toArray()),
+                Venue: @json($roomCategories->toArray()),
+                Transportation: @json($transportationCategories->toArray())
+            };
+
+            let assetCount = document.querySelectorAll('.asset-row').length; // Track the number of rows
+
+            // Function to load assets based on the selected asset type
+            function loadAssets(index) {
+                const assetType = document.getElementById('asset-type-' + index).value;
+                const assetSelect = document.getElementById('asset-id-' + index);
+
+                // Clear the existing options
+                assetSelect.innerHTML = '<option value="">Select Asset</option>';
+
+                // Fetch assets based on the selected asset type
+                const assets = assetCategories[assetType] || [];
+
+                if (assets.length > 0) {
+                    assets.forEach(asset => {
+                        const option = document.createElement('option');
+                        option.value = asset.id;
+                        option.textContent = asset.name;
+                        assetSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No assets available';
+                    assetSelect.appendChild(option);
+                }
+            }
+
+            // Add new asset row
+            document.getElementById('add-asset-btn').addEventListener('click', function() {
+                assetCount++;
+
+                const assetRow = `
+        <div class="row mb-3 align-items-end asset-row" id="asset-row-${assetCount}">
+            <div class="col-lg-4">
+                <label for="asset-type-${assetCount}" class="form-label">Asset Type</label>
+                <select class="form-select asset-type" id="asset-type-${assetCount}" onchange="loadAssets(${assetCount})">
+                    <option value="">Select Type</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Equipment">Equipment</option>
+                    <option value="Venue">Venue</option>
+                    <option value="Transportation">Transportation</option>
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="asset-id-${assetCount}" class="form-label">Asset</label>
+                <select class="form-select asset-id" id="asset-id-${assetCount}">
+                    <option value="">Select Asset</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <label for="asset-quantity-${assetCount}" class="form-label">Quantity</label>
+                <input type="number" class="form-control asset-quantity" id="asset-quantity-${assetCount}" min="1" value="1">
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn btn-danger remove-asset" onclick="removeAssetRow(${assetCount})">Remove</button>
+            </div>
+        </div>
+        `;
+                document.getElementById('asset-needs-container').insertAdjacentHTML('beforeend', assetRow);
+            });
+
+            // Function to remove an asset row
+            function removeAssetRow(index) {
+                const row = document.getElementById('asset-row-' + index);
+                if (row) row.remove();
+            }
+        </script>
+        <!-- choices js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            // Initialize Choices.js for Categories and Domains
+            document.addEventListener('DOMContentLoaded', function() {
+                const categorySelect = new Choices('#event-categories', {
+                    removeItemButton: true,
+                    searchPlaceholderValue: 'Search categories...',
+                });
+
+                const domainSelect = new Choices('#event-domains', {
+                    removeItemButton: true,
+                    searchPlaceholderValue: 'Search domains...',
+                });
+            });
+
+            // Collect selected categories and domains when moving to the next tab
+            document.getElementById('next-tab-btn').addEventListener('click', function() {
+                const selectedCategories = Array.from(document.querySelectorAll('#event-categories option:checked'))
+                    .map(opt =>
+                        opt.value);
+                const selectedDomains = Array.from(document.querySelectorAll('#event-domains option:checked')).map(
+                    opt => opt.value);
+
+                const eventData = {
+                    categories: selectedCategories,
+                    domains: selectedDomains
+                };
+
+                console.log(eventData); // Send or use this data as needed
+            });
+        </script>
         <script>
             flatpickr('#datepicker-range', {
                 mode: "range"
@@ -352,8 +545,102 @@
                 });
             });
         </script>
-        <!-- form wizard init -->
-        <script src="{{ URL::asset('build/js/pages/form-wizard.init.js') }}"></script>
+        <script>
+            // Add new skill row
+            document.getElementById('add-skill-btn').addEventListener('click', function() {
+                skillCount++;
+                const skillRow = `
+        <div class="row mb-3 align-items-end skill-row">
+            <div class="col-lg-6">
+                <label for="skill-name-${skillCount}" class="form-label">Skill Name</label>
+                <select class="form-select skill-name" id="skill-name-${skillCount}">
+                    @foreach ($skills as $skill)
+                    <option value="{{ $skill->id }}">{{ $skill->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="skill-quantity-${skillCount}" class="form-label">Quantity</label>
+                <input type="number" class="form-control skill-quantity" id="skill-quantity-${skillCount}" min="1" value="1">
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn btn-danger remove-skill">Remove</button>
+            </div>
+        </div>
+        `;
+                document.getElementById('skill-needs-container').insertAdjacentHTML('beforeend', skillRow);
+            });
+
+            // Remove asset or skill row
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-asset')) {
+                    event.target.closest('.asset-row').remove();
+                }
+                if (event.target.classList.contains('remove-skill')) {
+                    event.target.closest('.skill-row').remove();
+                }
+            });
+
+            // Collect data
+            document.getElementById('next-tab-btn').addEventListener('click', function() {
+            const assetNeeds = Array.from(document.querySelectorAll('.asset-row')).map(row => ({
+                assetable_id: row.querySelector('.asset-id').value,
+                assetable_type: row.querySelector('.asset-type').value,
+                quantity: row.querySelector('.asset-quantity').value,
+                notes: row.querySelector('.asset-notes')?.value || null,
+            }));
+
+            const skillNeeds = Array.from(document.querySelectorAll('.skill-row')).map(row => ({
+                skill_name_id: row.querySelector('.skill-name').value,
+                quantity: row.querySelector('.skill-quantity').value,
+            }));
+
+            const eventNeeds = {
+                asset_needs: assetNeeds,
+                skill_needs: skillNeeds,
+            };
+
+            console.log(eventNeeds); // Send or use this data as needed
+            });
+            });
+        </script>
+        <script>
+            document.getElementById('event-fee-switch').addEventListener('change', function() {
+                const feesSection = document.getElementById('fees-section');
+                if (this.checked) {
+                    feesSection.style.display = 'block';
+                } else {
+                    feesSection.style.display = 'none';
+                }
+            });
+
+            document.getElementById('add-fee-btn').addEventListener('click', function() {
+                const feeList = document.getElementById('fee-list');
+                const newFeeEntry = document.createElement('div');
+                newFeeEntry.classList.add('fee-entry', 'mb-3');
+                newFeeEntry.innerHTML = `
+            <div class="row">
+                <div class="col-md-5">
+                    <label for="event-fee-type" class="form-label">Fee Type</label>
+                    <input type="text" class="form-control fee-type" placeholder="Enter Fee Type (e.g. Early Bird)" required>
+                </div>
+                <div class="col-md-5">
+                    <label for="event-fee-amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control fee-amount" placeholder="Enter Amount" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger remove-fee-btn" style="margin-top: 28px;">Remove</button>
+                </div>
+            </div>
+            `;
+                feeList.appendChild(newFeeEntry);
+
+                // Attach remove button functionality
+                newFeeEntry.querySelector('.remove-fee-btn').addEventListener('click', function() {
+                    feeList.removeChild(newFeeEntry);
+                });
+            });
+        </script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
     @endsection

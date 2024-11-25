@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventCategory;
 use App\Models\EventDomain;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,11 +58,26 @@ class EventApiController extends Controller
             'event_fees.*.type' => 'required|string',
             'event_fees.*.amount' => 'required|numeric|min:0',
             'asset_needs' => 'array',
-            'asset_needs.*.equipment_type_id' => 'required|integer|exists:equipment_types,id',
-            'asset_needs.*.furniture_type_id' => 'required|integer|exists:furniture_types,id',
-            'asset_needs.*.room_type_id' => 'required|integer|exists:room_types,id',
+            'asset_needs.*.assetable_id' => 'required|integer', // Ensure assetable_id exists in the referenced table
+            'asset_needs.*.assetable_type' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    // Define the allowed types
+                    $allowedTypes = [
+                        \App\Models\EquipmentCategory::class,
+                        \App\Models\FurnitureCategory::class,
+                        \App\Models\RoomCategory::class,
+                        \App\Models\TransportationCategory::class,
+                    ];
+                    if (!in_array($value, $allowedTypes)) {
+                        $fail('The ' . $attribute . ' is not a valid asset type.');
+                    }
+                },
+            ],
             'asset_needs.*.quantity' => 'required|integer|min:1',
             'asset_needs.*.notes' => 'nullable|string',
+
             // Validate skills needs
             'skill_needs' => 'array',
             'skill_needs.*.skill_name_id' => 'required|integer|exists:skill_names,id',
@@ -86,6 +102,7 @@ class EventApiController extends Controller
         }
     
         // Add asset needs
+
         foreach ($request->input('asset_needs', []) as $need) {
             $event->assetNeeds()->create($need);
         }
@@ -97,11 +114,19 @@ class EventApiController extends Controller
                 'quantity' => $skillNeed['quantity']
             ]);
         }
-    
+        $teamName = $event->name . ' Team'; // Team name is event name + "Team"
+        $teamDescription = "This is the official team for the " . $event->name . ". Add members to help you make this event a success!";
+
+        $team = Team::create([
+            'event_id' => $event->id,
+            'name' => $teamName,
+            'description' => $teamDescription, // Default description
+        ]);
         return response()->json([
             'success' => true,
             'message' => 'Event created successfully',
-            'data' => $event
+            'event' => $event,
+            'team' => $team
         ], 201);
     }
     

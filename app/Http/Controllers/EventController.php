@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EquipmentCategory;
 use App\Models\EventCategory;
 use App\Models\EventDomain;
 use App\Models\Event;
 
+use App\Models\FurnitureCategory;
 use App\Models\Post;
+use App\Models\RoomCategory;
+use App\Models\SkillName;
+use App\Models\TransportationCategory;
 use Auth;
 use Illuminate\Http\Request;
 use Log;
@@ -37,8 +42,20 @@ class EventController extends Controller
     public function create()
     {
         //
-
-        return view('events.create');
+        $categories=EventCategory::all();
+        $domains = EventDomain::all();
+        $skills = SkillName::all();
+        // Fetch asset type categories
+        $furnitureCategories = FurnitureCategory::all();
+        $transportationCategories = TransportationCategory::all();
+        $roomCategories = RoomCategory::all();
+        $equipmentCategories = EquipmentCategory::all();
+       
+        return view('events.create',compact('categories','domains','skills',
+            'furnitureCategories',
+            'transportationCategories',
+            'roomCategories',
+            'equipmentCategories'));
     }
 
     /**
@@ -47,6 +64,7 @@ class EventController extends Controller
     public function store(Request $request)
     {
         //
+        dd($request->input());
     }
 
     /**

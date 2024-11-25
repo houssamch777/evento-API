@@ -75,4 +75,12 @@ class Event extends Model
     {
         return $this->hasMany(EventSkillNeed::class);
     }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
+
+
+
 }

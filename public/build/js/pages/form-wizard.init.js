@@ -21,8 +21,10 @@ function showTab(n) {
     }
     if (n == (x.length - 1)) {
         document.getElementById("nextBtn").innerHTML = "Submit";
+        document.getElementById("nextBtn").type = "submit";
     } else {
         document.getElementById("nextBtn").innerHTML = "Next";
+        document.getElementById("nextBtn").type = "button";
     }
     //... and run a function that will display the correct step indicator:
     fixStepIndicator(n)
