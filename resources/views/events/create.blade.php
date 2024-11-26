@@ -98,7 +98,7 @@
                                                     <label for="event-type-switch" class="form-label">Event Type</label>
                                                     <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
                                                         <input type="checkbox" class="form-check-input"
-                                                            id="event-type-switch" checked>
+                                                            id="event-type-switch" checked name="type">
                                                         <label class="form-check-label" for="event-type-switch">
                                                             <span class="text-success">In Person</span>
                                                         </label>
@@ -108,7 +108,7 @@
                                                     <label for="event-privacy-switch" class="form-label">Privacy</label>
                                                     <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
                                                         <input type="checkbox" class="form-check-input"
-                                                            id="event-privacy-switch" checked>
+                                                            id="event-privacy-switch" checked name="privacy">
                                                         <label class="form-check-label" for="event-privacy-switch">
                                                             <span class="text-success">Private</span>
                                                         </label>
@@ -121,7 +121,7 @@
                                                         class="form-label">Certificate</label>
                                                     <div class="form-check form-switch form-switch-lg mb-3" dir="ltr">
                                                         <input type="checkbox" class="form-check-input"
-                                                            id="event-certificate-switch" checked>
+                                                            id="event-certificate-switch" checked name="certificate">
                                                         <label class="form-check-label" for="event-certificate-switch">
                                                             <span class="text-success">Certified</span>
                                                         </label>
@@ -132,7 +132,7 @@
                                                     <div class="form-check form-switch form-switch-lg mb-3"
                                                         dir="ltr">
                                                         <input type="checkbox" class="form-check-input"
-                                                            id="event-fee-switch">
+                                                            id="event-fee-switch" name="fee">
                                                         <label class="form-check-label" for="event-fee-switch">
                                                             <span class="text-success">Fees Required</span>
                                                         </label>
@@ -151,6 +151,7 @@
                                                                 <label for="event-fee-type" class="form-label">Fee
                                                                     Type</label>
                                                                 <input type="text" class="form-control fee-type"
+                                                                    name="fees[0][type]"
                                                                     placeholder="Enter Fee Type (e.g. Early Bird)"
                                                                     required>
                                                             </div>
@@ -158,12 +159,11 @@
                                                                 <label for="event-fee-amount"
                                                                     class="form-label">Amount</label>
                                                                 <input type="number" class="form-control fee-amount"
-                                                                    placeholder="Enter Amount" required>
+                                                                    name="fees[0][amount]" placeholder="Enter Amount"
+                                                                    required>
                                                             </div>
                                                             <div class="col-md-2">
-                                                                <button type="button"
-                                                                    class="btn btn-danger remove-fee-btn"
-                                                                    style="margin-top: 28px;">Remove</button>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -180,7 +180,7 @@
                                             <label for="event-description-input" class="form-label">Event Description
                                                 <span class="text-danger">*</span></label>
                                             <textarea id="event-description-input" class="form-control" placeholder="Enter Event Description" rows="3"
-                                                required></textarea>
+                                                required name="description"></textarea>
                                             <div class="invalid-feedback">Please provide a description for the event.</div>
                                         </div>
                                     </div>
@@ -199,7 +199,8 @@
                                         <div class="mb-3">
                                             <label for="event-categories" class="form-label">Categories <span
                                                     class="text-danger">*</span></label>
-                                            <select id="event-categories" class="form-control" multiple required>
+                                            <select id="event-categories" class="form-control" multiple
+                                                name="categories[]" required>
                                                 @foreach ($categories as $Category)
                                                     <option value="{{ $Category->id }}">{{ $Category->name }}</option>
                                                 @endforeach
@@ -213,7 +214,8 @@
                                         <div class="mb-3">
                                             <label for="event-domains" class="form-label">Domains <span
                                                     class="text-danger">*</span></label>
-                                            <select id="event-domains" class="form-control" multiple required>
+                                            <select id="event-domains" class="form-control" multiple name="domains[]"
+                                                required>
                                                 @foreach ($domains as $domain)
                                                     <option value="{{ $domain->id }}">{{ $domain->name }}</option>
                                                 @endforeach
@@ -242,7 +244,7 @@
                                                     <div class="col-lg-4">
                                                         <label for="asset-type-1" class="form-label">Asset Type</label>
                                                         <select class="form-select asset-type" id="asset-type-1"
-                                                            onchange="loadAssets(1)">
+                                                            name="assets[0][type]" onchange="loadAssets(1)">
                                                             <option value="Furniture" selected>Furniture</option>
                                                             <option value="Equipment">Equipment</option>
                                                             <option value="Venue">Venue</option>
@@ -253,7 +255,8 @@
                                                     <!-- Asset Name Dropdown (Initially Empty) -->
                                                     <div class="col-lg-4">
                                                         <label for="asset-id-1" class="form-label">Asset Name</label>
-                                                        <select class="form-select asset-id" id="asset-id-1">
+                                                        <select class="form-select asset-id" id="asset-id-1"
+                                                            name="assets[0][id]">
                                                             @foreach ($furnitureCategories as $category)
                                                                 <option value="{{ $category->id }}">{{ $category->name }}
                                                                 </option>
@@ -264,12 +267,12 @@
                                                     <div class="col-lg-2">
                                                         <label for="asset-quantity-1" class="form-label">Quantity</label>
                                                         <input type="number" class="form-control asset-quantity"
-                                                            id="asset-quantity-1" min="1" value="1">
+                                                            id="asset-quantity-1" min="1" value="1"
+                                                            name="assets[0][quantity]">
                                                     </div>
 
                                                     <div class="col-lg-2">
-                                                        <button type="button"
-                                                            class="btn btn-danger remove-asset">Remove</button>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -287,7 +290,8 @@
                                                 <div class="row mb-3 align-items-end skill-row">
                                                     <div class="col-lg-6">
                                                         <label for="skill-name-1" class="form-label">Skill Name</label>
-                                                        <select class="form-select skill-name" id="skill-name-1">
+                                                        <select class="form-select skill-name" id="skill-name-1"
+                                                            name="skills[0][name]">
                                                             @foreach ($skills as $skill)
                                                                 <option value="{{ $skill->id }}">{{ $skill->name }}
                                                                 </option>
@@ -297,11 +301,11 @@
                                                     <div class="col-lg-4">
                                                         <label for="skill-quantity-1" class="form-label">Quantity</label>
                                                         <input type="number" class="form-control skill-quantity"
-                                                            id="skill-quantity-1" min="1" value="1">
+                                                            id="skill-quantity-1" min="1" value="1"
+                                                            name="skills[0][quantity]">
                                                     </div>
                                                     <div class="col-lg-2">
-                                                        <button type="button"
-                                                            class="btn btn-danger remove-skill">Remove</button>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -362,6 +366,7 @@
                 // if you have reached the end of the form...
                 if (currentTab === x.length) {
                     document.getElementById("yourFormId").submit();
+                    currentTab = currentTab - n;
                 }
                 if (currentTab > x.length) {
                     currentTab = currentTab - n;
@@ -435,7 +440,7 @@
         <div class="row mb-3 align-items-end asset-row" id="asset-row-${assetCount}">
             <div class="col-lg-4">
                 <label for="asset-type-${assetCount}" class="form-label">Asset Type</label>
-                <select class="form-select asset-type" id="asset-type-${assetCount}" onchange="loadAssets(${assetCount})">
+                <select class="form-select asset-type" id="asset-type-${assetCount}" name="assets[${assetCount}][type]"  onchange="loadAssets(${assetCount})">
                     <option value="">Select Type</option>
                     <option value="Furniture">Furniture</option>
                     <option value="Equipment">Equipment</option>
@@ -445,13 +450,13 @@
             </div>
             <div class="col-lg-4">
                 <label for="asset-id-${assetCount}" class="form-label">Asset</label>
-                <select class="form-select asset-id" id="asset-id-${assetCount}">
+                <select class="form-select asset-id" id="asset-id-${assetCount}" name="assets[${assetCount}][id]">
                     <option value="">Select Asset</option>
                 </select>
             </div>
             <div class="col-lg-2">
                 <label for="asset-quantity-${assetCount}" class="form-label">Quantity</label>
-                <input type="number" class="form-control asset-quantity" id="asset-quantity-${assetCount}" min="1" value="1">
+                <input type="number" class="form-control asset-quantity" id="asset-quantity-${assetCount}"  min="1" value="1" name="assets[${assetCount}][quantity]">
             </div>
             <div class="col-lg-2">
                 <button type="button" class="btn btn-danger remove-asset" onclick="removeAssetRow(${assetCount})">Remove</button>
@@ -547,29 +552,43 @@
         </script>
         <script>
             // Add new skill row
+            // Initialize skillCount to track the number of skills added
+            let skillCount = document.querySelectorAll('.skill-row').length;
+
+            // Add Skill Button
             document.getElementById('add-skill-btn').addEventListener('click', function() {
                 skillCount++;
                 const skillRow = `
         <div class="row mb-3 align-items-end skill-row">
             <div class="col-lg-6">
                 <label for="skill-name-${skillCount}" class="form-label">Skill Name</label>
-                <select class="form-select skill-name" id="skill-name-${skillCount}">
+                <select class="form-select skill-name" id="skill-name-${skillCount}" name="skills[${skillCount}][name]">
                     @foreach ($skills as $skill)
-                    <option value="{{ $skill->id }}">{{ $skill->name }}</option>
+                        <option value="{{ $skill->id }}">{{ $skill->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-lg-4">
                 <label for="skill-quantity-${skillCount}" class="form-label">Quantity</label>
-                <input type="number" class="form-control skill-quantity" id="skill-quantity-${skillCount}" min="1" value="1">
+                <input type="number" class="form-control skill-quantity" id="skill-quantity-${skillCount}" 
+                       name="skills[${skillCount}][quantity]" min="1" value="1">
             </div>
             <div class="col-lg-2">
                 <button type="button" class="btn btn-danger remove-skill">Remove</button>
             </div>
         </div>
-        `;
+    `;
                 document.getElementById('skill-needs-container').insertAdjacentHTML('beforeend', skillRow);
             });
+
+            // Event delegation for dynamically added "Remove" buttons
+            document.getElementById('skill-needs-container').addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('remove-skill')) {
+                    const skillRow = e.target.closest('.skill-row');
+                    skillRow.remove();
+                }
+            });
+
 
             // Remove asset or skill row
             document.addEventListener('click', function(event) {
@@ -579,29 +598,6 @@
                 if (event.target.classList.contains('remove-skill')) {
                     event.target.closest('.skill-row').remove();
                 }
-            });
-
-            // Collect data
-            document.getElementById('next-tab-btn').addEventListener('click', function() {
-            const assetNeeds = Array.from(document.querySelectorAll('.asset-row')).map(row => ({
-                assetable_id: row.querySelector('.asset-id').value,
-                assetable_type: row.querySelector('.asset-type').value,
-                quantity: row.querySelector('.asset-quantity').value,
-                notes: row.querySelector('.asset-notes')?.value || null,
-            }));
-
-            const skillNeeds = Array.from(document.querySelectorAll('.skill-row')).map(row => ({
-                skill_name_id: row.querySelector('.skill-name').value,
-                quantity: row.querySelector('.skill-quantity').value,
-            }));
-
-            const eventNeeds = {
-                asset_needs: assetNeeds,
-                skill_needs: skillNeeds,
-            };
-
-            console.log(eventNeeds); // Send or use this data as needed
-            });
             });
         </script>
         <script>
@@ -616,17 +612,18 @@
 
             document.getElementById('add-fee-btn').addEventListener('click', function() {
                 const feeList = document.getElementById('fee-list');
+                const feeCount = feeList.querySelectorAll('.fee-entry').length;
                 const newFeeEntry = document.createElement('div');
                 newFeeEntry.classList.add('fee-entry', 'mb-3');
                 newFeeEntry.innerHTML = `
             <div class="row">
                 <div class="col-md-5">
                     <label for="event-fee-type" class="form-label">Fee Type</label>
-                    <input type="text" class="form-control fee-type" placeholder="Enter Fee Type (e.g. Early Bird)" required>
+                    <input type="text" name="fees[${feeCount}][type]" class="form-control fee-type" placeholder="Enter Fee Type (e.g. Early Bird)" required>
                 </div>
                 <div class="col-md-5">
                     <label for="event-fee-amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control fee-amount" placeholder="Enter Amount" required>
+                    <input type="number" name="fees[${feeCount}][amount]" class="form-control fee-amount" placeholder="Enter Amount" required>
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-danger remove-fee-btn" style="margin-top: 28px;">Remove</button>

@@ -28,8 +28,8 @@ class EventController extends Controller
         
 
         // Pass the categorized assets to the view
-        $events = Auth::user()->events()->paginate(8);
-        return view('events.myEvents', compact('events'));
+        $events = Event::orderBy('created_at', 'desc')->with(['categories', 'visualIdentity','domains'])->paginate(10);
+        return view('events.index', compact('events'));
     }
     public function myEvents()
     {
@@ -72,48 +72,27 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        //
-        $event = Event::with(['categories', 'domains', 'organizer', 'reviews','timeLine'])->findOrFail($id);
-        $userReview = $event->reviews()->where('user_id', auth()->id())->first(); // Get the user's review if it exists
-        //dd($event);
-        $timelineEvents = [
-            [
-                'date' => '25',
-                'month' => 'June',
-                'title' => 'Timeline Event One',
-                'description' => 'Perspitis unde omnis iste natus error sit voluptatem accusantium doloremque.',
-                'icon' => 'bx-briefcase-alt-2',
-                'images' => [],
-                'button' => false,
-                'link' => null,
-                'alignment' => 'right',
-            ],
-            [
-                'date' => '25',
-                'month' => 'June',
-                'title' => 'Timeline Event Two',
-                'description' => 'At vero eos dignissimos ducimus quos dolores.',
-                'icon' => 'bx-user-pin',
-                'images' => ['img-2.jpg', 'img-5.jpg'],
-                'button' => false,
-                'link' => null,
-                'alignment' => 'left',
-            ],
-            [
-                'date' => '28',
-                'month' => 'Dec',
-                'title' => 'Timeline Event Three',
-                'description' => 'Vivamus ultrices massa interdum eu.',
-                'icon' => 'bx-bar-chart-square',
-                'images' => [],
-                'button' => false,
-                'link' => null,
-                'alignment' => 'right',
-            ],
-            // Add more events...
-        ];
+        // Fetch the event with related models (excluding reviews for eager loading)
+        $event = Event::with([
+            'categories:id,name',
+            'domains:id,name',
+            'organizer:id,name,profile_picture',
+            'visualIdentity',
+            'timeLine'
+        ])->findOrFail($id);
 
-        return view('events.show',compact('event','timelineEvents','userReview'));
+        $rating = $event->getAverageRatingAttribute(); // Get the rating value
+        $fullStars = floor($rating); // Number of full stars
+        $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0; // Check if there's a half star
+        $emptyStars = 5 - ($fullStars + $halfStar); // Remaining stars
+
+        // Fetch paginated reviews for the event
+        $reviews = $event->reviews()->paginate(5); // Paginate 5 reviews per page
+
+        // Get the authenticated user's review, if it exists
+        $userReview = $event->reviews()->where('user_id', auth()->id())->first();
+
+        return view('events.show', compact('event', 'userReview', 'rating', 'fullStars', 'halfStar', 'emptyStars', 'reviews'));
     }
 
     /**
@@ -192,4 +171,29 @@ class EventController extends Controller
         $categories = EventCategory::all();
         return $name;
     }
+    public function loadMoreReviews(Request $request, string $eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $reviews = $event->reviews()
+            ->with('user:id,first_name,last_name,profile_picture')
+            ->latest()
+            ->paginate(5, ['*'], 'page', $request->get('page', 1));
+
+        return response()->json($reviews);
+    }
+    public function fetchEvents(Request $request)
+    {
+        $events = Event::query()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('components.event', compact('events'))->render(),
+            ]);
+        }
+
+        return view('events.index', compact('events'));
+    }
+
 }

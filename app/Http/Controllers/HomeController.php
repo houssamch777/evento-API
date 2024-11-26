@@ -20,46 +20,16 @@ class HomeController extends Controller
 
         //$events = Event::orderBy('created_at', 'desc')->paginate(10);
 
-        $events = [
-            (object) [
-                'id' => 1,
-                'name' => 'Thanksgiving Celebration',
-                'image' => 'build/images/events/img-1.jpg',
-                'startdate' => '2024-11-28',
-            ],
-            (object) [
-                'id' => 2,
-                'name' => 'New Year Party',
-                'image' => 'build/images/events/img-3.jpg',
-                'startdate' => '2024-12-31',
-            ],
-            (object) [
-                'id' => 3,
-                'name' => 'Charity Marathon',
-                'image' => 'build/images/events/img-1.jpg',
-                'startdate' => '2025-01-15',
-            ],
-            (object) [
-                'id' => 4,
-                'name' => 'Tech Conference 2025',
-                'image' => 'build/images/events/img-5.jpg',
-                'startdate' => '2025-02-20',
-            ],
-            (object) [
-                'id' => 5,
-                'name' => 'Music Festival',
-                'image' => 'build/images/events/img-2.jpg',
-                'startdate' => '2025-03-10',
-            ],
-        ];
-
-
+        $topEvents = Event::withCount('reviews') // 'reviews' is the relationship method
+            ->orderBy('reviews_count', 'desc')
+            ->take(5)->with(['categories', 'visualIdentity', 'domains']) // Limit to the top 5
+            ->get();
         //$posts = Post::orderBy('updated_at', 'desc')->with(['comments', 'likes'])->paginate(10);
         $categgories = EventCategory::paginate(12);
         $domains = EventDomain::paginate(15);
         
         $tags = Tag::all();
-         return view('welcome', compact('categgories','events','domains'));
+         return view('welcome', compact('categgories','topEvents','domains'));
     }
     public function loadMore($page)
     {

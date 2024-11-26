@@ -60,12 +60,14 @@ Route::middleware([LockScreenMiddleware::class, 'auth'])->group(function () {
     Route::resource('posts', EventController::class);
     // Events Resources
     Route::resource('events', EventController::class);
+    Route::get('/events/fetch', [EventController::class, 'fetchEvents'])->name('events.fetch');
     Route::get('/event-categories', [EventController::class, 'eventsByCategory'])->name('events.categories');
     Route::get('/event-categories/{category}', [EventController::class, 'eventsByCategoryName'])->name('events.categories.name');
     Route::get('/my-events', [EventController::class, 'myEvents'])->name('myEvents');
     Route::post('/events/{event}/reviews', [EventReviewController::class, 'store'])->name('event_reviews.store');
     Route::put('/reviews/{reviewId}', [EventReviewController::class, 'update'])->name('event_reviews.update');
     Route::delete('/reviews/{reviewId}', [EventReviewController::class, 'destroy'])->name('event_reviews.destroy');
+    Route::get('/events/{id}/reviews/load', [EventController::class, 'loadMoreReviews'])->name('events.reviews.load');
     // routes/web.php
     Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
 

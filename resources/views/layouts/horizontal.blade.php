@@ -222,7 +222,7 @@
                             
                             <div class="dropdown-menu" aria-labelledby="topnav-more">
 
-                                <a href="#" class="dropdown-item"
+                                <a href="{{route('events.index')}}" class="dropdown-item"
                                     data-key="t-horizontal">Events feed</a>
                                 <a href="#" class="dropdown-item"
                                     data-key="t-horizontal">Find Event</a>

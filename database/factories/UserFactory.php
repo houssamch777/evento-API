@@ -23,19 +23,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName=$this->faker->firstName();
+        $lastName = $this->faker->lastName();
         return [
 
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name'=>$firstName.' '.$lastName,
             'phone_number' => $this->faker->phoneNumber(),
             'location' => $this->faker->city(),
             'job' => $this->faker->optional()->jobTitle(),
             'date_of_birth' => $this->faker->year(), // Between 18 and 60 years old
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
-            'profile_picture' => $this->faker->optional()->imageUrl(200, 200, 'people', true, 'Profile'),
+            'profile_picture' => 'https://picsum.photos/1080/1080',
             'rating_average' => $this->faker->optional()->randomFloat(1, 0, 5), // Between 0 and 5
             'bio' => $this->faker->optional()->sentence(10),
             'social_links' => $this->faker->optional()->randomElement([

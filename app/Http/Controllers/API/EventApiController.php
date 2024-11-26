@@ -18,7 +18,7 @@ class EventApiController extends Controller
     public function index()
     {
         //
-        $events = Event::paginate(10);
+        $events = Event::with(['categories', 'domains', 'fees'])->get();
         return response()->json($events);
     }
     public function userEvents(Request $request)

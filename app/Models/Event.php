@@ -81,6 +81,9 @@ class Event extends Model
         return $this->hasMany(Team::class);
     }
 
-
+    public function visualIdentity()
+    {
+        return $this->hasOne(EventVisualIdentity::class, 'event_id'); // or belongsTo depending on your schema
+    }
 
 }
