@@ -39,30 +39,27 @@
 </script>
 @endif
 @if (session('success'))
-
-    @if (session('success'))
-            <script>
-                Swal.fire({
+<script>
+    Swal.fire({
                     position: 'top-end',
                     icon: 'success',
                     title: "{{ session('success') }}",
                     showConfirmButton: false,
                     timer: 1500
                 });
-            </script>
-        @endif
+</script>
+@endif
 
-        @if (session('error'))
-            <script>
-                Swal.fire({
+@if (session('error'))
+<script>
+    Swal.fire({
                     position: 'top-end',
                     icon: 'error',
                     title: "{{ session('error') }}",
                     showConfirmButton: false,
                     timer: 1500
                 });
-            </script>
-        @endif
-
+</script>
 @endif
+
 @yield('scripts')

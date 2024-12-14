@@ -151,21 +151,21 @@
                                                 
                                                 <!-- Actions (Edit & Remove) -->
                                                 <td>
-                                                    <div class="dropdown">
-                                                        <a class="text-muted dropdown-toggle font-size-18" role="button"
-                                                            data-bs-toggle="dropdown" aria-haspopup="true">
-                                                            <i class="mdi mdi-dots-horizontal"></i>
+                                                    <div class="d-flex gap-3">
+                                                        <!-- Edit Link -->
+                                                        <a href="{{ route('skills.edit', $skill->id) }}" class="text-success" title="Edit">
+                                                            <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-    
-                                                        <div class="dropdown-menu dropdown-menu-end">
-                                                            <a class="dropdown-item" href="{{ route('skills.edit', $skill->id) }}">Edit</a>
-                                                            <form action="{{ route('skills.destroy', $skill->id) }}" method="POST" style="display:inline-block;">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="dropdown-item">Delete</button>
-                                                            </form>
-                                                            
-                                                        </div>
+                                                    
+                                                        <!-- Delete Form -->
+                                                        <form method="POST" action="{{ route('skills.destroy', $skill->id) }}" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-link text-danger p-0 m-0" title="Delete"
+                                                                onclick="return confirm('Are you sure you want to delete this event?')">
+                                                                <i class="mdi mdi-delete font-size-18"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>

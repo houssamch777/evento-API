@@ -151,6 +151,12 @@ public function register(Request $request)
     
 }
 
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('user.edit',compact('user'));
+    }
+    
     
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BoostedEvent;
 use App\Models\Event;
 use App\Models\EventCategory;
 use App\Models\EventDomain;
@@ -24,12 +25,13 @@ class HomeController extends Controller
             ->orderBy('reviews_count', 'desc')
             ->take(5)->with(['categories', 'visualIdentity', 'domains']) // Limit to the top 5
             ->get();
+        $boostedEvents = BoostedEvent::with('event')->where('boost_start', '<=', now())->where('boost_end', '>', now())->get();
         //$posts = Post::orderBy('updated_at', 'desc')->with(['comments', 'likes'])->paginate(10);
-        $categgories = EventCategory::paginate(12);
+        $categories = EventCategory::paginate(12);
         $domains = EventDomain::paginate(15);
         
         $tags = Tag::all();
-         return view('welcome', compact('categgories','topEvents','domains'));
+         return view('welcome', compact('categories','topEvents','domains', 'boostedEvents'));
     }
     public function loadMore($page)
     {

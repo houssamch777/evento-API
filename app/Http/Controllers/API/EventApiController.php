@@ -122,6 +122,11 @@ class EventApiController extends Controller
             'name' => $teamName,
             'description' => $teamDescription, // Default description
         ]);
+        // Add the event organizer as a member of the team
+        $team->members()->attach($event->organizer_id, [
+            'role' => 'Admin',
+        ]);
+        
         return response()->json([
             'success' => true,
             'message' => 'Event created successfully',

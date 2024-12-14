@@ -11,7 +11,9 @@ use App\Models\FurnitureCategory;
 use App\Models\Post;
 use App\Models\RoomCategory;
 use App\Models\SkillName;
+use App\Models\Team;
 use App\Models\TransportationCategory;
+use App\Notifications\EventoNotification;
 use Auth;
 use Illuminate\Http\Request;
 use Log;
@@ -101,27 +103,98 @@ class EventController extends Controller
     public function edit(string $id)
     {
         //
-
-        return view('events.edit');
+        
+        $event = Event::findOrFail($id);
+        //dd($event->allNeeds);
+        //dd($event->organizer_id != auth()->user()->id);
+        if($event->organizer_id !=auth()->user()->id)
+        {
+            return redirect()->route('myEvents')->with('error', 'Unable to get Access to this event.');
+        }
+        //$teams = Team::findOrFail($event->teams->id);
+        return view('events.edit',compact('event'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
-        try
-        {
-            $event = Event::findOrFail($id);
-            return view('events.edit', compact('event'));
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Log the error if the event is not found  
-            Log::error("Event with ID {$id} not found. Deletion failed.");
+        // Get the authenticated user
+        $organizer = auth()->user();
 
-            return redirect()->back()->with('error', 'Event not found. Unable to delete.');
+        // Check if the user is the organizer of the event
+        $event = Event::findOrFail($id);
+        if ($event->organizer_id !== $organizer->id) {
+            return redirect()->route('events.index')
+                ->with('error', 'You do not have permission to update this event.');
+        }
+
+        // Validate the request
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'categories' => 'nullable|array',
+            'categories.*' => 'exists:event_categories,id',
+            'domains' => 'nullable|array',
+            'domains.*' => 'exists:event_domains,id',
+            'type' => 'required|in:in-person,online',
+            'privacy' => 'nullable|boolean',
+            'certificate' => 'nullable|boolean',
+            'fee' => 'nullable|boolean',
+            'fee_types' => 'nullable|array',
+            'fee_amounts' => 'nullable|array',
+            'fee_types.*' => 'nullable|string|max:255',
+            'fee_amounts.*' => 'nullable|numeric|min:0',
+        ]);
+        //dd($validatedData, $event, $organizer, $event->categories(), $event->domains());
+        try {
+            // Update basic details
+            $event->name = $validatedData['name'];
+            $event->description = $validatedData['description'];
+            $event->start_date = $validatedData['start_date'];
+            $event->end_date = $validatedData['end_date'];
+            $event->type = $validatedData['type'];
+            $event->privacy = isset($validatedData['privacy']) ? true : false;
+            $event->certificate = isset($validatedData['certificate']) ? true : false;
+            $event->fee = isset($validatedData['fee']) ? true : false;
+
+            // Update categories and domains
+            $event->categories()->sync($validatedData['categories'] ?? []);
+            $event->domains()->sync($validatedData['domains'] ?? []);
+
+            // Update fees
+            if ($event->fee && isset($validatedData['fee_types'], $validatedData['fee_amounts'])) {
+                $event->fees()->delete(); // Clear previous fees
+                foreach ($validatedData['fee_types'] as $index => $type) {
+                    $event->fees()->create([
+                        'type' => $type,
+                        'amount' => $validatedData['fee_amounts'][$index],
+                    ]);
+                }
+            }
+
+            // Save the event
+            $event->save();
+
+            // Send notification to the organizer
+            $title = 'Event Updated Successfully';
+            $message = "Your event '{$event->name}' has been updated successfully.";
+            $imagePath = null; // Update this with the actual path
+            $url = route('events-panel', $event->id); // Event detail page URL
+            $organizer->notify(new EventoNotification($title, $message, $imagePath, $url));
+
+            return redirect()->route('events-panel', $event->id)
+                ->with('success', 'Event updated successfully.');
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return redirect()->route('events-panel', $event->id)
+                ->with('error', 'An error occurred while updating the event. Please try again.');
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -194,6 +267,29 @@ class EventController extends Controller
         }
 
         return view('events.index', compact('events'));
+    }
+
+
+    public function liveSearch(Request $request)
+    {
+        $query = $request->input('query');
+        $location = $request->input('location');
+        $date = $request->input('date');
+
+        // Fetch matching events
+        $events = Event::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
+            })->get();
+        /*->when($location, function ($q) use ($location) {
+                $q->where('location', 'like', "%{$location}%");
+            })
+            ->when($date, function ($q) use ($date) {
+                $q->whereDate('event_date', $date);
+            })*/
+        // Return results as a view
+        return response()->json(view('events.partials.live_search_results', compact('events'))->render());
     }
 
 }

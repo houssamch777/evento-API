@@ -45,7 +45,7 @@ class SkillController extends Controller
     public function store(Request $request)
     {
         //
-        
+        //dd($request->input());
 
         $fields = $request->validate([
             'name' => 'required|max:255',
@@ -54,7 +54,8 @@ class SkillController extends Controller
             'portfolio_url' => 'nullable|url',
             'cost' => 'nullable|numeric',
             'cost_type' => 'nullable|in:per_hour,per_task',
-            
+            'start_time'=>'nullable',
+            'end_time'=>'nullable',
         ]);
 
          // Get the authenticated user and their token
@@ -65,18 +66,7 @@ class SkillController extends Controller
             'Authorization' => 'Bearer ' . $token,
     
         ];
-        $availability = [];
-        if($request->input('offer_as_service')){
-                $day = $request->input('day');
-                $starttime = $request->input('start_time');
-                $endtime = $request->input('end_time');
 
-                
-                // Loop through the arrays and combine them
-                for ($i = 0; $i < count($day); $i++) {
-                    $availability[$day[$i]] = $starttime[$i].'-'.$endtime[$i];
-                }
-        }
         
         $response = Http::withHeaders($headers)->post('https://evento.witslinks.com/api/skills', [
             // حقول التسجيل
@@ -86,7 +76,9 @@ class SkillController extends Controller
             'portfolio_url' => $request->input('portfolio_url'),
             'cost' => $request->input('cost'),
             'cost_type' => $request->input('cost_type'),
-            'availability' => $availability,
+            'availability' => $request->input('day'),
+            'start_time' => $request->input('start_time'),
+            'end_time' => $request->input('end_time'),
         ]);
         
         if ($response->successful()) {
@@ -108,7 +100,7 @@ class SkillController extends Controller
         $skill = Skill::findOrFail($id);
         $skills = Auth::user()->skills;
         $availability = $skill->availability;
-
+        
         $hoursPerDay = [
             "Mo" => 0,
             "Tu" => 0,
@@ -119,10 +111,10 @@ class SkillController extends Controller
             "Su" => 0
         ];
 
-        foreach ($availability as $day => $time_range) {
-            [$start, $end] = explode('-', $time_range);
-            $start_time = strtotime($start);
-            $end_time = strtotime($end);
+        foreach ($availability as $day) {
+            
+            $start_time = strtotime($skill->start_time);
+            $end_time = strtotime($skill->end_time);
         
             // Calculate hours
             $hours = ($end_time - $start_time) / 3600;
@@ -130,7 +122,7 @@ class SkillController extends Controller
             // Round the hours to one decimal place
             $hoursPerDay[$day] = round($hours, 1);
         }
-
+        //dd($hoursPerDay);
 
         // Return the view and pass the skill and hoursPerDay variables
         return view('skill.show', compact('skill', 'skills', 'hoursPerDay'));
@@ -151,15 +143,15 @@ class SkillController extends Controller
         $endTimes = [];
         
         // Loop through the availability array
-        foreach ($availability as $day => $time) {
-            // تقسيم الوقت إلى بداية ونهاية
-            list($startTime, $endTime) = explode('-', $time);
+        foreach ($availability as $day) {
+
             
             // إضافة القيم إلى المصفوفات الجديدة
             $days[] = $day;
-            $startTimes[] = $startTime;
-            $endTimes[] = $endTime;
+            $startTimes[] = $skill->start_time;
+            $endTimes[] = $skill->end_time;
         }
+        //dd($availability, $skill,$days);
         
         // إرسال البيانات إلى العرض
         return view('skill.edit', compact('skill', 'days', 'startTimes', 'endTimes'));

@@ -31,5 +31,9 @@ class Team extends Model
     {
         return $this->hasMany(Task::class);
     }
+    public function requests()
+    {
+        return $this->hasMany(TeamRequest::class);
+    }
 
 }

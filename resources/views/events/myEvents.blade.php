@@ -487,7 +487,7 @@
                                 `
                                 <div class="d-flex gap-3">
                                     <!-- Edit Link -->
-                                    <a href="/events/${row.cells[1].data}/edit" class="text-success" title="Edit">
+                                    <a href="/events/${row.cells[1].data}/panel" class="text-success" title="Edit">
                                         <i class="mdi mdi-pencil font-size-18"></i>
                                     </a>
                                 

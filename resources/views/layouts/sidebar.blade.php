@@ -49,8 +49,26 @@
                 </li>
                 <li>
                     <a href="{{ route('myEvents') }}">
-                        <i class="bx bxs-calendar-event icon nav-icon"></i>
+                        <i class="bx bx-select-multiple icon nav-icon"></i>
                         <span class="menu-item" data-key="t-myevents">My Events</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('calendar.view') }}">
+                        <i class="bx bx-calendar icon nav-icon"></i>
+                        <span class="menu-item" data-key="t-myevents">Evanto Claender</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('notifications.index') }}">
+                        <i class="bx bx-bell icon nav-icon"></i>
+                        <span class="menu-item" data-key="t-myevents">Notifications</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('task.index')}}">
+                        <i class="bx bx-check-square icon nav-icon"></i>
+                        <span class="menu-item" data-key="t-todo">Todo</span>
                     </a>
                 </li>
                 <li class="menu-title" data-key="t-skills-assets">Skills & Assets</li>
@@ -84,4 +102,5 @@
         <!-- Sidebar End -->
     </div>
 </div>
+
 <!-- Left Sidebar End -->

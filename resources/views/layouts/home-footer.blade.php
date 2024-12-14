@@ -111,14 +111,23 @@
   </section>
   <!-- Section: Links -->
 
-  <!-- Copyright -->
-  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-    © <span id="year"></span> Evanto. All rights reserved.
-  </div>
-  <!-- Copyright -->
 </footer>
 <!-- Footer -->
-
+<footer class="footer">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        © <span id="year"></span> Evanto. All rights reserved.
+      </div>
+      <div class="col-sm-6">
+        <div class="text-sm-end d-none d-sm-block">
+          Crafted with <i class="mdi mdi-heart text-danger"></i> by <a href="https://witslinks.com/" target="_blank"
+            class="text-reset">Witslinks</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>

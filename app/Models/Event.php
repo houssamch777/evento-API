@@ -58,6 +58,12 @@ class Event extends Model
     {
         return $this->hasMany(EventAssetNeed::class);
     }
+    public function skillNeeds()
+    {
+        return $this->hasMany(EventSkillNeed::class);
+    }
+
+
     public function reviews()
     {
         return $this->hasMany(EventReview::class);
@@ -71,19 +77,26 @@ class Event extends Model
     {
         return $this->reviews()->avg('rating');
     }
-    public function skillNeeds()
-    {
-        return $this->hasMany(EventSkillNeed::class);
-    }
-
+    
     public function teams()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasOne(Team::class);
     }
 
     public function visualIdentity()
     {
         return $this->hasOne(EventVisualIdentity::class, 'event_id'); // or belongsTo depending on your schema
     }
-
+    public function calendarEntries()
+    {
+        return $this->hasMany(UserCalendarEvent::class);
+    }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+    public function boostedEvent()
+    {
+        return $this->hasOne(BoostedEvent::class);
+    }
 }

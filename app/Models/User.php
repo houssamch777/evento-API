@@ -91,4 +91,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Task::class, 'task_user')->withTimestamps();
     }
+    public function calendarEvents()
+    {
+        return $this->hasMany(UserCalendarEvent::class);
+    }
+    public function eventCount()
+    {
+        return $this->events()->count();
+    }
 }

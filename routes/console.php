@@ -1,8 +1,17 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Console\Commands\CleanupBoostedEvents;
 
+use App\Console\Commands\UpdateEventStatus;
+use Illuminate\Support\Facades\Schedule;
+
+/*
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
+*/
+Schedule::command(CleanupBoostedEvents::class)->daily();
+// Run the event status update command every minute
+Schedule::command(UpdateEventStatus::class)->hourly();
+
+//Schedule::command('test:cron')->everySecond();
