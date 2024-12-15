@@ -17,7 +17,27 @@
     @endsection
     @section('content')
         <x-breadcrub :title="'Create'" :link="route('myEvents')" :pagetitle="'My Event'" />
+            <!-- Validation Errors -->
+    @if ($errors->any())
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Please fix the following errors:</h5>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
         <div class="row">
+            
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">

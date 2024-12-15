@@ -66,7 +66,101 @@ class EventController extends Controller
     public function store(Request $request)
     {
         //
+        $user = auth()->user(); // Get the authenticated user
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'fee' => 'required|boolean',
+            'privacy' => 'required|boolean',
+            'type' => 'required|string|in:online,in-person',
+            'certificate' => 'required|boolean',
+            'categories' => 'array',
+            'categories.*' => 'integer|exists:event_categories,id',
+            'domains' => 'array',
+            'domains.*' => 'integer|exists:event_domains,id',
+            'fees' => 'array',
+            'fees.*.type' => 'required|string',
+            'fees.*.amount' => 'required|numeric|min:0',
+            'assets' => 'array',
+            'assets.*.id' => 'required|integer', // Ensure assetable_id exists in the referenced table
+            'assets.*.type' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    // Define the allowed types
+                    $allowedTypes = [
+                        EquipmentCategory::class,
+                        FurnitureCategory::class,
+                        RoomCategory::class,
+                        TransportationCategory::class,
+                    ];
+                    if (!in_array($value, $allowedTypes)) {
+                        $fail('The ' . $attribute . ' is not a valid asset type.');
+                    }
+                },
+            ],
+            'assets.*.quantity' => 'required|integer|min:1',
+            'assets.*.notes' => 'nullable|string',
+
+            // Validate skills needs
+            'skills' => 'array',
+            'skills.*.name' => 'required|integer|exists:skill_names,id',
+            'skills.*.quantity' => 'required|integer|min:1',
+        ]);
+    
+        // Create the event with the authenticated user's ID as organizer_id
+
         dd($request->input());
+
+        $event = Event::create(array_merge(
+            $request->only([
+                'name', 'description', 'start_date', 'end_date', 'fee', 'privacy', 'type', 'certificate'
+            ]),
+            ['organizer_id' => $user->id]
+        ));
+    
+        // Attach categories and domains
+        $event->categories()->attach($request->input('categories'));
+        $event->domains()->attach($request->input('domains'));
+    
+        // Add event fees
+        foreach ($request->input('event_fees', []) as $fee) {
+            $event->fees()->create($fee);
+        }
+    
+        // Add asset needs
+
+        foreach ($request->input('asset_needs', []) as $need) {
+            $event->assetNeeds()->create($need);
+        }
+    
+        // Add skill needs
+        foreach ($request->input('skill_needs', []) as $skillNeed) {
+            $event->skillNeeds()->create([
+                'skill_name_id' => $skillNeed['skill_name_id'],
+                'quantity' => $skillNeed['quantity']
+            ]);
+        }
+        $teamName = $event->name . ' Team'; // Team name is event name + "Team"
+        $teamDescription = "This is the official team for the " . $event->name . ". Add members to help you make this event a success!";
+
+        $team = Team::create([
+            'event_id' => $event->id,
+            'name' => $teamName,
+            'description' => $teamDescription, // Default description
+        ]);
+        // Add the event organizer as a member of the team
+        $team->members()->attach($event->organizer_id, [
+            'role' => 'Admin',
+        ]);
+        response()->json([
+            'success' => true,
+            'message' => 'Event created successfully',
+            'event' => $event,
+            'team' => $team
+        ], 201);
+        return null;
     }
 
     /**

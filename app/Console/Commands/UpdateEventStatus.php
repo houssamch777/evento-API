@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Event;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -29,26 +30,35 @@ class UpdateEventStatus extends Command
     {
         //
 
-
-        $now = Carbon::now();
-
-        // Find events with "Scheduled" or "Ongoing" status whose end_date has passed
-        $events = Event::whereIn('status', ['Scheduled', 'Ongoing'])
-            ->where('end_date', '<', $now)
-            ->get();
-
-        foreach ($events as $event) {
-            if($event->status=='Scheduled'){
-                $event->status = 'Cancelled';
-                $event->save();
-                $this->info("Updated event ID {$event->id} to 'Cancelled'.");
-            }else{
-                $event->status = 'Completed';
-                $event->save();
-                $this->info("Updated event ID {$event->id} to 'Completed'.");
-            }
+        try {
+            $now = Carbon::now();
+    
+            // Scheduled → Expired
+            $expiredEvents = Event::where('status', 'Scheduled')
+                ->where('start_date', '<', $now)
+                ->update(['status' => 'Expired']);
+            log::info("Updated {$expiredEvents} event(s) from Scheduled to Expired.");
+            $this->info("Updated {$expiredEvents} event(s) from Scheduled to Expired.");
+            // Ready → Ongoing
+            $ongoingEvents = Event::where('status', 'Ready')
+                ->where('start_date', '<=', $now)
+                ->where('end_date', '>', $now)
+                ->update(['status' => 'Ongoing']);
+            Log::info("Updated {$ongoingEvents} event(s) from Ready to Ongoing.");
+            $this->info("Updated {$ongoingEvents} event(s) from Ready to Ongoing.");
+    
+            // Ongoing → Completed
+            $completedEvents = Event::where('status', 'Ongoing')
+                ->where('end_date', '<=', $now)
+                ->update(['status' => 'Completed']);
+            Log::info("Updated {$completedEvents} event(s) from Ongoing to Completed.");
+            $this->info("Updated {$completedEvents} event(s) from Ongoing to Completed.");
+    
+            $this->info("Status updates completed successfully.");
+        } catch (\Exception $e) {
+            Log::error("Error updating event statuses: " . $e->getMessage());
+            $this->error("Failed to update event statuses. Check the logs for details.");
         }
-
-        $this->info("Event status update completed.");
+    
     }
 }
